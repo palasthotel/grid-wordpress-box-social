@@ -18,9 +18,7 @@ function grid_box_social_define_boxes() {
 	/**
 	 * twitter box
 	 */
-	if(!class_exists("TwitterOAuth")){
-		require_once 'grid_twitterbox/twitteroauth/twitteroauth.php';
-	}
+	grid_box_social_include_twitter_api();
 	require( 'grid_twitterbox/grid_wp_twitterboxes.php' );
 	/**
 	 * facebook box
@@ -38,12 +36,13 @@ function grid_box_social_admin_menu() {
 add_action( 'admin_menu', 'grid_box_social_admin_menu' );
 
 function grid_box_social_settings() {
+	grid_box_social_include_twitter_api();
 	if ( isset( $_POST ) && ! empty( $_POST ) ) {
 		update_site_option( 'grid_twitterbox_consumer_key', $_POST['grid_twitterbox_consumer_key'] );
 		update_site_option( 'grid_twitterbox_consumer_secret', $_POST['grid_twitterbox_consumer_secret'] );
 
 		$connection = new TwitterOAuth( get_site_option( 'grid_twitterbox_consumer_key', '' ), get_site_option( 'grid_twitterbox_consumer_secret', '' ) );
-		$request_token = $connection->getRequestToken( add_query_arg( array( 'page' => 'grid_wp_twitterbox_callback', 'noheader' => true ), admin_url( 'admin.php' ) ) );
+		$request_token = $connection->getRequestToken( add_query_arg( array( 'page' => 'grid_box_social_twitterbox_callback', 'noheader' => true ), admin_url( 'admin.php' ) ) );
 		session_start();
 		$_SESSION['oauth_token'] = $token = $request_token['oauth_token'];
 		$_SESSION['oauth_token_secret'] = $request_token['oauth_token_secret'];
@@ -53,31 +52,50 @@ function grid_box_social_settings() {
 	} else {
 ?>
 <h2>Twitter Settings</h2>
-<form method="POST" action="<?php echo add_query_arg( array( 'noheader' => true, 'page' => 'grid_wp_twitterbox_settings' ), admin_url( 'options-general.php' ) ) ?>">
-<label for="grid_twitterbox_consumer_key">Consumer Key:</label>
-<input type="text" name="grid_twitterbox_consumer_key" value="<?php echo get_site_option( 'grid_twitterbox_consumer_key', '' );?>">
-<label for="grid_twitterbox_consumer_secret">Consumer Secret:</label>
-<input type="text" name="grid_twitterbox_consumer_secret" value="<?php echo get_site_option( 'grid_twitterbox_consumer_secret', '' );?>">
-<input type="submit" value="Save and authenticate">
+<form method="POST" action="<?php echo add_query_arg( array( 'noheader' => true, 'page' => 'grid_box_social_settings' ), admin_url( 'options-general.php' ) ) ?>">
+<p>
+	<label for="grid_twitterbox_consumer_key">Consumer Key:</label>
+	<input type="text" name="grid_twitterbox_consumer_key" value="<?php echo get_site_option( 'grid_twitterbox_consumer_key', '' );?>">
+	<label for="grid_twitterbox_consumer_secret">Consumer Secret:</label>
+	<input type="text" name="grid_twitterbox_consumer_secret" value="<?php echo get_site_option( 'grid_twitterbox_consumer_secret', '' );?>">
+</p>
+<?php echo get_submit_button( "Save" ); ?>
 </form>
-Access Token:
+
+<p>Access Token:</p>
 <pre>
 <?php
 	var_dump( get_site_option( 'grid_twitterbox_accesstoken', 'none' ) );
 ?>
 </pre>
+
 <?php
 	}
 }
 
 function grid_box_social_twitterbox_callback() {
+	grid_box_social_include_twitter_api();
 	session_start();
-	$connection = new TwitterOAuth( get_site_option( 'grid_twitterbox_consumer_key', '' ), get_site_option( 'grid_twitterbox_consumer_secret', '' ), $_SESSION['oauth_token'], $_SESSION['oauth_token_secret'] );
+	$connection = new TwitterOAuth( 
+		get_site_option( 'grid_twitterbox_consumer_key', '' ), 
+		get_site_option( 'grid_twitterbox_consumer_secret', '' ), 
+		$_SESSION['oauth_token'], 
+		$_SESSION['oauth_token_secret'] 
+	);
 
 	/* Request access tokens from twitter */
 	$access_token = $connection->getAccessToken( $_REQUEST['oauth_verifier'] );
 	update_site_option( 'grid_twitterbox_accesstoken', $access_token );
 	echo 'Done! We\'re authenticated';
+}
+
+/**
+ * include twitter api if not already included
+ */
+function grid_box_social_include_twitter_api(){
+	if(!class_exists("TwitterOAuth")){
+		require_once 'grid_twitterbox/twitteroauth/twitteroauth.php';
+	}
 }
 
 ?>
