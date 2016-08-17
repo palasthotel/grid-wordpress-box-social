@@ -13,7 +13,16 @@ use GridSocialBoxes\Settings\Twitter;
 
 class Settings {
 	
+	/**
+	 * settings page slug
+	 */
 	const PAGE_SLUG = "grid_social_boxes_settings";
+	
+	/**
+	 * social media types
+	 */
+	const TYPE_TWITTER = "twitter";
+	const TYPE_INSTAGRAM = "instagram";
 	
 	/**
 	 * @var \GridSocialBoxes

@@ -10,9 +10,11 @@ namespace GridSocialBoxes\Settings;
 
 
 
+use GridSocialBoxes\Settings;
+
 class Instagram extends Base{
 	
-	const OPTION_KEY_CLIENT_KEY = "grid_instagram_client_key";
+	const OPTION_KEY_CLIENT_ID = "grid_instagram_client_id";
 	const OPTION_KEY_CLIENT_SECRET = "grid_instagram_client_secret";
 	const OPTION_KEY_CLIENT_TOKEN= "grid_instagram_client_token";
 	const OPTION_KEY_CODE = "grid_instagram_code";
@@ -28,7 +30,7 @@ class Instagram extends Base{
 	}
 	
 	public function getSlug() {
-		return "instagram";
+		return Settings::TYPE_INSTAGRAM;
 	}
 	
 	public function getTitle(){
@@ -39,12 +41,15 @@ class Instagram extends Base{
 	 * get instagram api
 	 * @return \MetzWeb\Instagram\Instagram|null
 	 */
-	public function getAPI(){
-		$key = get_site_option(self::OPTION_KEY_CLIENT_KEY);
+	public function getApi(){
+		$key = get_site_option(self::OPTION_KEY_CLIENT_ID);
 		$secret = get_site_option(self::OPTION_KEY_CLIENT_SECRET);
 		if($key == false || $secret == false){
 			return null;
 		}
+		
+		$this->settings->plugin->include_instagram_api();
+		
 		if($this->api == null){
 			$this->api = new \MetzWeb\Instagram\Instagram(array(
 				"apiKey" => $key,
@@ -63,16 +68,13 @@ class Instagram extends Base{
 	 * render settings page
 	 */
 	public function renderPage(){
-		$this->settings->plugin->social_boxes_include_instagram_api();
-		
-		
 		
 		if ( isset( $_POST ) && ! empty( $_POST ) ) {
 			
-			update_site_option( self::OPTION_KEY_CLIENT_KEY, $_POST[self::OPTION_KEY_CLIENT_KEY] );
+			update_site_option( self::OPTION_KEY_CLIENT_ID, $_POST[self::OPTION_KEY_CLIENT_ID] );
 			update_site_option( self::OPTION_KEY_CLIENT_SECRET, $_POST[self::OPTION_KEY_CLIENT_SECRET] );
 			
-			$instagram = $this->getAPI();
+			$instagram = $this->getApi();
 			
 			if($instagram == null){
 				die("error instagram is null");
@@ -82,7 +84,7 @@ class Instagram extends Base{
 			die();
 		}
 		
-		$instagram = $this->getAPI();
+		$instagram = $this->getApi();
 		if($instagram != null && get_site_option(self::OPTION_KEY_CLIENT_TOKEN) !== false){
 			$user = $instagram->getUser();
 			?>
@@ -94,14 +96,18 @@ class Instagram extends Base{
 				
 			</div>
 			<?php
+		} else {
+			?>
+			<p>Goto <a href="https://www.instagram.com/developer/">Instagram Developer</a> and register an App to get the following credentials.</p>
+			<?php
 		}
 		?>
 		
 		<form method="POST" action="<?php echo $this->getSelfURL(array("noheader"=>true)); ?>">
 			
 			<p>
-				<label for="<?php echo self::OPTION_KEY_CLIENT_KEY; ?>">Client Key:</label>
-				<input type="text" name="<?php echo self::OPTION_KEY_CLIENT_KEY; ?>" value="<?php echo get_site_option( self::OPTION_KEY_CLIENT_KEY, '' );?>">
+				<label for="<?php echo self::OPTION_KEY_CLIENT_ID; ?>">Client ID:</label>
+				<input type="text" name="<?php echo self::OPTION_KEY_CLIENT_ID; ?>" value="<?php echo get_site_option( self::OPTION_KEY_CLIENT_ID, '' );?>">
 				<label for="<?php echo self::OPTION_KEY_CLIENT_SECRET; ?>">Client Secret:</label>
 				<input type="text" name="<?php echo self::OPTION_KEY_CLIENT_SECRET; ?>" value="<?php echo get_site_option( self::OPTION_KEY_CLIENT_SECRET, '' );?>">
 			</p>
@@ -177,9 +183,7 @@ class Instagram extends Base{
 			/**
 			 * ready to auth
 			 */
-			$this->settings->plugin->social_boxes_include_instagram_api();
-			
-			$instagram = $this->getAPI();
+			$instagram = $this->getApi();
 			// receive OAuth token object
 			$data = $instagram->getOAuthToken($_GET["code"]);
 			

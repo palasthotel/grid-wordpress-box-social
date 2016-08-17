@@ -9,9 +9,15 @@
 namespace GridSocialBoxes\Settings;
 
 
+use GridSocialBoxes\Settings;
 use TwitterOAuth;
 
 class Twitter extends Base{
+	
+	/**
+	 * @var TwitterOAuth
+	 */
+	private $api;
 	
 	public function __construct( \GridSocialBoxes\Settings $settings ) {
 		parent::__construct( $settings );
@@ -19,18 +25,34 @@ class Twitter extends Base{
 	}
 	
 	public function getSlug() {
-		return "twitter";
+		return Settings::TYPE_TWITTER;
 	}
 	
 	public function getTitle(){
 		return __("Twitter", "grid-social-boxes");
 	}
 	
+	public function getApi(){
+		/**
+		 * check if options are saved
+		 */
+		if(get_site_option( 'grid_twitterbox_consumer_key' ) === false || get_site_option( 'grid_twitterbox_consumer_secret') === false ){
+			return null;
+		}
+		
+		if( get_site_option( 'grid_twitterbox_accesstoken')!== false){
+			$this->settings->plugin->include_twitter_api();
+			
+			$this->api = new TwitterOAuth( get_site_option( 'grid_twitterbox_consumer_key', '' ), get_site_option( 'grid_twitterbox_consumer_secret', '' ) );
+		}
+		return $this->api;
+	}
+	
 	/**
 	 * render settings page
 	 */
 	public function renderPage(){
-		$this->settings->plugin->social_boxes_include_twitter_api();
+		$this->settings->plugin->include_twitter_api();
 		if ( isset( $_POST ) && ! empty( $_POST ) ) {
 			update_site_option( 'grid_twitterbox_consumer_key', $_POST['grid_twitterbox_consumer_key'] );
 			update_site_option( 'grid_twitterbox_consumer_secret', $_POST['grid_twitterbox_consumer_secret'] );
@@ -95,7 +117,7 @@ class Twitter extends Base{
 	 */
 	public function callback() {
 		
-		$this->settings->plugin->social_boxes_include_twitter_api();
+		$this->settings->plugin->include_twitter_api();
 		
 		session_start();
 		$connection = new TwitterOAuth(

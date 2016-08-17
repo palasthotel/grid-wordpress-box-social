@@ -29,7 +29,7 @@ class GridSocialBoxes{
 		add_filter("grid_templates_paths", array($this,"template_paths") );
 		
 		require_once $this->dir."/inc/settings.inc";
-		new \GridSocialBoxes\Settings($this);
+		$this->settings = new \GridSocialBoxes\Settings($this);
 	}
 
 	/**
@@ -42,7 +42,7 @@ class GridSocialBoxes{
 		/**
 		 * twitter box
 		 */
-		$this->social_boxes_include_twitter_api();
+		$this->include_twitter_api();
 		require( 'grid_twitterbox/grid_wp_twitterboxes.php' );
 		
 		/**
@@ -53,6 +53,9 @@ class GridSocialBoxes{
 		/**
 		 * instagram box
 		 */
+		if($this->get_instagram_api() != null){
+			require('grid_instagram_box/grid_instagram_box.php');
+		}
 
 	}
 
@@ -69,22 +72,34 @@ class GridSocialBoxes{
 	/**
 	 * include twitter api if not already included
 	 */
-	public function social_boxes_include_twitter_api(){
+	public function include_twitter_api(){
 		if(!class_exists("TwitterOAuth")){
 			require_once 'grid_twitterbox/twitteroauth/twitteroauth.php';
 		}
 	}
 	
 	/**
+	 * @return \MetzWeb\Instagram\Instagram|null
+	 */
+	public function get_instagram_api(){
+		/**
+		 * @var $settings \GridSocialBoxes\Settings\Instagram
+		 */
+		$settings = $this->settings->pages[\GridSocialBoxes\Settings::TYPE_INSTAGRAM];
+		return $settings->getApi();
+	}
+	
+	/**
 	 * include instagram api if not already included
 	 */
-	public function social_boxes_include_instagram_api(){
+	public function include_instagram_api(){
 		if(!class_exists("Instagram")){
 			require_once 'grid_instagram_box/instagram-api/instagram.php';
 		}
 	}
 }
-new GridSocialBoxes();
+global $grid_social_boxes;
+$grid_social_boxes = new GridSocialBoxes();
 
 
 ?>
