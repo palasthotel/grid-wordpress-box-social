@@ -99,7 +99,7 @@ class Settings {
 			 * @var $obj Settings\Base
 			 */
 			$class = ( $slug == $current ) ? ' nav-tab-active' : '';
-			echo "<a class='nav-tab$class' href='?page=".self::PAGE_SLUG."&tab=$slug'>".$obj->getTitle()."</a>";
+			echo "<a class='nav-tab$class' href='".$obj->getSelfURL()."'>".$obj->getTitle()."</a>";
 		}
 		echo '</h2>';
 		

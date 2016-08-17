@@ -23,7 +23,7 @@ class Twitter extends Base{
 	}
 	
 	public function getTitle(){
-		return __("Twitter Settings", "grid-social-boxes");
+		return __("Twitter", "grid-social-boxes");
 	}
 	
 	/**
@@ -44,13 +44,24 @@ class Twitter extends Base{
 			header( 'Location: ' . $url );
 			die();
 		} else {
+			
+			
+			if( get_site_option( 'grid_twitterbox_accesstoken')!== false){
+			?>
+			<div class="notice notice-success">
+				<p>Authorization granted!</p>
+			<p><?php
+			$token = get_site_option( 'grid_twitterbox_accesstoken');
+			foreach ($token as $key => $val){
+				?><strong><?php echo $key; ?>:</strong> <?php echo $val; ?><br /><?php
+			}
+			?></p>
+			</div>
+			<?php
+		}
 			?>
 			
-			<form method="POST" action="<?php echo add_query_arg( array(
-				'noheader' => true,
-				'page' => 'grid_social_boxes_settings',
-				'tab' => $this->getSlug()
-			), admin_url( 'options-general.php' ) ) ?>">
+			<form method="POST" action="<?php echo $this->getSelfURL(array("noheader"=>true)); ?>">
 				
 				<p>
 					<label for="grid_twitterbox_consumer_key">Consumer Key:</label>
@@ -60,13 +71,6 @@ class Twitter extends Base{
 				</p>
 				<?php echo get_submit_button( "Save" ); ?>
 			</form>
-			
-			<p>Access Token:</p>
-			<pre>
-			<?php
-			var_dump( get_site_option( 'grid_twitterbox_accesstoken', 'none' ) );
-			?>
-			</pre>
 			
 			<?php
 		}

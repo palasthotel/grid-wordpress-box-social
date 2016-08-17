@@ -26,12 +26,11 @@ abstract class Base{
 		$this->settings = $settings;
 	}
 	
-	public function getSelfURL(){
-		return add_query_arg( array(
-			'noheader' => true,
+	public function getSelfURL( $add = array() ){
+		return add_query_arg( array_merge(array(
 			'page' => Settings::PAGE_SLUG,
-			'tab' => $this->getSlug()
-		), admin_url( 'options-general.php' ) );
+			'tab' => $this->getSlug(),
+		), $add), admin_url( 'options-general.php' ) );
 	}
 	
 	abstract public function getSlug();

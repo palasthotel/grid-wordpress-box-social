@@ -74,6 +74,15 @@ class GridSocialBoxes{
 			require_once 'grid_twitterbox/twitteroauth/twitteroauth.php';
 		}
 	}
+	
+	/**
+	 * include instagram api if not already included
+	 */
+	public function social_boxes_include_instagram_api(){
+		if(!class_exists("Instagram")){
+			require_once 'grid_instagram_box/instagram-api/instagram.php';
+		}
+	}
 }
 new GridSocialBoxes();
 
