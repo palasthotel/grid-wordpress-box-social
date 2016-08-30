@@ -40,11 +40,27 @@ class Twitter extends Base{
 			return null;
 		}
 		
-		if( get_site_option( 'grid_twitterbox_accesstoken')!== false){
+		if($this->api == null){
+			
 			$this->settings->plugin->include_twitter_api();
 			
-			$this->api = new TwitterOAuth( get_site_option( 'grid_twitterbox_consumer_key', '' ), get_site_option( 'grid_twitterbox_consumer_secret', '' ) );
+			$token = get_option( 'grid_twitterbox_accesstoken' );
+			
+			if ( $token === false || ! isset( $token['oauth_token'] ) || ! isset( $token['oauth_token_secret'] ) ) {
+				$this->api = new TwitterOAuth(
+					get_site_option( 'grid_twitterbox_consumer_key', '' ),
+					get_site_option( 'grid_twitterbox_consumer_secret', '' )
+				);
+			} else {
+				$this->api = new TwitterOAuth(
+					get_option( 'grid_twitterbox_consumer_key' ),
+					get_option( 'grid_twitterbox_consumer_secret' ),
+					$token['oauth_token'],
+					$token['oauth_token_secret']
+				);
+			}
 		}
+		
 		return $this->api;
 	}
 	

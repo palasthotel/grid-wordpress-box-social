@@ -46,11 +46,13 @@ class grid_twitter_box extends grid_static_base_box {
 			if ( $prebuild != null ) {
 				return $prebuild;
 			} else {
-				$token = get_option( 'grid_twitterbox_accesstoken' );
-				if ( ! isset( $token['oauth_token'] ) || ! isset( $token['oauth_token_secret'] ) ) {
-					return '';
+				global $grid_social_boxes;
+				if($grid_social_boxes == null){
+					return "<p>no API found for Twitter</p>";
 				}
-				$connection = new TwitterOAuth( get_option( 'grid_twitterbox_consumer_key', '' ), get_option( 'grid_twitterbox_consumer_secret', '' ), $token['oauth_token'], $token['oauth_token_secret'] );
+				
+				$connection = $grid_social_boxes->get_twitter_api();
+				
 				$result = $this->fetch( $connection );
 				if ( count( $result ) > $this->content->limit ) {
 					$result = array_slice( $result, 0, $this->content->limit );
@@ -66,6 +68,10 @@ class grid_twitter_box extends grid_static_base_box {
 				return $result;
 			}
 		}
+	}
+	
+	public function getConnection(){
+		
 	}
 
 	public function contentStructure () {

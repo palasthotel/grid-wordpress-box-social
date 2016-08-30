@@ -56,6 +56,11 @@ class GridSocialBoxes{
 		if($this->get_instagram_api() != null){
 			require('grid_instagram_box/grid_instagram_box.php');
 		}
+		
+		/**
+		 * social timeline
+		 */
+		require "social_timeline/grid_social_timeline_box.php";
 
 	}
 
@@ -67,6 +72,17 @@ class GridSocialBoxes{
 	public function template_paths($paths){
 		$paths[] = dirname(__FILE__)."/templates";
 		return $paths;
+	}
+	
+	/**
+	 * @return \TwitterOAuth|null
+	 */
+	public function get_twitter_api(){
+		/**
+		 * @var $settings \GridSocialBoxes\Settings\Twitter
+		 */
+		$settings = $this->settings->pages[\GridSocialBoxes\Settings::TYPE_TWITTER];
+		return $settings->getApi();
 	}
 	
 	/**

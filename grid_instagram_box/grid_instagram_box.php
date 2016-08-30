@@ -15,7 +15,6 @@ class grid_instagram_box extends grid_static_base_box {
 	public function __construct() {
 		parent::__construct();
 		$this->content->count = 3;
-		$this->content->user = "self";
 	}
 
 	public function build($editmode) {
@@ -26,36 +25,50 @@ class grid_instagram_box extends grid_static_base_box {
 			
 			// TODO: cache output with transient for max 500 calls an hour (api limit)
 			
-			$arr = array();
-			global $grid_social_boxes;
-			if($grid_social_boxes != null){
-				$api = $grid_social_boxes->get_instagram_api();
-				if($api != null){
-					$result = $api->getUserMedia($this->content->user, $this->content->count);
-					$images = $result->data;
-					foreach ($images as $item){
-						$src = $item->images->low_resolution->url;
-						$arr[] = "<img src='$src' />";
-					}
-				}
-			}
+			$arr =  $this->getData();
 			
 			return implode("<br>",$arr);
 		}
 	}
+	
+	public function getData(){
+		$arr = array();
+		global $grid_social_boxes;
+		if($grid_social_boxes != null){
+			$api = $grid_social_boxes->get_instagram_api();
+			if($api != null){
+				$result = $api->getUserMedia('self', $this->content->count);
+				$images = $result->data;
+				foreach ($images as $item){
+					$src = $item->images->low_resolution->url;
+					$arr[] = "<img src='$src' />";
+				}
+			}
+		}
+		return $arr;
+	}
 
 	public function contentStructure () {
 		$cs = parent::contentStructure();
+		global $grid_social_boxes;
+		
+		$info = array(
+			'label' => __("Instagram Account", "grid-social-boxes"),
+			'text' => __( 'Not logged in. Goto settings and get an access token.', 'grid-social-boxes' ),
+			'type' => 'info',
+		);
+		
+		if($grid_social_boxes->get_instagram_api() != null){
+			$user = $grid_social_boxes->get_instagram_api()->getUser();
+			$info['text'] = sprintf(esc_html__('Get Instagram posts for: %1$s', 'grid-social-boxes'),$user->data->username);
+		}
+		
 		return array_merge( $cs, array(
+			$info,
 			array(
 				'key' => 'count',
 				'label' => t( 'Count' ),
 				'type' => 'number',
-			),
-			array(
-				'key' => 'user',
-				'label' => t( 'Different username (optional)' ),
-				'type' => 'text',
 			),
 		));
 	}
