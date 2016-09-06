@@ -113,6 +113,15 @@ class GridSocialBoxes{
 			require_once 'grid_instagram_box/instagram-api/instagram.php';
 		}
 	}
+	
+	/**
+	 * include youtube api if not already included
+	 */
+	public function include_youtube_api(){
+		if(!class_exists("Google_Service")){
+			require_once 'grid_youtube_box/google-api-php-client-2.0.2/src/Google/autoload.php';
+		}
+	}
 }
 global $grid_social_boxes;
 $grid_social_boxes = new GridSocialBoxes();
