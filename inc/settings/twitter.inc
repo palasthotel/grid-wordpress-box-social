@@ -14,6 +14,8 @@ use TwitterOAuth;
 
 class Twitter extends Base{
 	
+	const ADMIN_PAGE_CALLBACK_SLUG = "grid_social_boxes_twitterbox_callback";
+	
 	/**
 	 * @var TwitterOAuth
 	 */
@@ -74,7 +76,12 @@ class Twitter extends Base{
 			update_site_option( 'grid_twitterbox_consumer_secret', $_POST['grid_twitterbox_consumer_secret'] );
 			
 			$connection = new TwitterOAuth( get_site_option( 'grid_twitterbox_consumer_key', '' ), get_site_option( 'grid_twitterbox_consumer_secret', '' ) );
-			$request_token = $connection->getRequestToken( add_query_arg( array( 'page' => 'grid_social_boxes_twitterbox_callback', 'noheader' => true ), admin_url( 'admin.php' ) ) );
+			
+			$request_token = $connection->getRequestToken( add_query_arg( array(
+				'page' => self::ADMIN_PAGE_CALLBACK_SLUG,
+				'noheader' => true
+			), admin_url( 'admin.php' ) ) );
+			
 			session_start();
 			$_SESSION['oauth_token'] = $token = $request_token['oauth_token'];
 			$_SESSION['oauth_token_secret'] = $request_token['oauth_token_secret'];
@@ -100,12 +107,14 @@ class Twitter extends Base{
 			?>
 			
 			<form method="POST" action="<?php echo $this->getSelfURL(array("noheader"=>true)); ?>">
-				
+				<p><?php _e("Get your credentials at <a href='https://apps.twitter.com/'>Twitter Apps</a>. Create or choose your app and have a look at 'Keys and Access Tokens'.", 'grid-social-boxes'); ?></p>
 				<p>
-					<label for="grid_twitterbox_consumer_key">Consumer Key:</label>
-					<input type="text" name="grid_twitterbox_consumer_key" value="<?php echo get_site_option( 'grid_twitterbox_consumer_key', '' );?>">
-					<label for="grid_twitterbox_consumer_secret">Consumer Secret:</label>
-					<input type="text" name="grid_twitterbox_consumer_secret" value="<?php echo get_site_option( 'grid_twitterbox_consumer_secret', '' );?>">
+					<label for="grid_twitterbox_consumer_key">Consumer Key:</label><br>
+					<input type="text" name="grid_twitterbox_consumer_key" id="grid_twitterbox_consumer_key"
+					       value="<?php echo get_site_option( 'grid_twitterbox_consumer_key', '' );?>"><br>
+					<label for="grid_twitterbox_consumer_secret">Consumer Secret:</label><br>
+					<input type="text" name="grid_twitterbox_consumer_secret" id="grid_twitterbox_consumer_secret"
+					       value="<?php echo get_site_option( 'grid_twitterbox_consumer_secret', '' );?>">
 				</p>
 				<?php echo get_submit_button( "Save" ); ?>
 			</form>
@@ -123,7 +132,7 @@ class Twitter extends Base{
 			'Grid Twitter Callback',
 			'Grid Twitter Callback',
 			'manage_options',
-			'grid_social_boxes_twitterbox_callback',
+			self::ADMIN_PAGE_CALLBACK_SLUG,
 			array( $this, 'callback')
 		);
 	}

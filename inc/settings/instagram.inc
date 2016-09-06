@@ -24,6 +24,11 @@ class Instagram extends Base{
 	
 	public function __construct( \GridSocialBoxes\Settings $settings ) {
 		parent::__construct( $settings );
+		/**
+		 * another implementation for callback url
+		 * because only two get parameters are allowed for redirection url
+		 * with instagram api
+		 */
 		add_action( 'init', array($this, 'register_route') );
 		add_filter( 'query_vars', array($this, 'query_vars'), 10, 1 );
 		add_action( 'parse_request' , array($this, 'callback'));
@@ -98,18 +103,23 @@ class Instagram extends Base{
 			<?php
 		} else {
 			?>
-			<p>Goto <a href="https://www.instagram.com/developer/">Instagram Developer</a> and register an App to get the following credentials.</p>
+			<p><?php _e('Goto <a href="https://www.instagram.com/developer/">Instagram Developer</a> and register an App to get the following credentials.','grid-social-boxes'); ?></p>
 			<?php
 		}
 		?>
 		
 		<form method="POST" action="<?php echo $this->getSelfURL(array("noheader"=>true)); ?>">
-			
 			<p>
-				<label for="<?php echo self::OPTION_KEY_CLIENT_ID; ?>">Client ID:</label>
-				<input type="text" name="<?php echo self::OPTION_KEY_CLIENT_ID; ?>" value="<?php echo get_site_option( self::OPTION_KEY_CLIENT_ID, '' );?>">
-				<label for="<?php echo self::OPTION_KEY_CLIENT_SECRET; ?>">Client Secret:</label>
-				<input type="text" name="<?php echo self::OPTION_KEY_CLIENT_SECRET; ?>" value="<?php echo get_site_option( self::OPTION_KEY_CLIENT_SECRET, '' );?>">
+				<?php _e('Callback URL:', 'grid-social-boxes'); ?><br>
+				<b><?php echo get_site_url().'/'.self::PAGE_CALLBACK ?></b>
+			</p>
+			<p>
+				<label for="<?php echo self::OPTION_KEY_CLIENT_ID; ?>">Client ID:</label><br>
+				<input type="text" name="<?php echo self::OPTION_KEY_CLIENT_ID; ?>" id="<?php echo self::OPTION_KEY_CLIENT_ID; ?>"
+				       value="<?php echo get_site_option( self::OPTION_KEY_CLIENT_ID, '' );?>"><br>
+				<label for="<?php echo self::OPTION_KEY_CLIENT_SECRET; ?>">Client Secret:</label><br>
+				<input type="text" name="<?php echo self::OPTION_KEY_CLIENT_SECRET; ?>" id="<?php echo self::OPTION_KEY_CLIENT_ID; ?>"
+				       value="<?php echo get_site_option( self::OPTION_KEY_CLIENT_SECRET, '' );?>">
 			</p>
 			<?php echo get_submit_button( "Save" ); ?>
 		</form>
@@ -146,12 +156,17 @@ class Instagram extends Base{
 		/**
 		 * var is set?
 		 */
+		
 		if(!empty($query->query_vars[self::PAGE_CALLBACK])
-		   && $query->query_vars[self::PAGE_CALLBACK]== "1"
-		   /**
-		    * user may manage options?
-		    */
-		   && current_user_can('manage_options')){
+		   && $query->query_vars[self::PAGE_CALLBACK]== "1" ){
+			
+			/**
+			 * user may manage options?
+			 */
+			if(!current_user_can('manage_options')){
+				wp_redirect(home_url());
+				die();
+			}
 			
 			/**
 			 * instagram sends an error

@@ -10,6 +10,7 @@ namespace GridSocialBoxes;
 
 use GridSocialBoxes\Settings\Instagram;
 use GridSocialBoxes\Settings\Twitter;
+use GridSocialBoxes\Settings\Youtube;
 
 class Settings {
 	

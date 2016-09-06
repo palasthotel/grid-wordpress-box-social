@@ -13,14 +13,27 @@ use GridSocialBoxes\Settings;
 
 class Youtube extends Base{
 	
+	const OPTION_KEY_CLIENT_ID = "grid_youtube_client_id";
+	const OPTION_KEY_CLIENT_KEY = "grid_youtube_client_key";
+	const PAGE_CALLBACK = "grid_social_boxes_youtube_callback";
+	
 	/**
-	 * @var TwitterOAuth
+	 * @var \Google_Service
 	 */
 	private $api;
 	
 	public function __construct( \GridSocialBoxes\Settings $settings ) {
 		parent::__construct( $settings );
-		add_action( 'admin_menu', array($this, 'admin_menu') );
+		
+		/**
+		 * another implementation for callback url
+		 * because only two get parameters are allowed for redirection url
+		 * with instagram api
+		 */
+		add_action( 'init', array($this, 'register_route') );
+		add_filter( 'query_vars', array($this, 'query_vars'), 10, 1 );
+		add_action( 'parse_request' , array($this, 'callback'));
+		
 	}
 	
 	public function getSlug() {
@@ -32,31 +45,22 @@ class Youtube extends Base{
 	}
 	
 	public function getApi(){
-		/**
-		 * check if options are saved
-		 */
-		if(get_site_option( 'grid_twitterbox_consumer_key' ) === false || get_site_option( 'grid_twitterbox_consumer_secret') === false ){
-			return null;
-		}
+		
 		
 		if($this->api == null){
 			
-			$this->settings->plugin->include_twitter_api();
+			$this->settings->plugin->include_youtube_api();
+			$id = get_site_option( self::OPTION_KEY_CLIENT_ID, '' );
+			$key = get_site_option( self::OPTION_KEY_CLIENT_KEY, '' );
 			
-			$token = get_option( 'grid_twitterbox_accesstoken' );
-			
-			if ( $token === false || ! isset( $token['oauth_token'] ) || ! isset( $token['oauth_token_secret'] ) ) {
-				$this->api = new TwitterOAuth(
-					get_site_option( 'grid_twitterbox_consumer_key', '' ),
-					get_site_option( 'grid_twitterbox_consumer_secret', '' )
-				);
-			} else {
-				$this->api = new TwitterOAuth(
-					get_option( 'grid_twitterbox_consumer_key' ),
-					get_option( 'grid_twitterbox_consumer_secret' ),
-					$token['oauth_token'],
-					$token['oauth_token_secret']
-				);
+			if(!empty($id) && !empty($key)){
+				$this->api = new \Google_Client();
+				
+				$this->api->setScopes('https://www.googleapis.com/auth/youtube');
+				$this->api->setClientId($id);
+				$this->api->setClientSecret($key);
+				
+				$this->api->setRedirectUri(get_site_url()."/".self::PAGE_CALLBACK);
 			}
 		}
 		
@@ -67,50 +71,66 @@ class Youtube extends Base{
 	 * render settings page
 	 */
 	public function renderPage(){
-		$this->settings->plugin->include_twitter_api();
-		if ( isset( $_POST ) && ! empty( $_POST ) ) {
-			update_site_option( 'grid_twitterbox_consumer_key', $_POST['grid_twitterbox_consumer_key'] );
-			update_site_option( 'grid_twitterbox_consumer_secret', $_POST['grid_twitterbox_consumer_secret'] );
+		
+		if(!empty($_POST[self::OPTION_KEY_CLIENT_KEY])){
+			$id = sanitize_title($_POST[self::OPTION_KEY_CLIENT_ID]);
+			$key = sanitize_title($_POST[self::OPTION_KEY_CLIENT_KEY]);
+			update_site_option(self::OPTION_KEY_CLIENT_ID, $id);
+			update_site_option(self::OPTION_KEY_CLIENT_KEY, $key);
 			
-			$connection = new TwitterOAuth( get_site_option( 'grid_twitterbox_consumer_key', '' ), get_site_option( 'grid_twitterbox_consumer_secret', '' ) );
-			$request_token = $connection->getRequestToken( add_query_arg( array( 'page' => 'grid_social_boxes_twitterbox_callback', 'noheader' => true ), admin_url( 'admin.php' ) ) );
-			session_start();
-			$_SESSION['oauth_token'] = $token = $request_token['oauth_token'];
-			$_SESSION['oauth_token_secret'] = $request_token['oauth_token_secret'];
-			$url = $connection->getAuthorizeURL( $token );
-			header( 'Location: ' . $url );
-			die();
-		} else {
-			
-			
-			if( get_site_option( 'grid_twitterbox_accesstoken')!== false){
-			?>
-			<div class="notice notice-success">
-				<p>Authorization granted!</p>
-			<p><?php
-			$token = get_site_option( 'grid_twitterbox_accesstoken');
-			foreach ($token as $key => $val){
-				?><strong><?php echo $key; ?>:</strong> <?php echo $val; ?><br /><?php
-			}
-			?></p>
-			</div>
-			<?php
-		}
-			?>
-			
-			<form method="POST" action="<?php echo $this->getSelfURL(array("noheader"=>true)); ?>">
+			$api = $this->getApi();
+			if($api != null){
+				session_start();
 				
-				<p>
-					<label for="grid_twitterbox_consumer_key">Consumer Key:</label>
-					<input type="text" name="grid_twitterbox_consumer_key" value="<?php echo get_site_option( 'grid_twitterbox_consumer_key', '' );?>">
-					<label for="grid_twitterbox_consumer_secret">Consumer Secret:</label>
-					<input type="text" name="grid_twitterbox_consumer_secret" value="<?php echo get_site_option( 'grid_twitterbox_consumer_secret', '' );?>">
-				</p>
-				<?php echo get_submit_button( "Save" ); ?>
-			</form>
+				wp_redirect($api->createAuthUrl());
+				die();
+			}
 			
-			<?php
 		}
+		
+		
+		?>
+		<p>Anleitung für Youtube. https://console.developers.google.com/</p>
+		<form method="POST" action="<?php echo $this->getSelfURL(array("noheader"=>"true")); ?>">
+			<p>
+				<label for="<?php echo self::OPTION_KEY_CLIENT_ID; ?>">Client ID:</label><br>
+				<input type="text" name="<?php echo self::OPTION_KEY_CLIENT_ID; ?>" id="<?php echo self::OPTION_KEY_CLIENT_ID; ?>"
+				       value="<?php echo get_site_option( self::OPTION_KEY_CLIENT_ID, '' );?>"><br>
+				<label for="<?php echo self::OPTION_KEY_CLIENT_KEY; ?>">Client Schlüssel:</label><br>
+				<input type="text" name="<?php echo self::OPTION_KEY_CLIENT_KEY; ?>" id="<?php echo self::OPTION_KEY_CLIENT_KEY; ?>"
+				       value="<?php echo get_site_option( self::OPTION_KEY_CLIENT_KEY, '' );?>">
+			</p>
+			<?php echo get_submit_button( "Save" ); ?>
+		</form>
+		<?php
+		$api = $this->getApi();
+		if($api != null){
+			
+			echo "<p>Token: -- ".$api->getAccessToken()." --</p>";
+			
+		}
+	}
+	
+	/**
+	 * register submenu page for callback
+	 */
+	public function register_route(){
+		add_rewrite_rule(
+			'^'.self::PAGE_CALLBACK . '$',
+			'index.php?'.self::PAGE_CALLBACK . '=1',
+			'top'
+		);
+	}
+	
+	/**
+	 * add query vars
+	 * @param $query_vars
+	 *
+	 * @return array
+	 */
+	public function query_vars( $query_vars ){
+		$query_vars[] = self::PAGE_CALLBACK;
+		return $query_vars;
 	}
 	
 	/**
@@ -119,10 +139,10 @@ class Youtube extends Base{
 	public function admin_menu(){
 		add_submenu_page(
 			null,
-			'Grid Twitter Callback',
-			'Grid Twitter Callback',
+			'Grid Youtube Callback',
+			'Grid Youtube Callback',
 			'manage_options',
-			'grid_social_boxes_twitterbox_callback',
+			self::PAGE_CALLBACK,
 			array( $this, 'callback')
 		);
 	}
@@ -130,24 +150,44 @@ class Youtube extends Base{
 	/**
 	 * callback for twitter
 	 */
-	public function callback() {
+	public function callback($query) {
 		
-		$this->settings->plugin->include_twitter_api();
+		/**
+		 * var is set?
+		 */
 		
-		session_start();
-		$connection = new TwitterOAuth(
-			get_site_option( 'grid_twitterbox_consumer_key', '' ),
-			get_site_option( 'grid_twitterbox_consumer_secret', '' ),
-			$_SESSION['oauth_token'],
-			$_SESSION['oauth_token_secret']
-		);
+		if(!empty($query->query_vars[self::PAGE_CALLBACK])
+		   && $query->query_vars[self::PAGE_CALLBACK]== "1" ) {
+			
+			/**
+			 * user may manage options?
+			 */
+			if ( ! current_user_can( 'manage_options' ) ) {
+				wp_redirect( home_url() );
+				die();
+			}
+			
+			
+			session_start();
+			
+			$api = $this->getApi();
+			
+			if (isset($_GET['code'])) {
+				if (strval($_SESSION['state']) !== strval($_GET['state'])) {
+					die('The session state did not match.');
+				}
+				
+				$api->authenticate($_GET['code']);
+				$_SESSION['token'] = $api->getAccessToken();
+//			header('Location: ' . $redirect);
+			}
+			
+			die($_SESSION['token']);
+			
+			
+		}
 		
-		/* Request access tokens from twitter */
-		$access_token = $connection->getAccessToken( $_REQUEST['oauth_verifier'] );
-		update_site_option( 'grid_twitterbox_accesstoken', $access_token );
-		echo 'Done! We\'re authenticated';
 	}
-	
 	
 	
 }
