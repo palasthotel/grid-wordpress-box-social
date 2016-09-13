@@ -17,6 +17,8 @@ class grid_youtube_box extends grid_static_base_box {
 		$this->content->q = '';
 		$this->content->type = 'search';
 		$this->content->count = 3;
+		$this->content->info = 0;
+		$this->content->related = 0;
 	}
 
 	public function build($editmode) {
@@ -80,7 +82,8 @@ class grid_youtube_box extends grid_static_base_box {
 					 * @var $value \Google_Service_YouTube_SearchResult
 					 */
 					ob_start();
-					echo '<iframe width="560" height="315" src="https://www.youtube.com/embed/'.$value->getId()->videoId .'" frameborder="0" allowfullscreen></iframe>';
+					echo $this->getOembedHTML($value->getId()->videoId);
+//					echo '<iframe width="560" height="315" src="https://www.youtube.com/embed/'.$value->getId()->videoId .'" frameborder="0" allowfullscreen></iframe>';
 					$arr[] = ob_get_contents();
 					ob_end_clean();
 				}
@@ -103,12 +106,58 @@ class grid_youtube_box extends grid_static_base_box {
 				 * @var $value \Google_Service_YouTube_SearchResult
 				 */
 				ob_start();
-				echo '<iframe width="560" height="315" src="https://www.youtube.com/embed/'.$value->getId()->videoId .'" frameborder="0" allowfullscreen></iframe>';
+				echo $this->getOembedHTML($this->getId()->videoId);
+//				echo '<iframe width="560" height="315" src="https://www.youtube.com/embed/'.$value->getId()->videoId .'" frameborder="0" allowfullscreen></iframe>';
 				$arr[] = ob_get_contents();
 				ob_end_clean();
 			}
 		}
 		return $arr;
+	}
+	
+	/**
+	 * @param $videoid
+	 * @param array $options
+	 */
+	public function getOembedHTML($videoid, $extend = array()){
+		$options = array_merge(array(
+			"scheme" => "http",
+			"show_info" => 0,
+			"related" => 0,
+		), $extend);
+		
+		$content_url = $options["scheme"]."://www.youtube.com/watch?v=".urlencode($videoid);
+		$url=$options['scheme']."://www.youtube.com/oembed?url=".$content_url."&format=json";
+		
+		$request=curl_init($url);
+		curl_setopt($request,CURLOPT_RETURNTRANSFER,TRUE);
+		curl_setopt($request,CURLOPT_HEADER,FALSE);
+		$result=curl_exec($request);
+		if($result===FALSE)
+		{
+			var_dump(curl_error($request));
+			die();
+		}
+		curl_close($request);
+		$result=json_decode($result);
+		$html = $result->html;
+		
+		$url_show_info = "&showinfo=";
+		if($this->content->info){
+			$url_show_info.="1";
+		} else {
+			$url_show_info.="0";
+		}
+		$url_related = "&rel=";
+		if($this->content->related){
+			$url_related.="1";
+		} else {
+			$url_related.="0";
+		}
+		
+		$html = str_replace("src=\"http://", "src=\"".$options["scheme"]."://", $html);
+		$html = str_replace('feature=oembed', 'feature=oembed&wmode=transparent&html5=1'.$url_related.$url_show_info, $html);
+		return $html;
 	}
 
 	public function contentStructure () {
@@ -139,6 +188,16 @@ class grid_youtube_box extends grid_static_base_box {
 				'key' => 'count',
 				'label' => t( 'Count' ),
 				'type' => 'number',
+			),
+			array(
+				'key'=>'info',
+				'label' => t('Display title info'),
+				'type'=>'checkbox',
+			),
+			array(
+				'key'=>'related',
+				'label'=>t('Display related videos at the end'),
+				'type'=>'checkbox',
 			),
 		));
 	}
