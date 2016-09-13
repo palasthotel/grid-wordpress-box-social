@@ -58,61 +58,104 @@ class grid_youtube_box extends grid_static_base_box {
 	}
 	
 	public function getChannelData(){
-		global $grid_social_boxes;
-		$youtube = $grid_social_boxes->get_youtube_api();
+		
+		$channels = $this->getChannels(array(
+			"forUsername"=> $this->content->q,
+			"maxResults" => $this->content->count,
+		));
+		
 		$arr = array();
-		if($youtube != null){
-			/**
-			 * @var $result \Google_Service_YouTube_ChannelListResponse
-			 */
-			$result = $youtube->channels->listChannels("id", array(
-				"forUsername"=> $this->content->q,
+		
+		foreach ($channels as $channel){
+			$videos = $this->getVideos(array(
+				"channelId" => $channel->id,
 				"maxResults" => $this->content->count,
+				"order" => "date",
 			));
-			
-			if(count($result->getItems()) > 0){
-				$channelID = $result->getItems()[0]->getId();
-				$result = $youtube->search->listSearch("id", array(
-					"channelId"=> $channelID,
-					"maxResults" => $this->content->count,
-					"order" => "date",
-				));
-				foreach ($result->getItems() as $key => $value){
-					/**
-					 * @var $value \Google_Service_YouTube_SearchResult
-					 */
-					ob_start();
-					echo $this->getOembedHTML($value->getId()->videoId);
-//					echo '<iframe width="560" height="315" src="https://www.youtube.com/embed/'.$value->getId()->videoId .'" frameborder="0" allowfullscreen></iframe>';
-					$arr[] = ob_get_contents();
-					ob_end_clean();
-				}
+			foreach ($videos as $video){
+				$arr[] = $this->getOembedHTML($video->id)->rendered;
 			}
 		}
 		return $arr;
 	}
 	
 	public function getSearchData(){
+		
+		$videos = $this->getVideos(array(
+			"q"=> "cat",
+			"maxResults" => $this->content->count,
+		));
+		$arr = array();
+		
+		foreach ($videos as $video){
+			$arr[] = $video->rendered;
+		}
+		
+		return $videos;
+	}
+	
+	/**
+	 *
+	 * @param $options https://developers.google.com/youtube/v3/docs/channels/list
+	 *
+	 * @return array array ob channel objects
+	 */
+	public function getChannels($options){
 		global $grid_social_boxes;
 		$youtube = $grid_social_boxes->get_youtube_api();
-		$arr = array();
-		if($youtube != null){
-			$result = $youtube->search->listSearch("id,snippet", array(
-				"q"=> "cat",
-				"maxResults" => $this->content->count,
-			));
-			foreach ($result->getItems() as $key => $value){
+		$channels = array();
+		if($youtube != null) {
+			/**
+			 * @var $result \Google_Service_YouTube_ChannelListResponse
+			 */
+			$result = $youtube->channels->listChannels( "id,snippet", $options);
+			foreach ($result->getItems() as $channel){
 				/**
-				 * @var $value \Google_Service_YouTube_SearchResult
+				 * @var $channel \Google_Service_YouTube_Channel
 				 */
-				ob_start();
-				echo $this->getOembedHTML($this->getId()->videoId);
-//				echo '<iframe width="560" height="315" src="https://www.youtube.com/embed/'.$value->getId()->videoId .'" frameborder="0" allowfullscreen></iframe>';
-				$arr[] = ob_get_contents();
-				ob_end_clean();
+				/**
+				 * @var $snippet \Google_Service_YouTube_ChannelSnippet
+				 */
+				$snippet = $channel->getSnippet();
+				$channels[] = (object) array(
+					"id" => $channel->getId(),
+					"title" => $snippet->getTitle(),
+					"description" => $snippet->getDescription(),
+				);
 			}
 		}
-		return $arr;
+		return $channels;
+	}
+	
+	/**
+	 * @param $options https://developers.google.com/youtube/v3/docs/search/list
+	 *
+	 * @return array array of video objects
+	 */
+	public function getVideos($options){
+		$videos = array();
+		global $grid_social_boxes;
+		$youtube = $grid_social_boxes->get_youtube_api();
+		if($youtube != null){
+			$result = $youtube->search->listSearch("id,snippet", $options);
+			foreach ($result->getItems() as $key => $video){
+				/**
+				 * @var $video \Google_Service_YouTube_SearchResult
+				 */
+				/**
+				 * @param $snippet \Google_Service_YouTube_SearchResultSnippet
+				 */
+				$snippet = $video->getSnippet();
+				$videos[] = (object) array(
+					"id" => $video->getId()->videpId,
+					"title" => $snippet->getTitle(),
+					"description" => $snippet->getDescription(),
+					"tumbnails" => array("thumbs"),
+					"rendered" => $this->getOembedHTML($video->getId()->videoId),
+				);
+			}
+		}
+		return $videos;
 	}
 	
 	/**
@@ -139,6 +182,7 @@ class grid_youtube_box extends grid_static_base_box {
 			die();
 		}
 		curl_close($request);
+		var_dump($result);
 		$result=json_decode($result);
 		$html = $result->html;
 		
