@@ -61,23 +61,21 @@ class Youtube extends Base{
 			$config = get_site_option( self::OPTION_CONFIG, '');
 			$access_token = get_site_option(self::TOKEN,  '');
 
-			if(!empty($access_token)){
-				$this->api = new \Google_Client();
-				$this->api->addScope(\Google_Service_YouTube::YOUTUBE);
-				$this->api->setAccessToken($access_token);
-				if($this->api->isAccessTokenExpired()){
-					$code = get_site_option(self::TOKEN_CODE, sanitize_text_field($_GET['code']));
-					$this->api->authenticate($code);
-					$token= $this->api->getAccessToken();
-					update_site_option(self::TOKEN, $token);
-				}
-			}
-
 			if(!empty($config) && is_array($config)){
-				if($this->api == null) $this->api = new \Google_Client();
+				$this->api = new \Google_Client();
 				$this->api->addScope(\Google_Service_YouTube::YOUTUBE);
 				$this->api->setAuthConfig($config);
 				$this->api->setRedirectUri(get_site_url()."/".self::PAGE_CALLBACK);
+			}
+
+			if($this->api != null && !empty($access_token)){
+				$this->api->setAccessToken($access_token);
+				if(!$this->api->isAccessTokenExpired()){
+					$code = get_site_option(self::TOKEN_CODE, '');
+					$this->api->authenticate($code);
+					$token = $this->api->getAccessToken();
+					update_site_option(self::TOKEN, $token);
+				}
 			}
 
 		}
@@ -90,7 +88,7 @@ class Youtube extends Base{
 	 */
 	public function getYoutube(){
 		$api = $this->getApi();
-		if($api != null){
+		if($api != null && !$api->isAccessTokenExpired()){
 			$this->youtube = new \Google_Service_YouTube($this->api);
 		}
 		return $this->youtube;
@@ -162,6 +160,8 @@ class Youtube extends Base{
 			if($api != null){
 				$token = $api->getAccessToken();
 				echo "<p><b>Token:</b> ".$token["access_token"]."</p>";
+				echo "<p><b>Is expired:</b> ".$api->isAccessTokenExpired()."</p>";
+				echo "<p><b>Code:</b> ".get_site_option(self::TOKEN_CODE, '')."</p>";
 
 			}
 			?>
@@ -169,8 +169,8 @@ class Youtube extends Base{
 		</form>
 		<?php
 
-		
-		
+
+
 	}
 
 	/**
