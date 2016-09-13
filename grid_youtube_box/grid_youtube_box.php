@@ -15,7 +15,7 @@ class grid_youtube_box extends grid_static_base_box {
 	public function __construct() {
 		parent::__construct();
 		$this->content->q = '';
-		$this->content->type = 'channel';
+		$this->content->type = 'search';
 		$this->content->count = 3;
 	}
 
@@ -34,17 +34,78 @@ class grid_youtube_box extends grid_static_base_box {
 	}
 	
 	public function getData(){
-		$arr = array();
 		global $grid_social_boxes;
-		if($grid_social_boxes != null){
-			$api = $grid_social_boxes->get_instagram_api();
-			if($api != null){
-				$result = $api->getUserMedia('self', $this->content->count);
-				$images = $result->data;
-				foreach ($images as $item){
-					$src = $item->images->low_resolution->url;
-					$arr[] = "<img src='$src' />";
+		$youtube = $grid_social_boxes->get_youtube_api();
+		$arr = array();
+		if($youtube != null){
+			/**
+			 * @var $result \Google_Service_YouTube_SearchListResponse
+			 */
+			
+			switch ($this->content->type){
+				case "channel":
+					return $this->getChannelData();
+				case "search":
+				default:
+					return $this->getSearchData();
+			}
+			
+			
+		}
+		return $arr;
+	}
+	
+	public function getChannelData(){
+		global $grid_social_boxes;
+		$youtube = $grid_social_boxes->get_youtube_api();
+		$arr = array();
+		if($youtube != null){
+			/**
+			 * @var $result \Google_Service_YouTube_ChannelListResponse
+			 */
+			$result = $youtube->channels->listChannels("id", array(
+				"forUsername"=> $this->content->q,
+				"maxResults" => $this->content->count,
+			));
+			
+			if(count($result->getItems()) > 0){
+				$channelID = $result->getItems()[0]->getId();
+				$result = $youtube->search->listSearch("id", array(
+					"channelId"=> $channelID,
+					"maxResults" => $this->content->count,
+					"order" => "date",
+				));
+				foreach ($result->getItems() as $key => $value){
+					/**
+					 * @var $value \Google_Service_YouTube_SearchResult
+					 */
+					ob_start();
+					echo '<iframe width="560" height="315" src="https://www.youtube.com/embed/'.$value->getId()->videoId .'" frameborder="0" allowfullscreen></iframe>';
+					$arr[] = ob_get_contents();
+					ob_end_clean();
 				}
+			}
+		}
+		return $arr;
+	}
+	
+	public function getSearchData(){
+		global $grid_social_boxes;
+		$youtube = $grid_social_boxes->get_youtube_api();
+		$arr = array();
+		if($youtube != null){
+			$result = $youtube->search->listSearch("id,snippet", array(
+				"q"=> "cat",
+				"maxResults" => $this->content->count,
+			));
+			foreach ($result->getItems() as $key => $value){
+				/**
+				 * @var $value \Google_Service_YouTube_SearchResult
+				 */
+				ob_start();
+				echo '<iframe width="560" height="315" src="https://www.youtube.com/embed/'.$value->getId()->videoId .'" frameborder="0" allowfullscreen></iframe>';
+				$arr[] = ob_get_contents();
+				ob_end_clean();
 			}
 		}
 		return $arr;
@@ -52,21 +113,28 @@ class grid_youtube_box extends grid_static_base_box {
 
 	public function contentStructure () {
 		$cs = parent::contentStructure();
-		global $grid_social_boxes;
-		
-		$info = array(
-			'label' => __("Instagram Account", "grid-social-boxes"),
-			'text' => __( 'Not logged in. Goto settings and get an access token.', 'grid-social-boxes' ),
-			'type' => 'info',
-		);
-		
-		if($grid_social_boxes->get_instagram_api() != null){
-			$user = $grid_social_boxes->get_instagram_api()->getUser();
-			$info['text'] = sprintf(esc_html__('Get Instagram posts for: %1$s', 'grid-social-boxes'),$user->data->username);
-		}
 		
 		return array_merge( $cs, array(
-			$info,
+			array(
+				'key' => 'q',
+				'label' => 'Search for',
+				'type' => 'text',
+ 			),
+			array(
+				'label' => 'Operation type',
+				'key' => 'type',
+				'type' => 'select',
+				'selections' => array(
+					array(
+						'key' => 'search',
+						'text' => 'Search',
+					),
+					array(
+						'key' => 'channel',
+						'text' => 'Channel',
+					)
+				)
+			),
 			array(
 				'key' => 'count',
 				'label' => t( 'Count' ),

@@ -56,6 +56,13 @@ class GridSocialBoxes{
 		}
 		
 		/**
+		 * instagram box
+		 */
+		if($this->get_youtube_api() != null){
+			require('grid_youtube_box/grid_youtube_box.php');
+		}
+		
+		/**
 		 * social timeline
 		 */
 		require "social_timeline/grid_social_timeline_box.php";
@@ -110,6 +117,17 @@ class GridSocialBoxes{
 		if(!class_exists("Instagram")){
 			require_once 'grid_instagram_box/instagram-api/instagram.php';
 		}
+	}
+	
+	/**
+	 * @return \Google_Service_YouTube
+	 */
+	public function get_youtube_api(){
+		/**
+		 * @var $settings \GridSocialBoxes\Settings\Youtube
+		 */
+		$settings = $this->settings->pages[\GridSocialBoxes\Settings::TYPE_YOUTUBE];
+		return $settings->getYoutube();
 	}
 	
 	/**

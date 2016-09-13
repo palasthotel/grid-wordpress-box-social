@@ -65,6 +65,12 @@ class Youtube extends Base{
 				$this->api = new \Google_Client();
 				$this->api->addScope(\Google_Service_YouTube::YOUTUBE);
 				$this->api->setAccessToken($access_token);
+				if($this->api->isAccessTokenExpired()){
+					$code = get_site_option(self::TOKEN_CODE, sanitize_text_field($_GET['code']));
+					$this->api->authenticate($code);
+					$token= $this->api->getAccessToken();
+					update_site_option(self::TOKEN, $token);
+				}
 			}
 
 			if(!empty($config) && is_array($config)){
@@ -163,12 +169,8 @@ class Youtube extends Base{
 		</form>
 		<?php
 
-		$youtube = $this->getYoutube();
-
-		$result = $youtube->search->listSearch("id,snippet", array(
-			"q"=> "cat"
-		));
-		var_dump($result);
+		
+		
 	}
 
 	/**
