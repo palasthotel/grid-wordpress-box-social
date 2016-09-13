@@ -138,17 +138,18 @@ class Youtube extends Base{
 					}
 					echo_array($config, 0);
 					?>
-
 			</p>
+			<?php
+			$api = $this->getApi();
+			if($api != null){
+				$token = $api->getAccessToken();
+				echo "<p><b>Token:</b> ".$token["access_token"]."</p>";
+
+			}
+			 ?>
 			<?php echo get_submit_button( "Save" ); ?>
 		</form>
 		<?php
-		$api = $this->getApi();
-		if($api != null){
-			$token = $api->getAccessToken();
-			echo "<p>Token: -- ".$token["access_token"]." --</p>";
-
-		}
 	}
 
 	/**
