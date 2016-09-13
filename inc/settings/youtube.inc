@@ -15,11 +15,8 @@ class Youtube extends Base{
 
 	const OPTION_CONFIG = "grid_youtube_config";
 
-	const TOKEN_CODE = "grid_youtube_token_code";
-	const TOKEN_ACCESS = "grid_youtube_token_access";
-	const TOKEN_TYPE = "grid_youtube_token_type";
-	const TOKEN_EXPIRES = "grid_youtube_token_expires";
-	const TOKEN_CREATED = "grid_youtube_token_created";
+	const TOKEN_CODE = "grid_youtube_code";
+	const TOKEN = "grid_youtube_token";
 
 	const PAGE_CALLBACK = "grid_social_boxes_youtube_callback";
 
@@ -27,6 +24,11 @@ class Youtube extends Base{
 	 * @var \Google_Service
 	 */
 	private $api;
+
+	/**
+	 * @var \Google_Service_YouTube
+	 */
+	private $youtube;
 
 	public function __construct( \GridSocialBoxes\Settings $settings ) {
 		parent::__construct( $settings );
@@ -57,25 +59,35 @@ class Youtube extends Base{
 
 			$this->settings->plugin->include_youtube_api();
 			$config = get_site_option( self::OPTION_CONFIG, '');
-			$access_token = get_site_option(self::TOKEN_ACCESS,  '');
+			$access_token = get_site_option(self::TOKEN,  '');
 
 			if(!empty($access_token)){
 				$this->api = new \Google_Client();
-				$this->api->addScope(\Google_Service_YouTube::YOUTUBE_READONLY);
+				$this->api->addScope(\Google_Service_YouTube::YOUTUBE);
 				$this->api->setAccessToken($access_token);
 			}
 
 			if(!empty($config) && is_array($config)){
 				if($this->api == null) $this->api = new \Google_Client();
+				$this->api->addScope(\Google_Service_YouTube::YOUTUBE);
 				$this->api->setAuthConfig($config);
 				$this->api->setRedirectUri(get_site_url()."/".self::PAGE_CALLBACK);
 			}
 
-
-
 		}
 
 		return $this->api;
+	}
+
+	/**
+	 * @return \Google_Service_YouTube
+	 */
+	public function getYoutube(){
+		$api = $this->getApi();
+		if($api != null){
+			$this->youtube = new \Google_Service_YouTube($this->api);
+		}
+		return $this->youtube;
 	}
 
 	/**
@@ -114,30 +126,30 @@ class Youtube extends Base{
 				<label for="<?php echo self::OPTION_CONFIG; ?>">Config:</label><br>
 				<input type="file" name="<?php echo self::OPTION_CONFIG; ?>" />
 			<h2>Credentials</h2>
-					<?php
-					$config = get_site_option(self::OPTION_CONFIG, array());
+			<?php
+			$config = get_site_option(self::OPTION_CONFIG, array());
 
-					function echo_array($data, $level){
-						++$level;
-						$level_prefix = "";
-						for( $i = 0; $i < $level; $i++){
-							$level_prefix.= "&nbsp;&nbsp;&nbsp;&nbsp;";
+			function echo_array($data, $level){
+				++$level;
+				$level_prefix = "";
+				for( $i = 0; $i < $level; $i++){
+					$level_prefix.= "&nbsp;&nbsp;&nbsp;&nbsp;";
+				}
+				if(is_string($data)){
+					echo $data."<br/>";
+				}
+				if(is_array($data)){
+					foreach ($data as $key => $value){
+						echo $level_prefix."<b>".$key.": </b>";
+						if(is_array($value)){
+							echo "<br />";
 						}
-						if(is_string($data)){
-							echo $data."<br/>";
-						}
-						if(is_array($data)){
-							foreach ($data as $key => $value){
-								echo $level_prefix."<b>".$key.": </b>";
-								if(is_array($value)){
-									echo "<br />";
-								}
-								echo_array($value, $level);
-							}
-						}
+						echo_array($value, $level);
 					}
-					echo_array($config, 0);
-					?>
+				}
+			}
+			echo_array($config, 0);
+			?>
 			</p>
 			<?php
 			$api = $this->getApi();
@@ -146,10 +158,17 @@ class Youtube extends Base{
 				echo "<p><b>Token:</b> ".$token["access_token"]."</p>";
 
 			}
-			 ?>
+			?>
 			<?php echo get_submit_button( "Save" ); ?>
 		</form>
 		<?php
+
+		$youtube = $this->getYoutube();
+
+		$result = $youtube->search->listSearch("id,snippet", array(
+			"q"=> "cat"
+		));
+		var_dump($result);
 	}
 
 	/**
@@ -216,10 +235,7 @@ class Youtube extends Base{
 				update_site_option(self::TOKEN_CODE, sanitize_text_field($_GET['code']));
 
 				$token= $api->getAccessToken();
-				update_site_option(self::TOKEN_ACCESS, $token["access_token"]);
-				update_site_option(self::TOKEN_TYPE, $token["token_type"]);
-				update_site_option(self::TOKEN_EXPIRES, $token["expires_in"]);
-				update_site_option(self::TOKEN_CREATED, $token["created"]);
+				update_site_option(self::TOKEN, $token);
 
 			}
 
