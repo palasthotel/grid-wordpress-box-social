@@ -12,19 +12,25 @@ namespace GridSocialBoxes\Settings;
 use GridSocialBoxes\Settings;
 
 class Youtube extends Base{
-	
-	const OPTION_KEY_CLIENT_ID = "grid_youtube_client_id";
-	const OPTION_KEY_CLIENT_KEY = "grid_youtube_client_key";
+
+	const OPTION_CONFIG = "grid_youtube_config";
+
+	const TOKEN_CODE = "grid_youtube_token_code";
+	const TOKEN_ACCESS = "grid_youtube_token_access";
+	const TOKEN_TYPE = "grid_youtube_token_type";
+	const TOKEN_EXPIRES = "grid_youtube_token_expires";
+	const TOKEN_CREATED = "grid_youtube_token_created";
+
 	const PAGE_CALLBACK = "grid_social_boxes_youtube_callback";
-	
+
 	/**
 	 * @var \Google_Service
 	 */
 	private $api;
-	
+
 	public function __construct( \GridSocialBoxes\Settings $settings ) {
 		parent::__construct( $settings );
-		
+
 		/**
 		 * another implementation for callback url
 		 * because only two get parameters are allowed for redirection url
@@ -33,84 +39,118 @@ class Youtube extends Base{
 		add_action( 'init', array($this, 'register_route') );
 		add_filter( 'query_vars', array($this, 'query_vars'), 10, 1 );
 		add_action( 'parse_request' , array($this, 'callback'));
-		
+
 	}
-	
+
 	public function getSlug() {
 		return Settings::TYPE_YOUTUBE;
 	}
-	
+
 	public function getTitle(){
 		return __("Youtube", "grid-social-boxes");
 	}
-	
+
 	public function getApi(){
-		
-		
+
+
 		if($this->api == null){
-			
+
 			$this->settings->plugin->include_youtube_api();
-			$id = get_site_option( self::OPTION_KEY_CLIENT_ID, '' );
-			$key = get_site_option( self::OPTION_KEY_CLIENT_KEY, '' );
-			
-			if(!empty($id) && !empty($key)){
+			$config = get_site_option( self::OPTION_CONFIG, '');
+			$access_token = get_site_option(self::TOKEN_ACCESS,  '');
+
+			if(!empty($access_token)){
 				$this->api = new \Google_Client();
-				
-				$this->api->setScopes('https://www.googleapis.com/auth/youtube');
-				$this->api->setClientId($id);
-				$this->api->setClientSecret($key);
-				
+				$this->api->addScope(\Google_Service_YouTube::YOUTUBE_READONLY);
+				$this->api->setAccessToken($access_token);
+			}
+
+			if(!empty($config) && is_array($config)){
+				if($this->api == null) $this->api = new \Google_Client();
+				$this->api->setAuthConfig($config);
 				$this->api->setRedirectUri(get_site_url()."/".self::PAGE_CALLBACK);
 			}
+
+
+
 		}
-		
+
 		return $this->api;
 	}
-	
+
 	/**
 	 * render settings page
 	 */
 	public function renderPage(){
-		
-		if(!empty($_POST[self::OPTION_KEY_CLIENT_KEY])){
-			$id = sanitize_title($_POST[self::OPTION_KEY_CLIENT_ID]);
-			$key = sanitize_title($_POST[self::OPTION_KEY_CLIENT_KEY]);
-			update_site_option(self::OPTION_KEY_CLIENT_ID, $id);
-			update_site_option(self::OPTION_KEY_CLIENT_KEY, $key);
-			
+
+		if(!empty($_FILES[self::OPTION_CONFIG])){
+
+			if(isset($_FILES[self::OPTION_CONFIG])
+			   && !empty($_FILES[self::OPTION_CONFIG]
+			             && is_file($_FILES[self::OPTION_CONFIG]['tmp_name']))){
+				$config = $_FILES[self::OPTION_CONFIG]['tmp_name'];
+				$config_content = file_get_contents($config);
+				$config_assoc = json_decode($config_content, true);
+				update_site_option(self::OPTION_CONFIG, $config_assoc);
+			}
+
+
 			$api = $this->getApi();
 			if($api != null){
-				session_start();
-				
-				wp_redirect($api->createAuthUrl());
+
+				$url = filter_var($api->createAuthUrl(), FILTER_SANITIZE_URL);
+				header('Location: ' . $url);
 				die();
 			}
-			
+
 		}
-		
-		
+
+
 		?>
 		<p>Anleitung für Youtube. https://console.developers.google.com/</p>
-		<form method="POST" action="<?php echo $this->getSelfURL(array("noheader"=>"true")); ?>">
+		<form id="google-auth-form" method="POST" enctype="multipart/form-data"
+		      action="<?php echo $this->getSelfURL(array("noheader"=>"true")); ?>">
 			<p>
-				<label for="<?php echo self::OPTION_KEY_CLIENT_ID; ?>">Client ID:</label><br>
-				<input type="text" name="<?php echo self::OPTION_KEY_CLIENT_ID; ?>" id="<?php echo self::OPTION_KEY_CLIENT_ID; ?>"
-				       value="<?php echo get_site_option( self::OPTION_KEY_CLIENT_ID, '' );?>"><br>
-				<label for="<?php echo self::OPTION_KEY_CLIENT_KEY; ?>">Client Schlüssel:</label><br>
-				<input type="text" name="<?php echo self::OPTION_KEY_CLIENT_KEY; ?>" id="<?php echo self::OPTION_KEY_CLIENT_KEY; ?>"
-				       value="<?php echo get_site_option( self::OPTION_KEY_CLIENT_KEY, '' );?>">
+				<label for="<?php echo self::OPTION_CONFIG; ?>">Config:</label><br>
+				<input type="file" name="<?php echo self::OPTION_CONFIG; ?>" />
+			<h2>Credentials</h2>
+					<?php
+					$config = get_site_option(self::OPTION_CONFIG, array());
+
+					function echo_array($data, $level){
+						++$level;
+						$level_prefix = "";
+						for( $i = 0; $i < $level; $i++){
+							$level_prefix.= "&nbsp;&nbsp;&nbsp;&nbsp;";
+						}
+						if(is_string($data)){
+							echo $data."<br/>";
+						}
+						if(is_array($data)){
+							foreach ($data as $key => $value){
+								echo $level_prefix."<b>".$key.": </b>";
+								if(is_array($value)){
+									echo "<br />";
+								}
+								echo_array($value, $level);
+							}
+						}
+					}
+					echo_array($config, 0);
+					?>
+
 			</p>
 			<?php echo get_submit_button( "Save" ); ?>
 		</form>
 		<?php
 		$api = $this->getApi();
 		if($api != null){
-			
-			echo "<p>Token: -- ".$api->getAccessToken()." --</p>";
-			
+			$token = $api->getAccessToken();
+			echo "<p>Token: -- ".$token["access_token"]." --</p>";
+
 		}
 	}
-	
+
 	/**
 	 * register submenu page for callback
 	 */
@@ -121,7 +161,7 @@ class Youtube extends Base{
 			'top'
 		);
 	}
-	
+
 	/**
 	 * add query vars
 	 * @param $query_vars
@@ -132,7 +172,7 @@ class Youtube extends Base{
 		$query_vars[] = self::PAGE_CALLBACK;
 		return $query_vars;
 	}
-	
+
 	/**
 	 * register submenu page for callback
 	 */
@@ -146,19 +186,19 @@ class Youtube extends Base{
 			array( $this, 'callback')
 		);
 	}
-	
+
 	/**
 	 * callback for twitter
 	 */
 	public function callback($query) {
-		
+
 		/**
 		 * var is set?
 		 */
-		
+
 		if(!empty($query->query_vars[self::PAGE_CALLBACK])
 		   && $query->query_vars[self::PAGE_CALLBACK]== "1" ) {
-			
+
 			/**
 			 * user may manage options?
 			 */
@@ -166,28 +206,24 @@ class Youtube extends Base{
 				wp_redirect( home_url() );
 				die();
 			}
-			
-			
-			session_start();
-			
+
 			$api = $this->getApi();
-			
+
 			if (isset($_GET['code'])) {
-				if (strval($_SESSION['state']) !== strval($_GET['state'])) {
-					die('The session state did not match.');
-				}
-				
+
 				$api->authenticate($_GET['code']);
-				$_SESSION['token'] = $api->getAccessToken();
-//			header('Location: ' . $redirect);
+				update_site_option(self::TOKEN_CODE, sanitize_text_field($_GET['code']));
+
+				$token= $api->getAccessToken();
+				update_site_option(self::TOKEN_ACCESS, $token["access_token"]);
+				update_site_option(self::TOKEN_TYPE, $token["token_type"]);
+				update_site_option(self::TOKEN_EXPIRES, $token["expires_in"]);
+				update_site_option(self::TOKEN_CREATED, $token["created"]);
+
 			}
-			
-			die($_SESSION['token']);
-			
-			
+
+			header( 'location: '.$this->getSelfURL());
+			die();
 		}
-		
 	}
-	
-	
 }
