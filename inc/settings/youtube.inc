@@ -70,11 +70,16 @@ class Youtube extends Base{
 
 			if($this->api != null && !empty($access_token)){
 				$this->api->setAccessToken($access_token);
-				if(!$this->api->isAccessTokenExpired()){
-					$code = get_site_option(self::TOKEN_CODE, '');
-					$this->api->authenticate($code);
-					$token = $this->api->getAccessToken();
-					update_site_option(self::TOKEN, $token);
+				
+				if($this->api->isAccessTokenExpired()){
+					
+					$this->api->refreshTokenWithAssertion();
+					
+//					$code = get_site_option(self::TOKEN_CODE, '');
+//					$this->api->authenticate($code);
+//					$this->api->fetchAccessTokenWithAuthCode()
+//					$token = $this->api->getAccessToken();
+//					update_site_option(self::TOKEN, $token);
 				}
 			}
 
