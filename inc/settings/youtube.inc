@@ -66,15 +66,17 @@ class Youtube extends Base{
 				$this->api->addScope(\Google_Service_YouTube::YOUTUBE);
 				$this->api->setAuthConfig($config);
 				$this->api->setRedirectUri(get_site_url()."/".self::PAGE_CALLBACK);
+				$this->api->setAccessType("offline");
+				$this->api->setIncludeGrantedScopes(true);
 			}
 
 			if($this->api != null && !empty($access_token)){
 				$this->api->setAccessToken($access_token);
-				
+
 				if($this->api->isAccessTokenExpired()){
-					
-					$this->api->refreshTokenWithAssertion();
-					
+
+					$this->api->fetchAccessTokenWithRefreshToken();
+
 //					$code = get_site_option(self::TOKEN_CODE, '');
 //					$this->api->authenticate($code);
 //					$this->api->fetchAccessTokenWithAuthCode()
@@ -138,13 +140,13 @@ class Youtube extends Base{
 			<?php
 			$config = get_site_option(self::OPTION_CONFIG, array());
 
-			function echo_array($data, $level){
+			function echo_array($data, $level = 0){
 				++$level;
 				$level_prefix = "";
 				for( $i = 0; $i < $level; $i++){
 					$level_prefix.= "&nbsp;&nbsp;&nbsp;&nbsp;";
 				}
-				if(is_string($data)){
+				if(is_string($data) || is_numeric($data)){
 					echo $data."<br/>";
 				}
 				if(is_array($data)){
@@ -157,16 +159,17 @@ class Youtube extends Base{
 					}
 				}
 			}
-			echo_array($config, 0);
+			echo_array($config);
 			?>
 			</p>
 			<?php
 			$api = $this->getApi();
 			if($api != null){
 				$token = $api->getAccessToken();
-				echo "<p><b>Token:</b> ".$token["access_token"]."</p>";
-				echo "<p><b>Is expired:</b> ".$api->isAccessTokenExpired()."</p>";
-				echo "<p><b>Code:</b> ".get_site_option(self::TOKEN_CODE, '')."</p>";
+				echo_array($token);
+				// echo "<p><b>Token:</b> ".$token["access_token"]."</p>";
+				// echo "<p><b>Is expired:</b> ".$api->isAccessTokenExpired()."</p>";
+				// echo "<p><b>Code:</b> ".get_site_option(self::TOKEN_CODE, '')."</p>";
 
 			}
 			?>
