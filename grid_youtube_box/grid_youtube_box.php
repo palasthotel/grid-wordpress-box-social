@@ -51,8 +51,6 @@ class grid_youtube_box extends grid_list_box  {
 				default:
 					return $this->getSearchData();
 			}
-
-
 		}
 		return $arr;
 	}
