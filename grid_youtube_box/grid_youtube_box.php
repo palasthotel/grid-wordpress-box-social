@@ -26,15 +26,15 @@ class grid_youtube_box extends grid_list_box  {
 			return $this->content;
 		} else {
 			$output = "<p>Youtube!</p>";
-			
+
 			// TODO: cache output with transient for max 500 calls an hour (api limit)
-			
+
 			$arr =  $this->getData();
-			
+
 			return implode("<br>",$arr);
 		}
 	}
-	
+
 	public function getData(){
 		global $grid_social_boxes;
 		$youtube = $grid_social_boxes->get_youtube_api();
@@ -43,7 +43,7 @@ class grid_youtube_box extends grid_list_box  {
 			/**
 			 * @var $result \Google_Service_YouTube_SearchListResponse
 			 */
-			
+
 			switch ($this->content->type){
 				case "channel":
 					return $this->getChannelData();
@@ -51,21 +51,21 @@ class grid_youtube_box extends grid_list_box  {
 				default:
 					return $this->getSearchData();
 			}
-			
-			
+
+
 		}
 		return $arr;
 	}
-	
+
 	public function getChannelData(){
-		
+
 		$channels = $this->getChannels(array(
 			"forUsername"=> $this->content->q,
 			"maxResults" => $this->content->count,
 		));
-		
+
 		$arr = array();
-		
+
 		foreach ($channels as $channel){
 			$videos = $this->getVideos(array(
 				"channelId" => $channel->id,
@@ -78,22 +78,22 @@ class grid_youtube_box extends grid_list_box  {
 		}
 		return $arr;
 	}
-	
+
 	public function getSearchData(){
-		
+
 		$videos = $this->getVideos(array(
 			"q"=> "cat",
 			"maxResults" => $this->content->count,
 		));
 		$arr = array();
-		
+
 		foreach ($videos as $video){
 			$arr[] = $video->rendered;
 		}
-		
-		return $videos;
+
+		return $arr;
 	}
-	
+
 	/**
 	 *
 	 * @param $options https://developers.google.com/youtube/v3/docs/channels/list
@@ -126,7 +126,7 @@ class grid_youtube_box extends grid_list_box  {
 		}
 		return $channels;
 	}
-	
+
 	/**
 	 * @param $options https://developers.google.com/youtube/v3/docs/search/list
 	 *
@@ -157,7 +157,7 @@ class grid_youtube_box extends grid_list_box  {
 		}
 		return $videos;
 	}
-	
+
 	/**
 	 * @param $videoid
 	 * @param array $options
@@ -168,10 +168,10 @@ class grid_youtube_box extends grid_list_box  {
 			"show_info" => 0,
 			"related" => 0,
 		), $extend);
-		
+
 		$content_url = $options["scheme"]."://www.youtube.com/watch?v=".urlencode($videoid);
 		$url=$options['scheme']."://www.youtube.com/oembed?url=".$content_url."&format=json";
-		
+
 		$request=curl_init($url);
 		curl_setopt($request,CURLOPT_RETURNTRANSFER,TRUE);
 		curl_setopt($request,CURLOPT_HEADER,FALSE);
@@ -182,10 +182,9 @@ class grid_youtube_box extends grid_list_box  {
 			die();
 		}
 		curl_close($request);
-		var_dump($result);
 		$result=json_decode($result);
 		$html = $result->html;
-		
+
 		$url_show_info = "&showinfo=";
 		if($this->content->info){
 			$url_show_info.="1";
@@ -198,7 +197,7 @@ class grid_youtube_box extends grid_list_box  {
 		} else {
 			$url_related.="0";
 		}
-		
+
 		$html = str_replace("src=\"http://", "src=\"".$options["scheme"]."://", $html);
 		$html = str_replace('feature=oembed', 'feature=oembed&wmode=transparent&html5=1'.$url_related.$url_show_info, $html);
 		return $html;
@@ -206,7 +205,7 @@ class grid_youtube_box extends grid_list_box  {
 
 	public function contentStructure () {
 		$cs = parent::contentStructure();
-		
+
 		return array_merge( $cs, array(
 			array(
 				'key' => 'q',
