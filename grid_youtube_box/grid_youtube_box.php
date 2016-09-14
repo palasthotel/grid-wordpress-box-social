@@ -6,7 +6,7 @@
  * @package Palasthotel\Grid-WordPress-Box-Social
  */
 
-class grid_youtube_box extends grid_static_base_box {
+class grid_youtube_box extends grid_list_box  {
 
 	public function type() {
 		return 'youtube';
