@@ -95,7 +95,7 @@ class Instagram extends Base{
 			?>
 			<div class="notice notice-success">
 				<p>Authorization granted!</p>
-				<p><strong>Username: </strong></strong><?php echo $user->data->username; ?><br>
+				<p><strong>Username: </strong><?php echo $user->data->username; ?><br>
 					<strong>Access Token: </strong><?php echo get_site_option(self::OPTION_KEY_CLIENT_TOKEN);
 					?></p>
 				

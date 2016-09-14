@@ -27,9 +27,13 @@ class grid_youtube_box extends grid_list_box  {
 		} else {
 			$output = "<p>Youtube!</p>";
 
-			// TODO: cache output with transient for max 500 calls an hour (api limit)
+			// TODO: cache output with transient for api calls limit
 
-			$arr =  $this->getData();
+			$videos = $this->getData();
+			$arr = array();
+			foreach ($videos as $video){
+				$arr[] = $video->rendered;
+			}
 
 			return implode("<br>",$arr);
 		}
@@ -59,7 +63,7 @@ class grid_youtube_box extends grid_list_box  {
 
 		$channels = $this->getChannels(array(
 			"forUsername"=> $this->content->q,
-			"maxResults" => $this->content->count,
+			"maxResults" => 1,
 		));
 
 		$arr = array();
@@ -71,25 +75,17 @@ class grid_youtube_box extends grid_list_box  {
 				"order" => "date",
 			));
 			foreach ($videos as $video){
-				$arr[] = $video->rendered;
+				$arr[] = $video;
 			}
 		}
 		return $arr;
 	}
 
 	public function getSearchData(){
-
-		$videos = $this->getVideos(array(
-			"q"=> "cat",
+		return $this->getVideos(array(
+			"q"=> $this->content->q,
 			"maxResults" => $this->content->count,
 		));
-		$arr = array();
-
-		foreach ($videos as $video){
-			$arr[] = $video->rendered;
-		}
-
-		return $arr;
 	}
 
 	/**
@@ -144,11 +140,33 @@ class grid_youtube_box extends grid_list_box  {
 				 * @param $snippet \Google_Service_YouTube_SearchResultSnippet
 				 */
 				$snippet = $video->getSnippet();
+				/**
+				 * @var $thumbnails \Google_Service_YouTube_ThumbnailDetails
+				 */
+				$thumbnails = $snippet->getThumbnails();
+				
+				$sizes = array("Default","High","Medium", "Standard", "Maxres");
+				$thumbs = array();
+				foreach ($sizes as $size){
+					$method = "get".$size;
+					if($thumbnails->$method() != null){
+						/**
+						 * @var $thumbnail \Google_Service_YouTube_Thumbnail
+						 */
+						$thumbnail = $thumbnails->$method();
+						$thumbs[strtolower($size)] = (object)array(
+							"url" => $thumbnail->getUrl(),
+							"height" => $thumbnail->getHeight(),
+							"width" => $thumbnail->getWidth(),
+						);
+					}
+				}
+				
 				$videos[] = (object) array(
-					"id" => $video->getId()->videpId,
+					"id" => $video->getId()->videoId,
 					"title" => $snippet->getTitle(),
 					"description" => $snippet->getDescription(),
-					"tumbnails" => array("thumbs"),
+					"tumbnails" => (object)$thumbs,
 					"rendered" => $this->getOembedHTML($video->getId()->videoId),
 					"published" => $snippet->getPublishedAt(),
 				);
@@ -156,10 +174,12 @@ class grid_youtube_box extends grid_list_box  {
 		}
 		return $videos;
 	}
-
+	
 	/**
 	 * @param $videoid
 	 * @param array $options
+	 *
+	 * @return string
 	 */
 	public function getOembedHTML($videoid, $extend = array()){
 		$options = array_merge(array(

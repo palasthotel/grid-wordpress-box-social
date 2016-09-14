@@ -127,58 +127,54 @@ class Youtube extends Base{
 			}
 
 		}
-
-
 		?>
-		<p>Anleitung für Youtube. https://console.developers.google.com/</p>
-		<form id="google-auth-form" method="POST" enctype="multipart/form-data"
-		      action="<?php echo $this->getSelfURL(array("noheader"=>"true")); ?>">
-			<p>
-				<label for="<?php echo self::OPTION_CONFIG; ?>">Config:</label><br>
-				<input type="file" name="<?php echo self::OPTION_CONFIG; ?>" />
-			<h2>Credentials</h2>
+		
+		<div class="notice notice-success">
+			<p>Config JSON content:</p>
 			<?php
 			$config = get_site_option(self::OPTION_CONFIG, array());
-
-			function echo_array($data, $level = 0){
-				++$level;
-				$level_prefix = "";
-				for( $i = 0; $i < $level; $i++){
-					$level_prefix.= "&nbsp;&nbsp;&nbsp;&nbsp;";
-				}
-				if(is_string($data) || is_numeric($data)){
-					echo $data."<br/>";
-				}
-				if(is_array($data)){
-					foreach ($data as $key => $value){
-						echo $level_prefix."<b>".$key.": </b>";
-						if(is_array($value)){
-							echo "<br />";
-						}
-						echo_array($value, $level);
-					}
-				}
-			}
-			echo_array($config);
+			echo "<p>";
+			$this->settings->echo_array($config);
+			echo "</p>";
 			?>
+		</div>
+		
+		
+		<?php
+		$api = $this->getApi();
+		if($api != null){
+			$token = $api->getAccessToken();
+			if($api->isAccessTokenExpired()){
+				echo "<div class=\"notice notice-error\"><p>Authorization not granted. Token expired.</p></div>";
+			} else {
+				echo "<div class=\"notice notice-success\"><p>Authorization granted</p>";
+			}
+			echo "<p>";
+			$this->settings->echo_array($token);
+			echo "</p>";
+			echo "</div>";
+		}
+		?>
+		
+		<form id="google-auth-form" method="POST" enctype="multipart/form-data"
+		      action="<?php echo $this->getSelfURL(array("noheader"=>"true")); ?>">
+			<p>Anleitung für Youtube Data API. https://console.developers.google.com/</p>
+			<p>
+				<?php _e('Callback URL:', 'grid-social-boxes'); ?><br>
+				<b><?php echo get_site_url().'/'.self::PAGE_CALLBACK ?></b>
 			</p>
-			<?php
-			$api = $this->getApi();
-			if($api != null){
-				$token = $api->getAccessToken();
-				echo_array($token);
-				// echo "<p><b>Token:</b> ".$token["access_token"]."</p>";
-				// echo "<p><b>Is expired:</b> ".$api->isAccessTokenExpired()."</p>";
-				// echo "<p><b>Code:</b> ".get_site_option(self::TOKEN_CODE, '')."</p>";
-
-			}
-			?>
+			<p>
+				<label for="<?php echo self::OPTION_CONFIG; ?>">Upload oauth2 credentials JSON:</label><br>
+				<input type="file" name="<?php echo self::OPTION_CONFIG; ?>" />
+			</p>
+			
 			<?php echo get_submit_button( "Save" ); ?>
 		</form>
+		
+		
+		
 		<?php
-
-
-
+		
 	}
 
 	/**

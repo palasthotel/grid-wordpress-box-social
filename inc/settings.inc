@@ -120,4 +120,30 @@ class Settings {
 		
 		echo $content;
 	}
+	
+	/**
+	 * echo array contents
+	 * @param $data
+	 * @param int $level
+	 */
+	public function echo_array($data, $level = 0){
+		++$level;
+		$level_prefix = "";
+		for( $i = 0; $i < $level; $i++){
+			$level_prefix.= "&nbsp;&nbsp;&nbsp;&nbsp;";
+		}
+		if(is_string($data) || is_numeric($data)){
+			echo $data."<br/>";
+		}
+		if(is_array($data)){
+			foreach ($data as $key => $value){
+				echo $level_prefix."<b>".$key.": </b>";
+				if(is_array($value)){
+					echo "<br />";
+				}
+				$this->echo_array($value, $level);
+			}
+		}
+	}
+	
 }

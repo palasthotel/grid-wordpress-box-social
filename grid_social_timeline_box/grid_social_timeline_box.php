@@ -95,6 +95,43 @@ class grid_social_timeline_box extends grid_list_box  {
 				}
 			}
 			
+			if($this->hasYoutube()){
+				$helper_box = new grid_youtube_box();
+				$videos_options = null;
+				switch ($this->content->youtube_type){
+					case "channel":
+						$channels = $helper_box->getChannels(array(
+							"forUsername"=> $this->content->youtube_q,
+							"maxResults" => 1,
+							)
+						);
+						if(count($channels)>0){
+							$videos_options = array(
+								"channelId" => $channels[0]->id,
+								"maxResults" => $this->content->youtube_count,
+								"order" => "date",
+							);
+						}
+						break;
+					case "search":
+					default:
+						$videos_options = array(
+							"q"=> $this->content->youtube_q,
+							"maxResults" => $this->content->youtube_count,
+						);
+				}
+				if($videos_options != null){
+					$videos = $helper_box->getVideos($videos_options);
+					foreach($videos as $video){
+						$date = new DateTime($video->published);
+						$content[] = (object)array(
+							"time" => (int)$date->format('U'),
+							"content" => $video,
+							"type" => self::PREFIX_YOUTUBE,
+						);
+					}
+				}
+			}
 			/**
 			 * sort by timestamp
 			 */
@@ -114,8 +151,8 @@ class grid_social_timeline_box extends grid_list_box  {
 			/**
 			 * render items
 			 */
-			for ($i = 0; $i < count($content); $i++){
-				$content[$i]->rendered = $this->renderItem($content[$i]);
+			for ($position = 0; $position < count($content); $position++){
+				$content[$position]->rendered = $this->renderItem($content[$position], $position);
 			}
 			
 			return $content;
@@ -174,7 +211,7 @@ class grid_social_timeline_box extends grid_list_box  {
 						"type" => "info",
 					)
 				),
-				$this->prefixStructure($youtube->contentStructure(), self::PREFIX_INSTAGRAM)
+				$this->prefixStructure($youtube->contentStructure(), self::PREFIX_YOUTUBE)
 			);
 		}
 		
@@ -271,9 +308,11 @@ class grid_social_timeline_box extends grid_list_box  {
 	/**
 	 * @param $item
 	 *
+	 * @param $position
+	 *
 	 * @return string
 	 */
-	private function renderItem($item){
+	private function renderItem($item, $position){
 		global $grid_social_boxes;
 		$rendered = "";
 		
