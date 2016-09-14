@@ -65,7 +65,7 @@ class GridSocialBoxes{
 		/**
 		 * social timeline
 		 */
-		require "social_timeline/grid_social_timeline_box.php";
+		require "grid_social_timeline_box/grid_social_timeline_box.php";
 
 	}
 

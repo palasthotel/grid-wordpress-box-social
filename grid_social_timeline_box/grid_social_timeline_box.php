@@ -5,7 +5,7 @@
  * @license http://www.gnu.org/licenses/gpl-2.0.html GPLv2
  * @package Palasthotel\Grid-Social-Boxes
  */
-class grid_social_timeline_box extends grid_static_base_box {
+class grid_social_timeline_box extends grid_list_box  {
 
 	const PREFIX_TWITTER = "twitter";
 	const PREFIX_INSTAGRAM = "instagram";
@@ -163,16 +163,20 @@ class grid_social_timeline_box extends grid_static_base_box {
 			);
 		}
 		
-		$apis = array_merge(
-			$apis,
-			array(
+		if($grid_social_boxes->get_youtube_api() != null){
+			$youtube = new grid_youtube_box();
+			$apis = array_merge(
+				$apis,
 				array(
-					"label"=> "",
-					"text" => __("Configuration for Youtube coming soon.", "grid-social-boxes"),
-					"type" => "info",
-				)
-			)
-		);
+					array(
+						"label"=> "",
+						"text" => __("Configuration for Youtube.", "grid-social-boxes"),
+						"type" => "info",
+					)
+				),
+				$this->prefixStructure($youtube->contentStructure(), self::PREFIX_INSTAGRAM)
+			);
+		}
 		
 		if(count($apis) > 0){
 			return array_merge(

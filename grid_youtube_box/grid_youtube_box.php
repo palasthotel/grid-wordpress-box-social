@@ -71,7 +71,7 @@ class grid_youtube_box extends grid_list_box  {
 				"order" => "date",
 			));
 			foreach ($videos as $video){
-				$arr[] = $this->getOembedHTML($video->id)->rendered;
+				$arr[] = $video->rendered;
 			}
 		}
 		return $arr;
@@ -181,8 +181,8 @@ class grid_youtube_box extends grid_list_box  {
 			die();
 		}
 		curl_close($request);
-		$result=json_decode($result);
-		$html = $result->html;
+		$result=json_decode($result,true);
+		$html = $result["html"];
 
 		$url_show_info = "&showinfo=";
 		if($this->content->info){
