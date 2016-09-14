@@ -115,7 +115,7 @@ class GridSocialBoxes{
 	 */
 	public function include_instagram_api(){
 		if(!class_exists("Instagram")){
-			require_once 'grid_instagram_box/instagram-api/instagram.php';
+			require_once 'grid_instagram_box/instagram-api/Instagram.php';
 		}
 	}
 	
