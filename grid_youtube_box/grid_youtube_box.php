@@ -150,6 +150,7 @@ class grid_youtube_box extends grid_list_box  {
 					"description" => $snippet->getDescription(),
 					"tumbnails" => array("thumbs"),
 					"rendered" => $this->getOembedHTML($video->getId()->videoId),
+					"published" => $snippet->getPublishedAt(),
 				);
 			}
 		}
