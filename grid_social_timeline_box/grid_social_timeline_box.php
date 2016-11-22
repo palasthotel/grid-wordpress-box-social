@@ -6,7 +6,7 @@
  * @package Palasthotel\Grid-Social-Boxes
  */
 class grid_social_timeline_box extends grid_list_box  {
-
+	
 	const PREFIX_TWITTER = "twitter";
 	const PREFIX_INSTAGRAM = "instagram";
 	const PREFIX_YOUTUBE = "youtube";
@@ -16,7 +16,7 @@ class grid_social_timeline_box extends grid_list_box  {
 		$this->content->limit = 5;
 		$this->content->sort = 1;
 	}
-
+	
 	public function type() {
 		return 'social_timeline';
 	}
@@ -46,6 +46,8 @@ class grid_social_timeline_box extends grid_list_box  {
 				/**
 				 * @var $connection TwitterOAuth
 				 */
+				$user = (!empty($this->content->twitter_user))? $this->content->twitter_user: "";
+				$limit = (!empty($this->content->twitter_limit))?$this->content->twitter_limit:"";
 				$connection = $grid_social_boxes->get_twitter_api();
 				if ( 'retweets' == $this->content->twitter_retweet ) {
 					$result = $connection->get(
@@ -59,8 +61,8 @@ class grid_social_timeline_box extends grid_list_box  {
 					$result = $connection->get(
 						'https://api.twitter.com:443/1.1/statuses/user_timeline.json',
 						array(
-							'screen_name' => $this->content->twitter_user,
-							"count" => $this->content->twitter_limit,
+							'screen_name' => $user,
+							"count" => $limit,
 						)
 					);
 				}
@@ -82,7 +84,8 @@ class grid_social_timeline_box extends grid_list_box  {
 			if($this->hasInstagram()){
 				$api = $grid_social_boxes->get_instagram_api();
 				if($api != null){
-					$result = $api->getUserMedia('self', $this->content->instagram_count);
+					$count = (!empty($this->content->instagram_count))? $this->content->instagram_count: 3;
+					$result = $api->getUserMedia('self', $count);
 					$images = $result->data;
 					foreach ($images as $item){
 						$src = $item->images->low_resolution->url;
@@ -98,17 +101,19 @@ class grid_social_timeline_box extends grid_list_box  {
 			if($this->hasYoutube()){
 				$helper_box = new grid_youtube_box();
 				$videos_options = null;
+				$q = (!empty($this->content->youtube_q))? $this->content->youtube_q: "";
+				$count = (!empty($this->content->youtube_count))?$this->content->youtube_count:"";
 				switch ($this->content->youtube_type){
 					case "channel":
 						$channels = $helper_box->getChannels(array(
-							"forUsername"=> $this->content->youtube_q,
-							"maxResults" => 1,
+								"forUsername"=> $q,
+								"maxResults" => 1,
 							)
 						);
 						if(count($channels)>0){
 							$videos_options = array(
 								"channelId" => $channels[0]->id,
-								"maxResults" => $this->content->youtube_count,
+								"maxResults" => $count,
 								"order" => "date",
 							);
 						}
@@ -116,8 +121,8 @@ class grid_social_timeline_box extends grid_list_box  {
 					case "search":
 					default:
 						$videos_options = array(
-							"q"=> $this->content->youtube_q,
-							"maxResults" => $this->content->youtube_count,
+							"q"=> $q,
+							"maxResults" => $count,
 						);
 				}
 				if($videos_options != null){
@@ -326,5 +331,5 @@ class grid_social_timeline_box extends grid_list_box  {
 		ob_end_clean();
 		return $rendered;
 	}
-
+	
 }

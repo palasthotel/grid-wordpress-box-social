@@ -30,6 +30,9 @@ Extends the Grid Plugin with Facebook and Twitter Boxes.
 
 == Changelog ==
 
+= 1.4.1 =
+* Twitter callback url
+
 = 1.4.0 =
 * Instagram box
 * Youtube box
