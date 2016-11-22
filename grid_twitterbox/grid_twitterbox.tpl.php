@@ -6,12 +6,12 @@
  * @package Palasthotel\Grid-WordPress-Box-Social
  */
 ?>
-<?
+<?php
 	foreach($content as $tweet) {
 ?>
 <div>
 	<?php echo '--<br />'.$tweet->text?>
 </div>
-<?
+<?php
 	}
 ?>
