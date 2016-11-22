@@ -70,44 +70,63 @@ class Twitter extends Base{
 	 * render settings page
 	 */
 	public function renderPage(){
+		$access_token = get_site_option( 'grid_twitterbox_accesstoken');
 		$this->settings->plugin->include_twitter_api();
+		$callback_url = add_query_arg( array(
+			'page' => self::ADMIN_PAGE_CALLBACK_SLUG,
+			'noheader' => true
+		), admin_url( 'admin.php' ) );
+		
 		if ( isset( $_POST ) && ! empty( $_POST ) ) {
 			update_site_option( 'grid_twitterbox_consumer_key', $_POST['grid_twitterbox_consumer_key'] );
 			update_site_option( 'grid_twitterbox_consumer_secret', $_POST['grid_twitterbox_consumer_secret'] );
+			$key = get_site_option( 'grid_twitterbox_consumer_key', '' );
+			$secret = get_site_option( 'grid_twitterbox_consumer_secret', '' );
 			
-			$connection = new TwitterOAuth( get_site_option( 'grid_twitterbox_consumer_key', '' ), get_site_option( 'grid_twitterbox_consumer_secret', '' ) );
+			if( !empty($secret) || !empty($key) ){
+				
+				$connection = new TwitterOAuth( $key, $secret );
+				$request_token = $connection->getRequestToken( add_query_arg( array(
+					'page' => self::ADMIN_PAGE_CALLBACK_SLUG,
+					'noheader' => true
+				), admin_url( 'admin.php' ) ) );
+				
+				session_start();
+				$_SESSION['oauth_token'] = $token = $request_token['oauth_token'];
+				$_SESSION['oauth_token_secret'] = $request_token['oauth_token_secret'];
+				$url = $connection->getAuthorizeURL( $token );
+				header( 'Location: ' . $url );
+				die();
+			} else if($access_token !== false){
+				// TODO: revoke token
+			}
 			
-			$request_token = $connection->getRequestToken( add_query_arg( array(
-				'page' => self::ADMIN_PAGE_CALLBACK_SLUG,
-				'noheader' => true
-			), admin_url( 'admin.php' ) ) );
-			
-			session_start();
-			$_SESSION['oauth_token'] = $token = $request_token['oauth_token'];
-			$_SESSION['oauth_token_secret'] = $request_token['oauth_token_secret'];
-			$url = $connection->getAuthorizeURL( $token );
-			header( 'Location: ' . $url );
-			die();
 		} else {
 			
 			
-			if( get_site_option( 'grid_twitterbox_accesstoken')!== false){
-			?>
-			<div class="notice notice-success">
-				<p>Authorization granted!</p>
-			<p><?php
-			$token = get_site_option( 'grid_twitterbox_accesstoken');
-			foreach ($token as $key => $val){
-				?><strong><?php echo $key; ?>:</strong> <?php echo $val; ?><br /><?php
+			if( $access_token!== false){
+				?>
+				<div class="notice notice-success">
+					<p>Authorization granted!</p>
+					<p><?php
+						foreach ($access_token as $key => $val){
+							?><strong><?php echo $key; ?>:</strong> <?php echo $val; ?><br /><?php
+						}
+						?></p>
+				</div>
+				<?php
 			}
-			?></p>
-			</div>
-			<?php
-		}
+			
 			?>
 			
 			<form method="POST" action="<?php echo $this->getSelfURL(array("noheader"=>true)); ?>">
 				<p><?php _e("Get your credentials at <a href='https://apps.twitter.com/'>Twitter Apps</a>. Create or choose your app and have a look at 'Keys and Access Tokens'.", 'grid-social-boxes'); ?></p>
+				
+				<p>
+					<?php _e('Use as callback url: ', 'grid-social-boxes'); ?><br>
+					<b><?php echo $callback_url; ?></b>
+				</p>
+				
 				<p>
 					<label for="grid_twitterbox_consumer_key">Consumer Key:</label><br>
 					<input type="text" name="grid_twitterbox_consumer_key" id="grid_twitterbox_consumer_key"
