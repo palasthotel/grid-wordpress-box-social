@@ -3,8 +3,8 @@ Contributors: edwardbock,mkernel
 Donate link: http://palasthotel.de/
 Tags: grid, landingpage, editor, admin, page, containerist
 Requires at least: 4.0
-Tested up to: 4.3
-Stable tag: 1.4.0
+Tested up to: 4.7.1
+Stable tag: 1.4.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl
 
@@ -12,7 +12,7 @@ Additional boxes for Grid Plugin
 
 == Description ==
 
-Extends the Grid Plugin with Facebook and Twitter Boxes.
+Extends the Grid Plugin with Facebook, Instagram, Youtube and Twitter Boxes.
 
 
 == Installation ==
@@ -29,6 +29,9 @@ Extends the Grid Plugin with Facebook and Twitter Boxes.
 
 
 == Changelog ==
+
+= 1.4.2 =
+* Spcial Timeline undefined key fix
 
 = 1.4.1 =
 * Twitter callback url
