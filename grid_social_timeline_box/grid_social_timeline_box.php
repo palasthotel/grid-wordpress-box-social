@@ -305,7 +305,7 @@ class grid_social_timeline_box extends grid_list_box  {
 	 */
 	private function prefixStructure($structure, $prefix){
 		for($i = 0; $i < count($structure); $i++){
-			$structure[$i]["key"] = $prefix."_".$structure[$i]["key"];
+			if(isset($structure[$i]["key"])) $structure[$i]["key"] = $prefix."_".$structure[$i]["key"];
 		}
 		return $structure;
 	}
