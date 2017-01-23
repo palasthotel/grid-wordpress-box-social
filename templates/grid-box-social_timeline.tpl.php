@@ -4,5 +4,12 @@
  * @var $content array
  */
 ?>
-<p>Timeline!!!</p>
-<p>hie?</p>
+<section class="timeline">
+	
+	<?php
+	foreach ($content as $item){
+		echo $item->rendered;
+	}
+	?>
+
+</section>

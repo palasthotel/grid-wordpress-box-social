@@ -3,7 +3,7 @@
  * @var $this grid_social_timeline_box
  */
 ?>
-<p>Social Timeline<?php
+Social Timeline<?php
 if($this->hasTwitter()){
 	echo "<br>Twitter working";
 }
@@ -13,4 +13,8 @@ if($this->hasInstagram()){
 if($this->hasYoutube()){
 	echo "<br>Youtube working";
 }
-?></p>
+if($this->hasFacebook()){
+	echo "<br>Facebook working";
+}
+
+?>

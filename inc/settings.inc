@@ -8,6 +8,7 @@
 
 namespace GridSocialBoxes;
 
+use GridSocialBoxes\Settings\Facebook;
 use GridSocialBoxes\Settings\Instagram;
 use GridSocialBoxes\Settings\Twitter;
 use GridSocialBoxes\Settings\Youtube;
@@ -25,6 +26,7 @@ class Settings {
 	const TYPE_TWITTER = "twitter";
 	const TYPE_INSTAGRAM = "instagram";
 	const TYPE_YOUTUBE = "youtube";
+	const TYPE_FACEBOOK = "facebook";
 	
 	/**
 	 * @var \GridSocialBoxes
@@ -59,6 +61,10 @@ class Settings {
 		require_once $this->plugin->dir."/inc/settings/youtube.inc";
 		$youtube = new Youtube($this);
 		$this->pages[$youtube->getSlug()] = $youtube;
+		
+		require_once $this->plugin->dir."/inc/settings/facebook.inc";
+		$facebook = new Facebook($this);
+		$this->pages[$facebook->getSlug()] = $facebook;
 		
 		add_action( 'admin_menu', array($this, 'social_boxes_admin_menu') );
 		

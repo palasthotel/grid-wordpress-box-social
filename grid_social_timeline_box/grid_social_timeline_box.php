@@ -10,6 +10,7 @@ class grid_social_timeline_box extends grid_list_box  {
 	const PREFIX_TWITTER = "twitter";
 	const PREFIX_INSTAGRAM = "instagram";
 	const PREFIX_YOUTUBE = "youtube";
+	const PREFIX_FACEBOOK = "facebook";
 	
 	public function __construct() {
 		parent::__construct();
@@ -137,6 +138,24 @@ class grid_social_timeline_box extends grid_list_box  {
 					}
 				}
 			}
+			
+			if($this->hasFacebook()){
+				$facebook = new grid_facebook_feed_box();
+				$feed_object = $facebook->get_feed($this->content->facebook_fb_page, $this->content->facebook_type);
+				$feed = $feed_object->getDecodedBody()["data"];
+				foreach ($feed as $post){
+					$post = (object)$post;
+					$date = new DateTime($post->created_time);
+					
+					$content[] = (object)array(
+						"time" => (int)$date->format('U'),
+						"content" => $facebook->get_post($post, $this->content->facebook_fb_page),
+						"post" => $post,
+						"type" => self::PREFIX_FACEBOOK,
+					);
+				}
+			}
+			
 			/**
 			 * sort by timestamp
 			 */
@@ -165,6 +184,28 @@ class grid_social_timeline_box extends grid_list_box  {
 	}
 	
 	/**
+	 * @param $item
+	 *
+	 * @param $position
+	 *
+	 * @return string
+	 */
+	private function renderItem($item, $position){
+		global $grid_social_boxes;
+		$rendered = "";
+		
+		ob_start();
+		if(locate_template("grid/grid-box-social_timeline--".$item->type.".tpl.php") !== ''){
+			get_template_part("grid/grid-box-social_timeline--".$item->type.".tpl.php");
+		} else {
+			require $grid_social_boxes->dir."/templates/grid-box-social_timeline--".$item->type.".tpl.php";
+		}
+		$rendered = ob_get_contents();
+		ob_end_clean();
+		return $rendered;
+	}
+	
+	/**
 	 * content structure
 	 * @return array
 	 */
@@ -184,7 +225,12 @@ class grid_social_timeline_box extends grid_list_box  {
 						"label"=> "",
 						"text" => __("Configuration for Twitter.", "grid-social-boxes"),
 						"type" => "info",
-					)
+					),
+					array(
+						'key' => self::PREFIX_TWITTER,
+						'label' => __("Activate Twitter posts", 'grid-social-boxes'),
+						'type' => "checkbox",
+					),
 				),
 				$this->prefixStructure($twitter->contentStructure(), self::PREFIX_TWITTER)
 			);
@@ -199,7 +245,12 @@ class grid_social_timeline_box extends grid_list_box  {
 						"label"=> "",
 						"text" => __("Configuration for Instagram.", "grid-social-boxes"),
 						"type" => "info",
-					)
+					),
+					array(
+						'key' => self::PREFIX_INSTAGRAM,
+						'label' => __("Activate Instagram posts", 'grid-social-boxes'),
+						'type' => "checkbox",
+					),
 				),
 				$this->prefixStructure($instagram->contentStructure(), self::PREFIX_INSTAGRAM)
 			);
@@ -214,9 +265,34 @@ class grid_social_timeline_box extends grid_list_box  {
 						"label"=> "",
 						"text" => __("Configuration for Youtube.", "grid-social-boxes"),
 						"type" => "info",
-					)
+					),
+					array(
+						'key' => self::PREFIX_YOUTUBE,
+						'label' => __("Activate Youtube posts", 'grid-social-boxes'),
+						'type' => "checkbox",
+					),
 				),
 				$this->prefixStructure($youtube->contentStructure(), self::PREFIX_YOUTUBE)
+			);
+		}
+		
+		if($grid_social_boxes->get_facebook_api() != null){
+			$facebook = new grid_facebook_feed_box();
+			$apis = array_merge(
+				$apis,
+				array(
+					array(
+						"label"=> "",
+						"text" => __("Configuration for Facebook.", "grid-social-boxes"),
+						"type" => "info",
+					),
+					array(
+						'key' => self::PREFIX_FACEBOOK,
+						'label' => __("Activate Facebook posts", 'grid-social-boxes'),
+						'type' => "checkbox",
+					),
+				),
+				$this->prefixStructure($facebook->contentStructure(), self::PREFIX_FACEBOOK)
 			);
 		}
 		
@@ -281,18 +357,21 @@ class grid_social_timeline_box extends grid_list_box  {
 	}
 	
 	/**
+	 * check if facebook config is set
+	 * @return bool
+	 */
+	public function hasFacebook(){
+		return $this->isWorking(self::PREFIX_FACEBOOK);
+	}
+	
+	/**
 	 * check api prefix configurations
 	 * @param $api_prefix
 	 *
 	 * @return bool
 	 */
 	private function isWorking($api_prefix){
-		foreach ($this->content as $key => $value){
-			if(strpos($key, $api_prefix ) !== false && $value != ""){
-				return true;
-			}
-		}
-		return false;
+		return (isset($this->content->{$api_prefix}) && $this->content->{$api_prefix});
 	}
 	
 	/**
@@ -310,26 +389,6 @@ class grid_social_timeline_box extends grid_list_box  {
 		return $structure;
 	}
 	
-	/**
-	 * @param $item
-	 *
-	 * @param $position
-	 *
-	 * @return string
-	 */
-	private function renderItem($item, $position){
-		global $grid_social_boxes;
-		$rendered = "";
-		
-		ob_start();
-		if(locate_template("grid/grid-box-social_timeline--".$item->type.".tpl.php") !== ''){
-			get_template_part("grid/grid-box-social_timeline--".$item->type.".tpl.php");
-		} else {
-			require $grid_social_boxes->dir."/templates/grid-box-social_timeline--".$item->type.".tpl.php";
-		}
-		$rendered = ob_get_contents();
-		ob_end_clean();
-		return $rendered;
-	}
+	
 	
 }

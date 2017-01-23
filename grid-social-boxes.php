@@ -28,7 +28,7 @@ class GridSocialBoxes{
 		add_action("grid_load_classes", array($this,"load_classes") );
 		add_filter("grid_templates_paths", array($this,"template_paths") );
 		
-		require_once $this->dir."/inc/settings.inc";
+		require_once  "inc/settings.inc";
 		$this->settings = new \GridSocialBoxes\Settings($this);
 	}
 
@@ -46,7 +46,11 @@ class GridSocialBoxes{
 		/**
 		 * facebook box
 		 */
-		require( 'grid_facebook_like_box/grid_fb_like_box_box.php' );
+		require( 'grid_facebook_box/grid_fb_like_box_box.php' );
+		if($this->get_facebook_api() != null){
+			require('grid_facebook_box/grid_facebook_feed_box.php');
+		}
+		
 		
 		/**
 		 * instagram box
@@ -56,11 +60,12 @@ class GridSocialBoxes{
 		}
 		
 		/**
-		 * instagram box
+		 * youtube box
 		 */
 		if($this->get_youtube_api() != null){
 			require('grid_youtube_box/grid_youtube_box.php');
 		}
+		
 		
 		/**
 		 * social timeline
@@ -121,6 +126,26 @@ class GridSocialBoxes{
 	}
 	
 	/**
+	 * @return \Facebook\Facebook
+	 */
+	public function get_facebook_api(){
+		/**
+		 * @var $settings \GridSocialBoxes\Settings\Facebook
+		 */
+		$settings = $this->settings->pages[GridSocialBoxes\Settings::TYPE_FACEBOOK];
+		return $settings->getApi();
+	}
+	
+	/**
+	 * include facebook sdk
+	 */
+	public function include_facebook_sdk(){
+		if(!class_exists("Facebook")){
+			require_once "grid_facebook_box/facebook-sdk-v5/autoload.php";
+		}
+	}
+	
+	/**
 	 * @return \Google_Service_YouTube
 	 */
 	public function get_youtube_api(){
@@ -143,5 +168,6 @@ class GridSocialBoxes{
 global $grid_social_boxes;
 $grid_social_boxes = new GridSocialBoxes();
 
+require 'public-functions.php';
 
 ?>

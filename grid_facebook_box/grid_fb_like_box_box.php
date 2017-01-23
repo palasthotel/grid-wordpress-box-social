@@ -48,24 +48,12 @@ class grid_fb_like_box_box extends grid_static_base_box {
 			if ( false === strpos( $fb_page, $fb_url ) && false === strpos( $fb_page, $fbs_url ) ) {
 				$fb_page = $fb_url.$fb_page;
 			}
-
+			
 			ob_start();
+			
+			grid_social_boxes_init_facebook_js();
+			
 			?>
-			<script>
-			(function(d, s, id) {
-			  if (d.getElementById(id)) return;
-			  div = d.createElement(s); 
-			  div.id = id;
-			  d.body.insertBefore(div, document.body.childNodes[0]);
-			}(document, 'div', 'fb-root'));
-			(function(d, s, id) {
-			  var js = d.getElementsByTagName(s)[0];
-			  if (d.getElementById(id)) return;
-			  js = d.createElement(s); js.id = id;
-			  js.src = '//connect.facebook.net/<?php echo $language; ?>/all.js#xfbml=1&appId=<?php echo $appid; ?>';
-			  d.head.insertBefore(js, document.head.childNodes[0])
-			}(document, 'script', 'facebook-jssdk'));
-			</script>
 			<div 
 			class="fb-like-box" 
 			data-href="<?php echo $fb_page; ?>" 
