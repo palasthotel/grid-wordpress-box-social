@@ -12,7 +12,7 @@
 	
 	<div class="timeline__content">
 		<p><?php echo $item->content->text; ?></p>
-		<a href="<?php echo $item->user->url; ?>" class="timeline__readmore">weiterlesen</a>
+		<a href="<?php echo $item->content->user->url; ?>" class="timeline__readmore">weiterlesen</a>
 		<span class="timeline__date"><?php echo date("H:i - d.m.Y", $item->time); ?></span>
 	</div>
 </div>

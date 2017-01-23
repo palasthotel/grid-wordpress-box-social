@@ -10,19 +10,15 @@ class grid_facebook_feed_box extends grid_list_box {
 	
 	const TRANSIENT = "grid_facebook_feed_box_";
 	
-	const DEFAULTS = array(
-		"fb_page"         => "",
-		"number_of_items" => 3,
-		"type"            => "feed",
-	);
-	
 	public function type() {
 		return 'facebook_feed';
 	}
 	
 	public function __construct() {
 		parent::__construct();
-		$this->content = (object) self::DEFAULTS;
+		$this->content->fb_page = "";
+		$this->content->number_of_items = 3;
+		$this->content->type = "feed";
 	}
 	
 	public function build( $editmode ) {
@@ -36,13 +32,9 @@ class grid_facebook_feed_box extends grid_list_box {
 			/**
 			 * fallback to defaults if not defined
 			 */
-			foreach (self::DEFAULTS as $key => $value){
-				if(!isset($this->content->{$key})) $this->content->{$key} = $value;
-			}
-			
-			$page = $this->content->fb_page;
-			$type = $this->content->type;
-			$noi = $this->content->number_of_items;
+			$page = (!empty($this->content->fb_page))? $this->content->fb_page : "";
+			$type = (!empty($this->content->type))? $this->content->type: "feed";
+			$noi = (!empty($this->content->number_of_items))? $this->content->number_of_items: 3;
 			
 			
 			$feed = get_site_transient( self::TRANSIENT . $this->boxid );

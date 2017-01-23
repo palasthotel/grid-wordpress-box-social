@@ -105,7 +105,7 @@ class Facebook extends Base{
 		?>
 		
 		<form method="POST" action="<?php echo $this->getSelfURL(array("noheader"=>true)); ?>">
-			<p>Register a facebook application on <a href="https://developers.facebook.com">developers.facebook.com</a> and get the  <a href="https://developers.facebook.com/tools/accesstoken/">app token</a>.</p>
+			<p>Register a facebook application on <a target="_blank" href="https://developers.facebook.com">developers.facebook.com</a> and get the  <a target="_blank" href="https://developers.facebook.com/tools/accesstoken/">app token</a>.</p>
 			<label>
 				App ID:<br>
 				<input name="<?php echo self::OPTION_APP_ID; ?>" value="<?php echo get_site_option( self::OPTION_APP_ID ); ?>" />
