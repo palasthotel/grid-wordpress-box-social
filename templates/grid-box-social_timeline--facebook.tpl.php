@@ -21,5 +21,6 @@
 	<?php grid_social_boxes_init_facebook_js(); ?>
 	<div class="timeline__content">
 		<?php echo $item->content; ?>
+		<span class="timeline__date"><?php echo date("H:i - d.m.Y", $item->time); ?></span>
 	</div>
 </div>

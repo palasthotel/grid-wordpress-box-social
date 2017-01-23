@@ -143,7 +143,9 @@ class grid_social_timeline_box extends grid_list_box  {
 				$facebook = new grid_facebook_feed_box();
 				$feed_object = $facebook->get_feed($this->content->facebook_fb_page, $this->content->facebook_type);
 				$feed = $feed_object->getDecodedBody()["data"];
-				foreach ($feed as $post){
+				$noi = (!empty($this->content->facebook_number_of_items))? $this->content->facebook_number_of_items: 3;
+				foreach ($feed as $index => $post){
+					if($index >= $noi) break;
 					$post = (object)$post;
 					$date = new DateTime($post->created_time);
 					
