@@ -4,7 +4,7 @@ Donate link: http://palasthotel.de/
 Tags: grid, landingpage, editor, admin, page, containerist
 Requires at least: 4.0
 Tested up to: 4.7.1
-Stable tag: 1.4.2
+Stable tag: 1.4.3
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl
 
@@ -29,6 +29,10 @@ Extends the Grid Plugin with Facebook, Instagram, Youtube and Twitter Boxes.
 
 
 == Changelog ==
+
+= 1.4.3 =
+ * Added Facebook posts support
+ * Template files fix
 
 = 1.4.2 =
 * Spcial Timeline undefined key fix

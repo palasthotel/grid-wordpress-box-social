@@ -194,11 +194,9 @@ class grid_social_timeline_box extends grid_list_box  {
 	 */
 	private function renderItem($item, $position){
 		global $grid_social_boxes;
-		$rendered = "";
-		
 		ob_start();
-		if(locate_template("grid/grid-box-social_timeline--".$item->type.".tpl.php") !== ''){
-			get_template_part("grid/grid-box-social_timeline--".$item->type.".tpl.php");
+		if($overridden_template = locate_template("grid/grid-box-social_timeline--".$item->type.".tpl.php")){
+			include $overridden_template;
 		} else {
 			require $grid_social_boxes->dir."/templates/grid-box-social_timeline--".$item->type.".tpl.php";
 		}

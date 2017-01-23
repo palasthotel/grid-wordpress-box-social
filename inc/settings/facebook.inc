@@ -45,9 +45,10 @@ class Facebook extends Base{
 		/**
 		 * check if options are saved
 		 */
-		if( get_site_option( self::OPTION_APP_ID ) === false
-		      || get_site_option( self::OPTION_SECRET ) === false
-		      || get_site_option( self::OPTION_APP_TOKEN ) === false){
+		if( empty(get_site_option( self::OPTION_APP_ID ))
+		    || empty(get_site_option( self::OPTION_SECRET ))
+		    || empty(get_site_option( self::OPTION_APP_TOKEN ))
+		){
 			return null;
 		}
 		
@@ -84,7 +85,8 @@ class Facebook extends Base{
 		 * check for successful connection
 		 */
 		$fb = $this->getApi();
-		$access_token = $fb->getDefaultAccessToken();
+		$access_token = null;
+		if($fb != null) $access_token = $fb->getDefaultAccessToken();
 		
 		if( $access_token !== null){
 			?>
