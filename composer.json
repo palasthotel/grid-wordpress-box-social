@@ -1,0 +1,8 @@
+{
+    "name": "philippze/grid-wordpress-box-social",
+    "type": "wordpress-plugin",
+    "require": {
+        "composer/installers": "^1.0",
+        "wpackagist-plugin/grid": "^1.6",
+    }
+}
