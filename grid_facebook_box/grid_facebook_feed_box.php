@@ -40,7 +40,7 @@ class grid_facebook_feed_box extends grid_list_box {
 			$feed = get_site_transient( self::TRANSIENT . $this->boxid );
 			if ( FALSE == $feed ) {
 				$feed_object = $this->get_feed($page, $type);
-				$feed = $feed_object->decodeBody();
+				$feed = $feed_object->getDecodedBody();
 				set_site_transient(self::TRANSIENT . $this->boxid , $feed, 60);
 			}
 			
