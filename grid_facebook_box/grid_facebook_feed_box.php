@@ -80,7 +80,7 @@ class grid_facebook_feed_box extends grid_list_box {
 		$plugin = grid_social_boxes_plugin();
 		$fb     = $plugin->get_facebook_api();
 		try {
-			$feed_object = $fb->get( "/{$page}/{$type}" );
+			$feed_object = $fb->get( "/{$page}/{$type}?fields=".GRID_FACEBOOK_FIELDS );
 			if ( ! $feed_object->isError() ) {
 				return $feed_object;
 			}
