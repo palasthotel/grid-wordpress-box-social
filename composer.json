@@ -1,5 +1,5 @@
 {
-    "name": "philippze/grid-social-boxes",
+    "name": "palasthotel/grid-social-boxes",
     "type": "wordpress-plugin",
     "require": {
         "composer/installers": "^1.0",
