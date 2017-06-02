@@ -63,12 +63,11 @@ class grid_facebook_feed_box extends grid_list_box {
 			
 			
 			ob_start();
-			if ( ! empty( $feed ) ) {
-				grid_social_boxes_init_facebook_js();
-				foreach ( $items as $item ) {
-					echo $this->get_post($item, $page);
+			if ( $overridden_template = locate_template('grid_facebook_feed_box.tpl.php' ) ) {
+					require $overridden_template;
+				} else {
+					require ( 'grid_facebook_feed_box.tpl.php' );
 				}
-			}
 			$output = ob_get_contents();
 			ob_end_clean();
 			
