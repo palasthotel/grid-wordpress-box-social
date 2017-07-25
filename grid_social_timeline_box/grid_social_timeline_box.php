@@ -39,6 +39,7 @@ class grid_social_timeline_box extends grid_list_box  {
 		} else {
 			$content = array();
 			global $grid_social_boxes;
+			$timezone = new DateTimeZone(get_option('timezone_string'));
 			
 			/**
 			 * get twitter contents
@@ -70,8 +71,9 @@ class grid_social_timeline_box extends grid_list_box  {
 				
 				foreach( $result as $key => $tweet ){
 					$datetime = new DateTime($tweet->created_at);
+					$datetime->setTimezone($timezone);
 					$content[] = (object)array(
-						"time" => (int) $datetime->format("U"),
+						"datetime" => $datetime,
 						"content" => $tweet,
 						"type" => self::PREFIX_TWITTER,
 					);
@@ -90,8 +92,10 @@ class grid_social_timeline_box extends grid_list_box  {
 					$images = $result->data;
 					foreach ($images as $item){
 						$src = $item->images->low_resolution->url;
+						$datetime = DateTime::createFromFormat( 'U', (int)$item->created_time );
+						$datetime->setTimezone($timezone);
 						$content[] = (object)array(
-							"time" => (int)$item->created_time,
+							"datetime" => $datetime,
 							"content" => $item,
 							"type" => self::PREFIX_INSTAGRAM
 						);
@@ -129,9 +133,10 @@ class grid_social_timeline_box extends grid_list_box  {
 				if($videos_options != null){
 					$videos = $helper_box->getVideos($videos_options);
 					foreach($videos as $video){
-						$date = new DateTime($video->published);
+						$datetime = new DateTime($video->published);
+						$datetime->setTimezone($timezone);
 						$content[] = (object)array(
-							"time" => (int)$date->format('U'),
+							"datetime" => $datetime,
 							"content" => $video,
 							"type" => self::PREFIX_YOUTUBE,
 						);
@@ -154,10 +159,10 @@ class grid_social_timeline_box extends grid_list_box  {
 				foreach ($feed as $index => $post){
 					if($index >= $noi) break;
 					$post = (object)$post;
-					$date = new DateTime($post->created_time);
-					
+					$datetime = new DateTime($post->created_time);
+					$datetime->setTimezone($timezone);
 					$content[] = (object)array(
-						"time" => (int)$date->format('U'),
+						"datetime" => $datetime,
 						"content" => $facebook->get_post($post, $this->content->facebook_fb_page),
 						"post" => $post,
 						"type" => self::PREFIX_FACEBOOK,
@@ -170,10 +175,10 @@ class grid_social_timeline_box extends grid_list_box  {
 			 */
 			$sort = $this->content->sort;
 			usort($content, function($a, $b) use ($sort){
-				if($a->time == $b->time){
+				if($a->datetime == $b->datetime){
 					return 0;
 				}
-				return ($a->time > $b->time) ? -1*$sort: $sort;
+				return ($a->datetime > $b->datetime) ? -1*intval($sort): intval($sort);
 			});
 			
 			/**

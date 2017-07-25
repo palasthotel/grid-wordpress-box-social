@@ -3,8 +3,8 @@ Contributors: edwardbock,mkernel
 Donate link: http://palasthotel.de/
 Tags: grid, landingpage, editor, admin, page, containerist
 Requires at least: 4.0
-Tested up to: 4.7.1
-Stable tag: 1.4.3
+Tested up to: 4.8
+Stable tag: 1.4.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl
 
@@ -29,6 +29,9 @@ Extends the Grid Plugin with Facebook, Instagram, Youtube and Twitter Boxes.
 
 
 == Changelog ==
+
+= 1.4.4 =
+ * Timezone fix
 
 = 1.4.3 =
  * Added Facebook posts support
@@ -56,3 +59,6 @@ Extends the Grid Plugin with Facebook, Instagram, Youtube and Twitter Boxes.
 = 1.3 =
 * Moved from Grid to a separate Plugin
 
+
+== Upgrade Notice ==
+$item->time property was replaced by $item->datetime for timezone fix. Please check your theme templates grid-box-social_timeline--*.tpl.php.

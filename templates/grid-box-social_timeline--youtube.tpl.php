@@ -18,6 +18,6 @@
 		<h2><?php echo $item->content->title ?></h2>
 		<p><?php echo $item->content->description; ?></p>
 		<a href="https://www.youtube-nocookie.com/embed/<?php echo $item->content->id; ?>" class="timeline__readmore">weiterlesen</a>
-		<span class="timeline__date"><?php echo date("H:i - d.m.Y", $item->time); ?></span>
+		<span class="timeline__date"><?php echo $item->datetime->format("H:i - d.m.Y"); ?></span>
 	</div>
 </div>
