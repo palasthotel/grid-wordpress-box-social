@@ -11,7 +11,9 @@
 	</div>
 	
 	<div class="timeline__content">
-		<p><?php echo $item->content->text; ?></p>
+		<p><?php
+			echo (isset($item->content->full_text))? $item->content->full_text : $item->content->text;
+			?></p>
 		<a href="<?php echo $item->content->user->url; ?>" class="timeline__readmore">weiterlesen</a>
 		<span class="timeline__date"><?php echo $item->datetime->format("H:i - d.m.Y"); ?></span>
 	</div>

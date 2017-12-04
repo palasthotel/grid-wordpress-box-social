@@ -65,6 +65,7 @@ class grid_social_timeline_box extends grid_list_box  {
 						array(
 							'screen_name' => $user,
 							"count" => $limit,
+							"tweet_mode" => "extended",
 						)
 					);
 				}
@@ -72,7 +73,7 @@ class grid_social_timeline_box extends grid_list_box  {
 				foreach( $result as $key => $tweet ){
 					$datetime = new DateTime($tweet->created_at);
 					$datetime->setTimezone($timezone);
-					$content[] = (object)array(
+					$content[] = (object) array(
 						"datetime" => $datetime,
 						"content" => $tweet,
 						"type" => self::PREFIX_TWITTER,

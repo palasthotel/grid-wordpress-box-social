@@ -31,7 +31,13 @@ class grid_twitter_box extends grid_static_base_box {
 			$result = $connection->get( 'https://api.twitter.com:443/1.1/search/tweets.json?src=typd&q='.$this->content->user );
 			$result = $result->statuses;
 		} else {
-			$result = $connection->get( 'https://api.twitter.com:443/1.1/statuses/user_timeline.json', array( 'screen_name' => $this->content->user ) );
+			$result = $connection->get( 'https://api.twitter.com:443/1.1/statuses/user_timeline.json',
+				array(
+					'screen_name' => $this->content->user,
+					"tweet_mode" => "extended",
+					"count" => $this->content->limit,
+				)
+			);
 		}
 
 		return $result;
@@ -62,7 +68,7 @@ class grid_twitter_box extends grid_static_base_box {
 				if ( file_exists( $this->storage->templatesPath.'/grid_twitterbox.tpl.php' ) ) {
 					require ( $this->storage->templatesPath.'/grid_twitterbox.tpl.php' );
 				} else {
-					require ( 'grid_twitterbox.tpl.php' );
+					require ( dirname(__FILE__).'/../templates/grid_twitterbox.tpl.php' );
 				}
 				$result = ob_get_clean();
 				return $result;
@@ -117,7 +123,7 @@ class grid_twitter_box extends grid_static_base_box {
 class grid_twitter_hashtag_box extends grid_twitter_box {
 
 	public function __construct() {
-		$this->content = new Stdclass();
+		parent::__construct();
 		$this->content->limit = 5;
 		$this->content->hashtag = '';
 	}
@@ -127,7 +133,12 @@ class grid_twitter_hashtag_box extends grid_twitter_box {
 	}
 
 	public function fetch( $connection ) {
-		$output = $connection->get( 'https://api.twitter.com:443/1.1/search/tweets.json', array( 'q' => $this->content->hashtag ) );
+		$output = $connection->get( 'https://api.twitter.com:443/1.1/search/tweets.json', array(
+				'q' => $this->content->hashtag,
+				"tweet_mode" => "extended",
+				"count" => $this->content->limit,
+			)
+		);
 		if ( isset( $output->statuses ) ) {
 			$result = $output->statuses;
 		} else {
