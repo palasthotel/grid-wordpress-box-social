@@ -11,7 +11,7 @@
  * @package Palasthotel\Grid-WordPress-Box-Social
  */
 
-include_once('settings.php');
+include_once( dirname(__FILE__) . '/settings.php' );
 
 class GridSocialBoxes{
 	public $dir;
