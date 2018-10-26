@@ -96,11 +96,7 @@ class Twitter extends Base{
 					$request_token = $connection->oauth(
 						"oauth/request_token",
 						array(
-							"oauth_callback" => "http://aas-prod.palasthotel.de/__twitter_auth_callback"
-//								add_query_arg( array(
-//								'page'     => self::ADMIN_PAGE_CALLBACK_SLUG,
-//								'noheader' => true,
-//							), admin_url( 'admin.php' ) ),
+							"oauth_callback" => $callback_url
 						)
 					);
 				} catch (\Exception $e){
@@ -145,7 +141,7 @@ class Twitter extends Base{
 				<p><?php _e("Get your credentials at <a href='https://apps.twitter.com/'>Twitter Apps</a>. Create or choose your app and have a look at 'Keys and Access Tokens'.", 'grid-social-boxes'); ?></p>
 
 				<p>
-					<?php _e('Use as callback url: ', 'grid-social-boxes'); ?><br>
+					⚠️ <?php _e('Important: Use as callback url in your twitter app details settings: ', 'grid-social-boxes'); ?><br>
 					<b><?php echo $callback_url; ?></b>
 				</p>
 
@@ -199,12 +195,10 @@ class Twitter extends Base{
 			));
 		}
 
+
 		$oauth_verifier = filter_input(INPUT_GET, 'oauth_verifier');
 
-		if (empty($oauth_verifier) ||
-		    empty($_SESSION['oauth_token']) ||
-		    empty($_SESSION['oauth_token_secret'])
-		) {
+		if (empty($oauth_verifier)) {
 			// something's missing, go and login again
 			wp_die(new \WP_Error(
 					1,
@@ -212,9 +206,17 @@ class Twitter extends Base{
 			));
 		}
 
+		session_start();
+		if ( empty($_SESSION['oauth_token']) || empty($_SESSION['oauth_token_secret']) ) {
+			// something's missing, go and login again
+			wp_die(new \WP_Error(
+				1,
+				'No session found 🚨'
+			));
+		}
+
 		$this->settings->plugin->include_twitter_api();
 
-		session_start();
 		$connection = new TwitterOAuth(
 			get_site_option( 'grid_twitterbox_consumer_key', '' ),
 			get_site_option( 'grid_twitterbox_consumer_secret', '' ),
