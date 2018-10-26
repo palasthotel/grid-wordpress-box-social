@@ -3,8 +3,8 @@ Contributors: edwardbock,mkernel
 Donate link: http://palasthotel.de/
 Tags: grid, landingpage, editor, admin, page, containerist
 Requires at least: 4.0
-Tested up to: 4.9.1
-Stable tag: 1.4.5
+Tested up to: 4.9.8
+Stable tag: 1.4.6
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl
 
@@ -29,6 +29,9 @@ Extends the Grid Plugin with Facebook, Instagram, Youtube and Twitter Boxes.
 
 
 == Changelog ==
+
+= 1.4.6 =
+ * API updates
 
 = 1.4.5 =
  * Twitter full text 280 characters fix

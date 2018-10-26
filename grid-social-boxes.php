@@ -3,7 +3,7 @@
  * Plugin Name: Grid Social Boxes
  * Plugin URI: https://github.com/palasthotel/wordpress-grid-box-social
  * Description: Some social network boxes. Facebook, Twitter, Instagram and Youtube.
- * Version: 1.4.5
+ * Version: 1.4.6
  * Author: Palasthotel <rezeption@palasthotel.de> (in person: Edward Bock, Enno Welbers)
  * Author URI: http://www.palasthotel.de
  * License: http://www.gnu.org/licenses/gpl-2.0.html GPLv2
@@ -32,6 +32,28 @@ class GridSocialBoxes{
 		
 		require_once  "inc/settings.inc";
 		$this->settings = new \GridSocialBoxes\Settings($this);
+
+		/**
+		 * on activate or deactivate plugin
+		 */
+		register_activation_hook( __FILE__, array( $this, "activation" ) );
+		register_deactivation_hook( __FILE__, array( $this, "deactivation" ) );
+
+	}
+
+	/**
+	 * on plugin activation
+	 */
+	function activation() {
+		$this->settings->twitter->add_endpoint();
+		flush_rewrite_rules();
+	}
+
+	/**
+	 * on plugin deactivation
+	 */
+	function deactivation() {
+		flush_rewrite_rules();
 	}
 
 	/**
@@ -102,7 +124,7 @@ class GridSocialBoxes{
 	 */
 	public function include_twitter_api(){
 		if(!class_exists("TwitterOAuth")){
-			require_once 'grid_twitterbox/twitteroauth/twitteroauth.php';
+			require_once dirname(__FILE__).'/grid_twitterbox/vendor/autoload.php';
 		}
 	}
 	
