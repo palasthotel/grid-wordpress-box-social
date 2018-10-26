@@ -46,7 +46,7 @@ class Settings {
 	 */
 	public $youtube;
 	/**
-	 * @var \GridSocialBoxes\Settings\Facebook 
+	 * @var \GridSocialBoxes\Settings\Facebook
 	 */
 	public $facebook;
 
