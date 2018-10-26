@@ -65,7 +65,7 @@ class GridSocialBoxes{
 		 * twitter box
 		 */
 		$this->include_twitter_api();
-		require( 'grid_twitterbox/grid_wp_twitterboxes.php' );
+		require( dirname(__FILE__).'/grid_twitterbox/grid_wp_twitterboxes.php' );
 		
 		/**
 		 * facebook box
@@ -107,9 +107,9 @@ class GridSocialBoxes{
 		$paths[] = dirname(__FILE__)."/templates";
 		return $paths;
 	}
-	
+
 	/**
-	 * @return \TwitterOAuth|null
+	 * @return \Abraham\TwitterOAuth\TwitterOAuth|null
 	 */
 	public function get_twitter_api(){
 		/**

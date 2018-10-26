@@ -232,12 +232,14 @@ class Twitter extends Base{
 		} catch (\Exception $e){
 			wp_die(new \WP_Error(
 				1,
-				'Could not fetch access token 🚨'
+				'Could not fetch access token 🚨',
+				$e
 			));
 		}
 
 		update_site_option( 'grid_twitterbox_accesstoken', $access_token );
 
+		wp_die("Authorization successfull ✅");
 
 	}
 
