@@ -41,10 +41,12 @@ class Instagram extends Base{
 	public function getTitle(){
 		return __("Instagram", "grid-social-boxes");
 	}
-	
+
 	/**
 	 * get instagram api
+	 *
 	 * @return \MetzWeb\Instagram\Instagram|null
+	 * @throws \MetzWeb\Instagram\InstagramException
 	 */
 	public function getApi(){
 		$key = get_site_option(self::OPTION_KEY_CLIENT_ID);
