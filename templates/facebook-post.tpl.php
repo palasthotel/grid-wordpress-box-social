@@ -16,9 +16,3 @@
         <?php endif; ?>
     </blockquote>
 </div>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var post = document.getElementById("grid-facebook-post-<?php echo $item->id; ?>");
-        post.setAttribute("data-width", post.parentNode.clientWidth);
-    });
-</script>

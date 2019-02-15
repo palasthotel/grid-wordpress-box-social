@@ -16,6 +16,8 @@ include_once('settings.php');
 class GridSocialBoxes{
 	public $dir;
 	public $url;
+
+	const HANDLE_FACEBOOK_JS = "grid-social-boxes-facebook";
 	
 	/**
 	 * construct

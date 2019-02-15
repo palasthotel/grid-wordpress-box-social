@@ -122,39 +122,26 @@ class Facebook extends Base{
 			</label>
 			<?php echo get_submit_button( "Save" ); ?>
 		</form>
-		
+
 		<?php
-		
+
 	}
-	
+
 	/**
 	 * initialize js for facebook integration
 	 */
-	function init_facebook_sdk_js(){
-		?>
-		<script>
-			window.fb_inited = window.fb_inited || false;
-			if(!window.fb_inited){
-				window.fb_inited = true;
-				window.fbAsyncInit = function() {
-					FB.init({
-						appId      : '<?php echo get_site_option(self::OPTION_APP_ID); ?>',
-						xfbml      : true,
-						version    : 'v2.8'
-					});
-				};
-				
-				(function(d, s, id){
-					var js, fjs = d.getElementsByTagName(s)[0];
-					if (d.getElementById(id)) {return;}
-					js = d.createElement(s); js.id = id;
-					js.src = "//connect.facebook.net/en_US/sdk.js";
-					fjs.parentNode.insertBefore(js, fjs);
-				}(document, 'script', 'facebook-jssdk'));
-			}
-		</script>
-		<?php
-		
+	function init_facebook_sdk_js() {
+		wp_enqueue_script(
+			\GridSocialBoxes::HANDLE_FACEBOOK_JS,
+			$this->settings->plugin->url . "/grid_facebook_box/facebook.js",
+			array( "jquery" ),
+			1,
+			true
+		);
+		wp_localize_script(\GridSocialBoxes::HANDLE_FACEBOOK_JS, "GridSocialBoxes_Facebook", array(
+			"appid" => get_site_option(self::OPTION_APP_ID),
+			"lazy" => true,
+		));
 	}
-	
+
 }
