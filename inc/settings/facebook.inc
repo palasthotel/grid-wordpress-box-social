@@ -19,6 +19,8 @@ class Facebook extends Base {
 
 	const OPTION_APP_TOKEN = "grid_facebook_app_token";
 
+	const OPTION_LAZY = "grid_facebook_lazy";
+
 	/**
 	 * @var \Facebook\Facebook
 	 */
@@ -80,6 +82,7 @@ class Facebook extends Base {
 			update_site_option( self::OPTION_APP_ID, sanitize_text_field( $_POST[ self::OPTION_APP_ID ] ) );
 			update_site_option( self::OPTION_SECRET, sanitize_text_field( $_POST[ self::OPTION_SECRET ] ) );
 			update_site_option( self::OPTION_APP_TOKEN, sanitize_text_field( $_POST[ self::OPTION_APP_TOKEN ] ) );
+			update_site_option(self::OPTION_LAZY, (isset($_POST[self::OPTION_LAZY]))? 1: 0);
 			wp_redirect( $this->getSelfURL( array( "noheader" => false ) ) );
 			exit;
 		}
@@ -133,6 +136,14 @@ class Facebook extends Base {
 				<input name="<?php echo self::OPTION_APP_TOKEN; ?>"
 				       value="<?php echo get_site_option( self::OPTION_APP_TOKEN ); ?>"/>
 			</label>
+			<br>
+			<br>
+			<label>
+				<input name="<?php echo self::OPTION_LAZY ?>"
+					<?php echo (get_site_option(self::OPTION_LAZY))? "checked": "" ?>
+				       value="<?php echo get_site_option( self::OPTION_APP_TOKEN ); ?>"
+				       type="checkbox"/> Wait for user cookie permission before loading facebook posts.
+			</label>
 			<?php echo get_submit_button( "Save" ); ?>
 		</form>
 
@@ -144,6 +155,7 @@ class Facebook extends Base {
 	 * initialize js for facebook integration
 	 *
 	 * @param string $lang
+	 * @param bool $lazy
 	 */
 	function init_facebook_sdk_js( $lang = "de_DE" ) {
 		wp_enqueue_script(
@@ -164,8 +176,8 @@ class Facebook extends Base {
 				\GridSocialBoxes::FILTER_FACEBOOK_JS_ARGS,
 				array(
 					"config"   => array(
-						"lazy"            => true,
 						"facebook_app_id" => get_site_option( self::OPTION_APP_ID ),
+						"lazy"            => get_site_option( self::OPTION_LAZY) == "1",
 						"lang"            => $lang,
 					),
 					"selector" => array(

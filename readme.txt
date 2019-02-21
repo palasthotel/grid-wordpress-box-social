@@ -32,6 +32,7 @@ Extends the Grid Plugin with Facebook, Instagram, Youtube and Twitter Boxes.
 
 = 1.4.6 =
  * Lazy load facebook option
+ * No need for facebook app id in box anymore
 
 = 1.4.5 =
  * Twitter full text 280 characters fix

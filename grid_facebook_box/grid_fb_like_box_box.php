@@ -15,7 +15,6 @@ class grid_fb_like_box_box extends grid_static_base_box {
 	public function __construct() {
 		parent::__construct();
 		$this->content->fb_page     = '';
-		$this->content->appid       = '';
 		$this->content->show_faces  = 'true';
 		$this->content->show_header = 'true';
 		$this->content->datastream  = 'false';
@@ -30,8 +29,6 @@ class grid_fb_like_box_box extends grid_static_base_box {
 			return $this->content;
 		} else {
 			$fb_page = $this->content->fb_page;
-			$appid = '';
-			if ( isset( $this->content->appid ) ) { $appid = $this->content->appid; }
 			$show_faces = $this->content->show_faces;
 			$show_header = $this->content->show_header;
 			$datastream = $this->content->datastream;
@@ -75,11 +72,6 @@ class grid_fb_like_box_box extends grid_static_base_box {
 			array(
 				'key' => 'fb_page',
 				'label' => t( 'Facebook page' ),
-				'type' => 'text',
-			),
-			array(
-				'key' => 'appid',
-				'label' => t( 'Facebook APP Id' ),
 				'type' => 'text',
 			),
 			array(

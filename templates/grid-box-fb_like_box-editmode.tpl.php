@@ -4,7 +4,6 @@
 	if($this->grid){
 		$fields = array(
 		"fb_page",
-		"appid",
 		"show_faces",
 		"show_header",
 		"datastream",
