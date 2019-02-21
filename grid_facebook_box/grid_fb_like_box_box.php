@@ -51,7 +51,7 @@ class grid_fb_like_box_box extends grid_static_base_box {
 			
 			ob_start();
 			
-			grid_social_boxes_init_facebook_js();
+			grid_social_boxes_init_facebook_js($language);
 			
 			?>
 			<div 

@@ -1,0 +1,143 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"Project-Id-Version: Grid Social Boxes\n"
+"POT-Creation-Date: 2019-02-21 17:21+0100\n"
+"PO-Revision-Date: 2019-02-21 17:21+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2.1\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: grid-social-boxes.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
+
+#: grid_instagram_box/grid_instagram_box.php:56
+msgid "Instagram Account"
+msgstr ""
+
+#: grid_instagram_box/grid_instagram_box.php:57
+msgid "Not logged in. Goto settings and get an access token."
+msgstr ""
+
+#: grid_instagram_box/grid_instagram_box.php:63
+#, php-format
+msgid "Get Instagram posts for: %1$s"
+msgstr ""
+
+#: grid_social_timeline_box/grid_social_timeline_box.php:239
+msgid "Configuration for Twitter."
+msgstr ""
+
+#: grid_social_timeline_box/grid_social_timeline_box.php:244
+msgid "Activate Twitter posts"
+msgstr ""
+
+#: grid_social_timeline_box/grid_social_timeline_box.php:259
+msgid "Configuration for Instagram."
+msgstr ""
+
+#: grid_social_timeline_box/grid_social_timeline_box.php:264
+msgid "Activate Instagram posts"
+msgstr ""
+
+#: grid_social_timeline_box/grid_social_timeline_box.php:279
+msgid "Configuration for Youtube."
+msgstr ""
+
+#: grid_social_timeline_box/grid_social_timeline_box.php:284
+msgid "Activate Youtube posts"
+msgstr ""
+
+#: grid_social_timeline_box/grid_social_timeline_box.php:299
+msgid "Configuration for Facebook."
+msgstr ""
+
+#: grid_social_timeline_box/grid_social_timeline_box.php:304
+msgid "Activate Facebook posts"
+msgstr ""
+
+#: grid_social_timeline_box/grid_social_timeline_box.php:323
+msgid "Sort order"
+msgstr ""
+
+#: grid_social_timeline_box/grid_social_timeline_box.php:326
+msgid "Latest first"
+msgstr ""
+
+#: grid_social_timeline_box/grid_social_timeline_box.php:327
+msgid "Oldest first"
+msgstr ""
+
+#: grid_social_timeline_box/grid_social_timeline_box.php:340
+msgid "You have to confiure the social apis first."
+msgstr ""
+
+#: inc/settings/facebook.inc:39
+msgid "Facebook"
+msgstr ""
+
+#: inc/settings/facebook.inc:175
+msgid "Enable facebook contents"
+msgstr ""
+
+#: inc/settings/instagram.inc:42
+msgid "Instagram"
+msgstr ""
+
+#: inc/settings/instagram.inc:108
+msgid ""
+"Goto <a href=\"https://www.instagram.com/developer/\">Instagram Developer</"
+"a> and register an App to get the following credentials."
+msgstr ""
+
+#: inc/settings/instagram.inc:115 inc/settings/youtube.inc:163
+msgid "Callback URL:"
+msgstr ""
+
+#: inc/settings/twitter.inc:34
+msgid "Twitter"
+msgstr ""
+
+#: inc/settings/twitter.inc:123
+msgid ""
+"Get your credentials at <a href='https://apps.twitter.com/'>Twitter Apps</"
+"a>. Create or choose your app and have a look at 'Keys and Access Tokens'."
+msgstr ""
+
+#: inc/settings/twitter.inc:126
+msgid "Use as callback url: "
+msgstr ""
+
+#: inc/settings/youtube.inc:52
+msgid "Youtube"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Grid Social Boxes"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://github.com/palasthotel/wordpress-grid-box-social"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Some social network boxes. Facebook, Twitter, Instagram and Youtube."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Palasthotel <rezeption@palasthotel.de> (in"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "http://www.palasthotel.de"
+msgstr ""

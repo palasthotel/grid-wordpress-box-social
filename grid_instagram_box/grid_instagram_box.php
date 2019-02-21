@@ -33,7 +33,7 @@ class grid_instagram_box extends grid_list_box {
 	
 	public function getData(){
 		$arr = array();
-		global $grid_social_boxes;
+		$grid_social_boxes = grid_social_boxes_plugin();
 		if($grid_social_boxes != null){
 			$api = $grid_social_boxes->get_instagram_api();
 			if($api != null){
@@ -50,7 +50,7 @@ class grid_instagram_box extends grid_list_box {
 
 	public function contentStructure () {
 		$cs = parent::contentStructure();
-		global $grid_social_boxes;
+		$grid_social_boxes = grid_social_boxes_plugin();
 		
 		$info = array(
 			'label' => __("Instagram Account", "grid-social-boxes"),

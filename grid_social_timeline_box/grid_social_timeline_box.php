@@ -38,7 +38,7 @@ class grid_social_timeline_box extends grid_list_box  {
 			return $this->content;
 		} else {
 			$content = array();
-			global $grid_social_boxes;
+			$grid_social_boxes = grid_social_boxes_plugin();
 			$timezone = new DateTimeZone(get_option('timezone_string'));
 			
 			/**
@@ -206,7 +206,7 @@ class grid_social_timeline_box extends grid_list_box  {
 	 * @return string
 	 */
 	private function renderItem($item, $position){
-		global $grid_social_boxes;
+		$grid_social_boxes = grid_social_boxes_plugin();
 		ob_start();
 		if($overridden_template = locate_template("grid/grid-box-social_timeline--".$item->type.".tpl.php")){
 			include $overridden_template;
@@ -224,8 +224,8 @@ class grid_social_timeline_box extends grid_list_box  {
 	 */
 	public function contentStructure () {
 		$cs = parent::contentStructure();
-		
-		global $grid_social_boxes;
+
+		$grid_social_boxes = grid_social_boxes_plugin();
 		
 		$apis = array();
 		

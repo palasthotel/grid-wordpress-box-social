@@ -40,7 +40,7 @@ class grid_youtube_box extends grid_list_box  {
 	}
 
 	public function getData(){
-		global $grid_social_boxes;
+		$grid_social_boxes = grid_social_boxes_plugin();
 		$youtube = $grid_social_boxes->get_youtube_api();
 		$arr = array();
 		if($youtube != null){
@@ -95,7 +95,7 @@ class grid_youtube_box extends grid_list_box  {
 	 * @return array array ob channel objects
 	 */
 	public function getChannels($options){
-		global $grid_social_boxes;
+		$grid_social_boxes = grid_social_boxes_plugin();
 		$youtube = $grid_social_boxes->get_youtube_api();
 		$channels = array();
 		if($youtube != null) {
@@ -128,7 +128,7 @@ class grid_youtube_box extends grid_list_box  {
 	 */
 	public function getVideos($options){
 		$videos = array();
-		global $grid_social_boxes;
+		$grid_social_boxes = grid_social_boxes_plugin();
 		$youtube = $grid_social_boxes->get_youtube_api();
 		if($youtube != null){
 			$result = $youtube->search->listSearch("id,snippet", $options);

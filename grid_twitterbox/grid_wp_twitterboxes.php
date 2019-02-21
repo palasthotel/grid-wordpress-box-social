@@ -52,7 +52,7 @@ class grid_twitter_box extends grid_static_base_box {
 			if ( $prebuild != null ) {
 				return $prebuild;
 			} else {
-				global $grid_social_boxes;
+				$grid_social_boxes = grid_social_boxes_plugin();
 				if($grid_social_boxes == null){
 					return "<p>no API found for Twitter</p>";
 				}
