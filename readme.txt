@@ -3,8 +3,8 @@ Contributors: edwardbock,mkernel
 Donate link: http://palasthotel.de/
 Tags: grid, landingpage, editor, admin, page, containerist
 Requires at least: 4.0
-Tested up to: 5.0.3
-Stable tag: 1.4.6
+Tested up to: 5.2.1
+Stable tag: 1.4.8
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl
 
@@ -29,6 +29,12 @@ Extends the Grid Plugin with Facebook, Instagram, Youtube and Twitter Boxes.
 
 
 == Changelog ==
+
+= 1.4.8 =
+ * Bugfix: Expired Instagram token in settings.
+
+= 1.4.7 =
+ * Bugfix: IE templatestring problems
 
 = 1.4.6 =
  * Lazy load facebook option

@@ -630,7 +630,8 @@ class Instagram
         $headers = $this->processHeaders($headerContent);
 
         // get the 'X-Ratelimit-Remaining' header value
-        $this->_xRateLimitRemaining = $headers['x-ratelimit-remaining'];
+        $this->_xRateLimitRemaining = isset($headers['X-Ratelimit-Remaining']) ? $headers['X-Ratelimit-Remaining'] :
+	        isset($headers['x-ratelimit-remaining'])? $headers['x-ratelimit-remaining']: 1;
 
         if (!$jsonData) {
             throw new InstagramException('Error: _makeCall() - cURL error: ' . curl_error($ch));

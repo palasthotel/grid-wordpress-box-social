@@ -98,27 +98,44 @@ class Instagram extends Base {
 		$instagram = $this->getApi();
 		if ( $instagram != NULL && get_site_option( self::OPTION_KEY_CLIENT_TOKEN ) !== false ) {
 			$user = $instagram->getUser();
-			?>
-			<div class="notice notice-success">
-				<p>Authorization granted!</p>
-				<p>
-					<strong>Username: </strong><?php echo $user->data->username; ?>
-					<br>
-					<strong>Access
-						Token: </strong><?php echo get_site_option( self::OPTION_KEY_CLIENT_TOKEN );
-					?></p>
+			if(is_object($user) && isset($user->data)){
+				?>
+				<div class="notice notice-success">
+					<p>Authorization granted!</p>
+					<p>
+						<strong>Username: </strong><?php echo $user->data->username; ?>
+						<br>
+						<strong>Access
+							Token: </strong><?php echo get_site_option( self::OPTION_KEY_CLIENT_TOKEN );
+						?></p>
 
-			</div>
-			<?php
+				</div>
+				<?php
+			} else {
+				?>
+				<div class="notice notice-error">
+					<p>Token not valid. Seems to be expired.</p>
+					<p><?php
+						printf(
+							__('Goto %sInstagram Developer%s and renew the API token.', \GridSocialBoxes::DOMAIN),
+
+								'<a href="https://www.instagram.com/developer/">',
+								'</a>'
+
+						); ?></p>
+				</div>
+				<?php
+			}
+
 		} else {
 			?>
 			<p><?php
 					printf(
 						__('Goto %sInstagram Developer%s and register an App to get the following credentials.', \GridSocialBoxes::DOMAIN),
-						array(
-							'<a href="https://www.instagram.com/developer/">',
-							'</a>',
-						)
+
+						'<a href="https://www.instagram.com/developer/">',
+						'</a>'
+
 					); ?></p>
 			<?php
 		}
