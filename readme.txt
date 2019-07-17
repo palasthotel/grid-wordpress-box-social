@@ -31,6 +31,7 @@ Extends the Grid Plugin with Facebook, Instagram, Youtube and Twitter Boxes.
 == Changelog ==
 
 = 1.4.8 =
+ * Optimization: Facebook PHP Library update.
  * Bugfix: Expired Instagram token in settings.
 
 = 1.4.7 =

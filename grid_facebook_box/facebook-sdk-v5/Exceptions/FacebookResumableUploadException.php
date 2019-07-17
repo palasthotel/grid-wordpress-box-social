@@ -21,22 +21,48 @@
  * DEALINGS IN THE SOFTWARE.
  *
  */
-namespace Facebook\Helpers;
+namespace Facebook\Exceptions;
 
 /**
- * Class FacebookJavaScriptLoginHelper
+ * Class FacebookResumableUploadException
  *
  * @package Facebook
  */
-class FacebookJavaScriptHelper extends FacebookSignedRequestFromInputHelper
+class FacebookResumableUploadException extends FacebookSDKException
 {
+    protected $startOffset;
+
+    protected $endOffset;
+
     /**
-     * Get raw signed request from the cookie.
-     *
-     * @return string|null
+     * @return int|null
      */
-    public function getRawSignedRequest()
+    public function getStartOffset()
     {
-        return $this->getRawSignedRequestFromCookie();
+        return $this->startOffset;
+    }
+
+    /**
+     * @param int|null $startOffset
+     */
+    public function setStartOffset($startOffset)
+    {
+        $this->startOffset = $startOffset;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getEndOffset()
+    {
+        return $this->endOffset;
+    }
+
+    /**
+     * @param int|null $endOffset
+     */
+    public function setEndOffset($endOffset)
+    {
+        $this->endOffset = $endOffset;
     }
 }

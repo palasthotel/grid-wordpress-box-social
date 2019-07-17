@@ -57,16 +57,15 @@ class GridSocialBoxes {
 		add_action( "grid_load_classes", array( $this, "load_classes" ) );
 		add_filter( "grid_templates_paths", array( $this, "template_paths" ) );
 
-		require_once dirname( __FILE__ ) . "/inc/settings.inc";
-		$this->settings = new \GridSocialBoxes\Settings( $this );
+
 		$this->dir = plugin_dir_path(__FILE__);
 		$this->url = plugin_dir_url(__FILE__);
 		
 		add_action("grid_load_classes", array($this,"load_classes") );
 		add_filter("grid_templates_paths", array($this,"template_paths") );
-		
-		require_once  "inc/settings.inc";
-		$this->settings = new \GridSocialBoxes\Settings($this);
+
+		require_once dirname( __FILE__ ) . "/inc/settings.inc";
+		$this->settings = new \GridSocialBoxes\Settings( $this );
 
 		/**
 		 * on activate or deactivate plugin
@@ -103,9 +102,7 @@ class GridSocialBoxes {
 		 * twitter box
 		 */
 		$this->include_twitter_api();
-		require( 'grid_twitterbox/grid_wp_twitterboxes.php' );
-
-		require( dirname(__FILE__).'/grid_twitterbox/grid_wp_twitterboxes.php' );
+		require_once( dirname(__FILE__).'/grid_twitterbox/grid_wp_twitterboxes.php' );
 		
 		/**
 		 * facebook box

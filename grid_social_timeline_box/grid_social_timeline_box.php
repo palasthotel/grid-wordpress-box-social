@@ -69,15 +69,25 @@ class grid_social_timeline_box extends grid_list_box  {
 						)
 					);
 				}
-				
-				foreach( $result as $key => $tweet ){
-					$datetime = new DateTime($tweet->created_at);
-					$datetime->setTimezone($timezone);
-					$content[] = (object) array(
-						"datetime" => $datetime,
-						"content" => $tweet,
-						"type" => self::PREFIX_TWITTER,
-					);
+
+				if(isset($result->errors)){
+					if(is_array($result->errors) && count($result->errors) >0){
+						error_log(
+							"Code: ".$result->errors[0]->code." - ".
+							$result->errors[0]->message,
+							4
+						);
+					}
+				} else {
+					foreach( $result as $key => $tweet ){
+						$datetime = new DateTime($tweet->created_at);
+						$datetime->setTimezone($timezone);
+						$content[] = (object) array(
+							"datetime" => $datetime,
+							"content" => $tweet,
+							"type" => self::PREFIX_TWITTER,
+						);
+					}
 				}
 				
 			}
@@ -89,18 +99,22 @@ class grid_social_timeline_box extends grid_list_box  {
 				$api = $grid_social_boxes->get_instagram_api();
 				if($api != null){
 					$count = (!empty($this->content->instagram_count))? $this->content->instagram_count: 3;
+
 					$result = $api->getUserMedia('self', $count);
-					$images = $result->data;
-					foreach ($images as $item){
-						$src = $item->images->low_resolution->url;
-						$datetime = DateTime::createFromFormat( 'U', (int)$item->created_time );
-						$datetime->setTimezone($timezone);
-						$content[] = (object)array(
-							"datetime" => $datetime,
-							"content" => $item,
-							"type" => self::PREFIX_INSTAGRAM
-						);
+					if(is_object($result) && isset($result->data)){
+						$images = $result->data;
+						foreach ($images as $item){
+							$src = $item->images->low_resolution->url;
+							$datetime = DateTime::createFromFormat( 'U', (int)$item->created_time );
+							$datetime->setTimezone($timezone);
+							$content[] = (object)array(
+								"datetime" => $datetime,
+								"content" => $item,
+								"type" => self::PREFIX_INSTAGRAM
+							);
+						}
 					}
+
 				}
 			}
 			
