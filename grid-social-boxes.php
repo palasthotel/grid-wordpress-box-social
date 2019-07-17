@@ -59,6 +59,36 @@ class GridSocialBoxes {
 
 		require_once dirname( __FILE__ ) . "/inc/settings.inc";
 		$this->settings = new \GridSocialBoxes\Settings( $this );
+		$this->dir = plugin_dir_path(__FILE__);
+		$this->url = plugin_dir_url(__FILE__);
+		
+		add_action("grid_load_classes", array($this,"load_classes") );
+		add_filter("grid_templates_paths", array($this,"template_paths") );
+		
+		require_once  "inc/settings.inc";
+		$this->settings = new \GridSocialBoxes\Settings($this);
+
+		/**
+		 * on activate or deactivate plugin
+		 */
+		register_activation_hook( __FILE__, array( $this, "activation" ) );
+		register_deactivation_hook( __FILE__, array( $this, "deactivation" ) );
+
+	}
+
+	/**
+	 * on plugin activation
+	 */
+	function activation() {
+		$this->settings->twitter->add_endpoint();
+		flush_rewrite_rules();
+	}
+
+	/**
+	 * on plugin deactivation
+	 */
+	function deactivation() {
+		flush_rewrite_rules();
 	}
 
 	/**
@@ -75,6 +105,8 @@ class GridSocialBoxes {
 		$this->include_twitter_api();
 		require( 'grid_twitterbox/grid_wp_twitterboxes.php' );
 
+		require( dirname(__FILE__).'/grid_twitterbox/grid_wp_twitterboxes.php' );
+		
 		/**
 		 * facebook box
 		 */
@@ -120,7 +152,7 @@ class GridSocialBoxes {
 	}
 
 	/**
-	 * @return \TwitterOAuth|null
+	 * @return \Abraham\TwitterOAuth\TwitterOAuth|null
 	 */
 	public function get_twitter_api() {
 		/**
@@ -134,9 +166,10 @@ class GridSocialBoxes {
 	/**
 	 * include twitter api if not already included
 	 */
-	public function include_twitter_api() {
-		if ( ! class_exists( "TwitterOAuth" ) ) {
-			require_once 'grid_twitterbox/twitteroauth/twitteroauth.php';
+
+	public function include_twitter_api(){
+		if(!class_exists("TwitterOAuth")){
+			require_once dirname(__FILE__).'/grid_twitterbox/vendor/autoload.php';
 		}
 	}
 

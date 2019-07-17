@@ -37,7 +37,19 @@ class Settings {
 	 * @var \GridSocialBoxes\Settings\Twitter
 	 */
 	public $twitter;
-	
+	/**
+	 * @var \GridSocialBoxes\Settings\Instagram
+	 */
+	public $instagram;
+	/**
+	 * @var \GridSocialBoxes\Settings\Youtube
+	 */
+	public $youtube;
+	/**
+	 * @var \GridSocialBoxes\Settings\Facebook
+	 */
+	public $facebook;
+
 	/**
 	 * Settings constructor.
 	 *
@@ -51,20 +63,20 @@ class Settings {
 		require_once $this->plugin->dir."/inc/settings/base.inc";
 		
 		require_once $this->plugin->dir."/inc/settings/twitter.inc";
-		$twitter = new Twitter($this);
-		$this->pages[$twitter->getSlug()] = $twitter;
+		$this->twitter = new Twitter($this);
+		$this->pages[$this->twitter->getSlug()] = $this->twitter;
 		
 		require_once $this->plugin->dir."/inc/settings/instagram.inc";
-		$instagram = new Instagram($this);
-		$this->pages[$instagram->getSlug()] = $instagram;
+		$this->instagram = new Instagram($this);
+		$this->pages[$this->instagram->getSlug()] = $this->instagram;
 		
 		require_once $this->plugin->dir."/inc/settings/youtube.inc";
-		$youtube = new Youtube($this);
-		$this->pages[$youtube->getSlug()] = $youtube;
+		$this->youtube = new Youtube($this);
+		$this->pages[$this->youtube->getSlug()] = $this->youtube;
 		
 		require_once $this->plugin->dir."/inc/settings/facebook.inc";
-		$facebook = new Facebook($this);
-		$this->pages[$facebook->getSlug()] = $facebook;
+		$this->facebook = new Facebook($this);
+		$this->pages[$this->facebook->getSlug()] = $this->facebook;
 		
 		add_action( 'admin_menu', array($this, 'social_boxes_admin_menu') );
 		

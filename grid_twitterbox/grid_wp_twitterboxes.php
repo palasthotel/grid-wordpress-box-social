@@ -6,7 +6,7 @@
  * @package Palasthotel\Grid-WordPress
  */
 
-class grid_twitter_box extends grid_static_base_box {
+class grid_twitter_box extends grid_list_box {
 
 	public function __construct() {
 		parent::__construct();
@@ -26,12 +26,20 @@ class grid_twitter_box extends grid_static_base_box {
 		return null;
 	}
 
+	/**
+	 * @param \Abraham\TwitterOAuth\TwitterOAuth $connection
+	 *
+	 * @return mixed
+	 */
 	protected function fetch( $connection ) {
 		if ( 'retweets' == $this->content->retweet ) {
-			$result = $connection->get( 'https://api.twitter.com:443/1.1/search/tweets.json?src=typd&q='.$this->content->user );
+			$result = $connection->get( 'search/tweets', array(
+				'src'=>'typd',
+				'q'=> $this->content->user,
+			));
 			$result = $result->statuses;
 		} else {
-			$result = $connection->get( 'https://api.twitter.com:443/1.1/statuses/user_timeline.json',
+			$result = $connection->get( 'statuses/user_timeline',
 				array(
 					'screen_name' => $this->content->user,
 					"tweet_mode" => "extended",
@@ -112,7 +120,7 @@ class grid_twitter_box extends grid_static_base_box {
 	}
 
 	public function metaSearch( $criteria, $query ) {
-		if ( get_option( 'grid_twitterbox_consumer_key', '' ) == '' || get_option( 'grid_twitterbox_consumer_secret', '' ) == '' || get_option( 'grid_twitterbox_accesstoken', '' ) == '' ) {
+		if ( get_site_option( 'grid_twitterbox_consumer_key', '' ) == '' || get_site_option( 'grid_twitterbox_consumer_secret', '' ) == '' || get_site_option( 'grid_twitterbox_accesstoken', '' ) == '' ) {
 			return array();
 		}
 		return array( $this );
@@ -132,8 +140,13 @@ class grid_twitter_hashtag_box extends grid_twitter_box {
 		return 'twitter_hashtag';
 	}
 
+	/**
+	 * @param \Abraham\TwitterOAuth\TwitterOAuth $connection
+	 *
+	 * @return array
+	 */
 	public function fetch( $connection ) {
-		$output = $connection->get( 'https://api.twitter.com:443/1.1/search/tweets.json', array(
+		$output = $connection->get( 'search/tweets', array(
 				'q' => $this->content->hashtag,
 				"tweet_mode" => "extended",
 				"count" => $this->content->limit,

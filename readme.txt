@@ -39,6 +39,7 @@ Extends the Grid Plugin with Facebook, Instagram, Youtube and Twitter Boxes.
 = 1.4.6 =
  * Lazy load facebook option
  * No need for facebook app id in box anymore
+ * Twitter API update
 
 = 1.4.5 =
  * Twitter full text 280 characters fix
@@ -74,4 +75,7 @@ Extends the Grid Plugin with Facebook, Instagram, Youtube and Twitter Boxes.
 
 
 == Upgrade Notice ==
+
+With 1.4.6 update you need to save permalinks to get twitter authorization work properly.
+
 $item->time property was replaced by $item->datetime for timezone fix. Please check your theme templates grid-box-social_timeline--*.tpl.php.

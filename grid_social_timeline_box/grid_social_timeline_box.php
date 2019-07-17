@@ -46,7 +46,7 @@ class grid_social_timeline_box extends grid_list_box  {
 			 */
 			if($this->hasTwitter() ){
 				/**
-				 * @var $connection TwitterOAuth
+				 * @var \Abraham\TwitterOAuth\TwitterOAuth $connection
 				 */
 				$user = (!empty($this->content->twitter_user))? $this->content->twitter_user: "";
 				$limit = (!empty($this->content->twitter_limit))?$this->content->twitter_limit:"";

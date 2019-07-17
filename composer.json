@@ -1,8 +1,0 @@
-{
-    "name": "palasthotel/grid-social-boxes",
-    "type": "wordpress-plugin",
-    "require": {
-        "composer/installers": "^1.0",
-        "wpackagist-plugin/grid": "^1.6"
-    }
-}
