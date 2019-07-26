@@ -52,16 +52,15 @@ class grid_social_timeline_box extends grid_list_box  {
 				$limit = (!empty($this->content->twitter_limit))?$this->content->twitter_limit:"";
 				$connection = $grid_social_boxes->get_twitter_api();
 				if ( 'retweets' == $this->content->twitter_retweet ) {
-					$result = $connection->get(
-						'https://api.twitter.com:443/1.1/search/tweets.json?src=typd&q='.$this->content->twitter_user,
-						array(
-							"count" => $this->content->twitter_limit,
-						)
-					);
+					$result = $connection->get( 'search/tweets', array(
+						'src'=>'typd',
+						'q'=> $this->content->user,
+						"count" => $this->content->twitter_limit,
+					));
 					$result = $result->statuses;
 				} else {
 					$result = $connection->get(
-						'https://api.twitter.com:443/1.1/statuses/user_timeline.json',
+						'statuses/user_timeline',
 						array(
 							'screen_name' => $user,
 							"count" => $limit,
