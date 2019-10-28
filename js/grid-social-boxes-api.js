@@ -28,7 +28,7 @@
 		} else {
 			eraseCookie(name);
 		}
-		return `${name} is ${set}`;
+		return name+" is "+set;
 	}
 	function setCookie(cname, cvalue, exdays) {
 		const d = new Date();
