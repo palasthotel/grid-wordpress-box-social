@@ -232,7 +232,7 @@ class GridSocialBoxes {
 	 */
 	public function include_youtube_api() {
 		if ( ! class_exists( "Google_Service" ) ) {
-			require_once 'grid_youtube_box/google-api-php-client-2.0.2/vendor/autoload.php';
+			require_once 'grid_youtube_box/google-api-php-client-2.4.0/vendor/autoload.php';
 		}
 	}
 
