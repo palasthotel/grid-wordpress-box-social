@@ -63,7 +63,7 @@ class Facebook extends Base {
 				'app_id'                => get_site_option( self::OPTION_APP_ID ),
 				'app_secret'            => get_site_option( self::OPTION_SECRET ),
 				'default_access_token'  => get_site_option( self::OPTION_APP_TOKEN ),
-				'default_graph_version' => 'v2.5',
+				'default_graph_version' => 'v2.10',
 			) );
 		}
 
