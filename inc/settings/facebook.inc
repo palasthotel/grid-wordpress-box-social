@@ -8,8 +8,10 @@
 
 namespace GridSocialBoxes\Settings;
 
+use Facebook\Exceptions\FacebookSDKException;
 use Facebook\Helpers\FacebookRedirectLoginHelper;
 use GridSocialBoxes\Settings;
+use League\Flysystem\Exception;
 
 class Facebook extends Base {
 
@@ -52,7 +54,6 @@ class Facebook extends Base {
 		 */
 		if ( empty( get_site_option( self::OPTION_APP_ID ) )
 		     || empty( get_site_option( self::OPTION_SECRET ) )
-		     || empty( get_site_option( self::OPTION_APP_TOKEN ) )
 		) {
 			return NULL;
 		}
@@ -62,7 +63,7 @@ class Facebook extends Base {
 			$this->api = new \Facebook\Facebook( array(
 				'app_id'                => get_site_option( self::OPTION_APP_ID ),
 				'app_secret'            => get_site_option( self::OPTION_SECRET ),
-				'default_access_token'  => get_site_option( self::OPTION_APP_TOKEN ),
+				'default_access_token'  => get_site_option( self::OPTION_APP_TOKEN, '' ),
 				'default_graph_version' => 'v2.10',
 			) );
 		}
@@ -75,39 +76,97 @@ class Facebook extends Base {
 	 */
 	public function renderPage() {
 
+		// first save values
 		if ( isset( $_POST[ self::OPTION_APP_ID ] ) ) {
 			/**
 			 * save options
 			 */
+			$appToken = sanitize_text_field( $_POST[ self::OPTION_APP_TOKEN ] );
 			update_site_option( self::OPTION_APP_ID, sanitize_text_field( $_POST[ self::OPTION_APP_ID ] ) );
 			update_site_option( self::OPTION_SECRET, sanitize_text_field( $_POST[ self::OPTION_SECRET ] ) );
-			update_site_option( self::OPTION_APP_TOKEN, sanitize_text_field( $_POST[ self::OPTION_APP_TOKEN ] ) );
+			update_site_option( self::OPTION_APP_TOKEN, $appToken );
 			update_site_option(self::OPTION_LAZY, (isset($_POST[self::OPTION_LAZY]))? 1: 0);
-			wp_redirect( $this->getSelfURL( array( "noheader" => false ) ) );
-			exit;
+
+			if(empty($appToken)){
+				try {
+					$api = $this->getApi();
+					$helper = $api->getRedirectLoginHelper();
+					$url = $helper->getLoginUrl(
+						$this->getSelfURL( array( "noheader" => false, 'facebook_callback_url' => 'it-is' ) ),
+						array('manage_pages','pages_show_list', 'public_profile')
+					);
+					wp_redirect($url);
+					exit;
+				} catch ( FacebookSDKException $e ) {
+					error_log($e->getMessage());
+				}
+			}
+		}
+
+		// second retrieve access token
+		if(isset($_GET['facebook_callback_url']) && $_GET['facebook_callback_url'] == 'it-is'){
+			try {
+				$api = $this->getApi();
+				$helper = $api->getRedirectLoginHelper();
+				$accessToken = $helper->getAccessToken();
+
+				update_site_option( self::OPTION_APP_TOKEN, (string) $accessToken);
+
+				wp_redirect($this->getSelfURL( array( "noheader" => false ) ));
+				exit;
+			} catch ( FacebookSDKException $e ) {
+				error_log($e->getMessage());
+			}
 		}
 
 		/**
 		 * check for successful connection
 		 */
 		$fb           = $this->getApi();
-		$access_token = NULL;
-		if ( $fb != NULL ) {
-			$access_token = $fb->getDefaultAccessToken();
+		$defaultToken = $fb->getDefaultAccessToken()->getValue();
+
+		if(isset($_GET['facebook_extend']) && $_GET['facebook_extend'] == "yes" ){
+			try{
+				$token = $fb->getOAuth2Client()->getLongLivedAccessToken($defaultToken);
+				update_option(self::OPTION_APP_TOKEN, (string) $token);
+				wp_redirect($this->getSelfURL());
+			} catch ( FacebookSDKException $e ) {
+				var_dump($e);
+				exit;
+			}
 		}
 
-		if ( $access_token !== NULL ) {
+		if(empty($defaultToken)) {
+			?>
+			<div class="notice notice-warning">
+				<p>No access token found!</p>
+			</div>
+			<?php
+		} else {
+
+			$token = $fb->getOAuth2Client()->debugToken($fb->getDefaultAccessToken()->getValue());
+			$isTokenValid = $token->getIsValid();
+
 			?>
 			<div class="notice notice-success">
 				<p>Authorization granted!</p>
-				<p><?php
-					echo "Token: " . $access_token->getValue();
-					echo "<br>";
-					$expires = $access_token->getExpiresAt();
-					echo "Expires: " . ( ( $expires == NULL ) ? "Never" : $expires );
-					?></p>
+				<p style="overflow-wrap: break-word;"><?php
+					echo "<strong>Token:</strong> " . $defaultToken;
+					?>
+				<p><?php echo "<strong>Is valid:</strong> ". (($isTokenValid)? "yes": "no"); ?></p>
+
+				<?php
+				if($isTokenValid){
+					$date = $token->getExpiresAt();
+					$date->setTimezone(new \DateTimeZone(get_option('timezone_string', 'UTC')));
+					$tokenValidTill = $date->format(get_option( 'date_format' )." ".get_option('time_format'));
+					$extendUrl = $this->getSelfURL(array( "noheader" => true ,"facebook_extend" => "yes"));
+					echo "<p><strong>Expires:</strong> " . $tokenValidTill." <a href='$extendUrl'>extend</a></p>";
+				}
+				?>
 			</div>
 			<?php
+
 		}
 
 		?>
