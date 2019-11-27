@@ -9,9 +9,7 @@
 namespace GridSocialBoxes\Settings;
 
 use Facebook\Exceptions\FacebookSDKException;
-use Facebook\Helpers\FacebookRedirectLoginHelper;
 use GridSocialBoxes\Settings;
-use League\Flysystem\Exception;
 
 class Facebook extends Base {
 
@@ -23,6 +21,11 @@ class Facebook extends Base {
 
 	const OPTION_LAZY = "grid_facebook_lazy";
 
+	const OPTION_ACCESS_TOKEN_EXPIRES = "grid_facebook_access_token_expires";
+
+	const TRANSIENT_FETCH_ACCESS_TOKEN_ERROR = "grid_facebook_fetch_access_token_error";
+	const TRANSIENT_FETCH_ACCESS_TOKEN_ERROR_VALUE = "error";
+
 	/**
 	 * @var \Facebook\Facebook
 	 */
@@ -31,7 +34,121 @@ class Facebook extends Base {
 
 	public function __construct( \GridSocialBoxes\Settings $settings ) {
 		parent::__construct( $settings );
-		$this->sdk_js_rendered = false;
+		add_action('admin_init', array($this, 'check_access_token'));
+		add_action('admin_notices', array($this, 'admin_notices'));
+	}
+
+	/**
+	 * handle access token automatic extension
+	 */
+	function check_access_token(){
+
+		// TODO: better use cronjob for this
+
+		// check if base configuration is set
+		$fb = $this->getApi();
+		if($fb === null) return;
+		$defaultAccessToken = $fb->getDefaultAccessToken();
+		if($defaultAccessToken === null) return;
+
+		if($this->hasFetchTokenError()){
+			// admin notice will be displayed
+			return;
+		}
+
+		// if is set than check expiration
+		$willExpire = $this->willAccessTokenExpire();
+		if( $willExpire === true ){
+			// is expired so try to automatic get new one
+			try{
+				$token = $fb->getOAuth2Client()->getLongLivedAccessToken($defaultAccessToken);
+				$fb->setDefaultAccessToken($token);
+				$this->setWillAccessTokenExpire($fb->getOAuth2Client()->debugToken($token));
+				update_option(self::OPTION_APP_TOKEN, (string) $token);
+
+			} catch ( FacebookSDKException $e ) {
+				set_transient(self::TRANSIENT_FETCH_ACCESS_TOKEN_ERROR, self::TRANSIENT_FETCH_ACCESS_TOKEN_ERROR_VALUE);
+			}
+			return;
+		}
+
+		if( $willExpire === null ){
+			// we dont know if it will expire ask facebook
+			$tokenMeta = $fb->getOAuth2Client()->debugToken($defaultAccessToken->getValue());
+			$this->setWillAccessTokenExpire($tokenMeta);
+		}
+
+	}
+
+	/**
+	 * show notice if facebook does something noticeable
+	 */
+	function admin_notices(){
+		$willExpire = $this->willAccessTokenExpire();
+		if($willExpire === null){
+			?>
+			<div class="notice notice-warning">
+				<h2>Facebook API</h2>
+				<p>
+					You do not seem to have a valid access token for grid social boxes.
+					<a href="<?php echo $this->getSelfURL(); ?>">Settings</a>
+				</p>
+			</div>
+			<?php
+		} else if($willExpire == true){
+			$timestamp = get_option(self::OPTION_ACCESS_TOKEN_EXPIRES);
+			$date = new \DateTime();
+			$date->setTimestamp($timestamp);
+			$date->setTimezone(new \DateTimeZone(get_option('timezone_string', 'UTC')));
+			$tokenValidTill = $date->format(get_option( 'date_format' )." ".get_option('time_format'));
+			?>
+			<div class="notice notice-warning">
+				<h2>Facebook API</h2>
+				<p>
+					Access token will expired shortly for grid social boxes. Valid till:
+					<?php echo $tokenValidTill; ?>
+				</p>
+			</div>
+			<?php
+		}
+
+		if($this->hasFetchTokenError()){
+			?>
+			<div class="notice notice-error">
+				<h2>Facebook API</h2>
+				<p>
+					Could not fetch new access token. You please check manually.
+					<a href="<?php echo $this->getSelfURL(); ?>">Settings</a>
+				</p>
+			</div>
+			<?php
+		}
+	}
+
+	/**
+	 * @param \Facebook\Authentication\AccessTokenMetadata|null $tokenMeta
+	 */
+	public function setWillAccessTokenExpire($tokenMeta){
+		if(is_a($tokenMeta, '\Facebook\Authentication\AccessTokenMetadata') && $tokenMeta->getIsValid()){
+			update_option(self::OPTION_ACCESS_TOKEN_EXPIRES, $tokenMeta->getExpiresAt()->getTimestamp());
+		} else {
+			update_option(self::OPTION_ACCESS_TOKEN_EXPIRES, 10);
+		}
+	}
+
+	public function hasFetchTokenError(){
+		return get_transient(self::TRANSIENT_FETCH_ACCESS_TOKEN_ERROR) == self::TRANSIENT_FETCH_ACCESS_TOKEN_ERROR_VALUE;
+	}
+
+	/**
+	 * @param int $daysOffset
+	 *
+	 * @return bool|null
+	 */
+	public function willAccessTokenExpire($daysOffset = 14){
+		$expires = get_option(self::OPTION_ACCESS_TOKEN_EXPIRES, null);
+		if($expires === null) return null;
+		return intval($expires) < time() - $daysOffset * 24 * 60 * 60;
 	}
 
 
@@ -45,7 +162,6 @@ class Facebook extends Base {
 
 	/**
 	 * @return \Facebook\Facebook
-	 * @throws \Facebook\Exceptions\FacebookSDKException
 	 */
 	public function getApi() {
 
@@ -60,12 +176,18 @@ class Facebook extends Base {
 
 		if ( $this->api == NULL ) {
 			$this->settings->plugin->include_facebook_sdk();
-			$this->api = new \Facebook\Facebook( array(
-				'app_id'                => get_site_option( self::OPTION_APP_ID ),
-				'app_secret'            => get_site_option( self::OPTION_SECRET ),
-				'default_access_token'  => get_site_option( self::OPTION_APP_TOKEN, '' ),
-				'default_graph_version' => 'v2.10',
-			) );
+			try{
+				$this->api = new \Facebook\Facebook( array(
+					'app_id'                => get_site_option( self::OPTION_APP_ID ),
+					'app_secret'            => get_site_option( self::OPTION_SECRET ),
+					'default_access_token'  => get_site_option( self::OPTION_APP_TOKEN, '' ),
+					'default_graph_version' => 'v2.10',
+				) );
+			} catch ( FacebookSDKException $e ) {
+				error_log($e->getMessage());
+				return NULL;
+			}
+
 		}
 
 		return $this->api;
@@ -249,5 +371,7 @@ class Facebook extends Base {
 			)
 		);
 	}
+
+
 
 }
