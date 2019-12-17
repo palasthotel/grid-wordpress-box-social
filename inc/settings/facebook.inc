@@ -130,10 +130,14 @@ class Facebook extends Base {
 	 */
 	public function setWillAccessTokenExpire($tokenMeta){
 		if(is_a($tokenMeta, '\Facebook\Authentication\AccessTokenMetadata') && $tokenMeta->getIsValid()){
-			update_option(self::OPTION_ACCESS_TOKEN_EXPIRES, $tokenMeta->getExpiresAt()->getTimestamp());
-		} else {
-			update_option(self::OPTION_ACCESS_TOKEN_EXPIRES, 10);
+			$datetime = $tokenMeta->getExpiresAt();
+			if($datetime != null){
+				update_option(self::OPTION_ACCESS_TOKEN_EXPIRES, $datetime->getTimestamp());
+				return;
+			}
 		}
+		update_option(self::OPTION_ACCESS_TOKEN_EXPIRES, 10);
+
 	}
 
 	public function hasFetchTokenError(){
