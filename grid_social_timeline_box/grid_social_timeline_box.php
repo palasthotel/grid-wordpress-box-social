@@ -124,6 +124,15 @@ class grid_social_timeline_box extends grid_list_box  {
 				$count = (!empty($this->content->youtube_count))?$this->content->youtube_count:"";
 				switch ($this->content->youtube_type){
 					case "channel":
+
+						$videos_options = array(
+							"channelId" => $q,
+							"maxResults" => $count,
+							"order" => "date",
+						);
+
+						break;
+					case "username":
 						$channels = $helper_box->getChannels(array(
 								"forUsername"=> $q,
 								"maxResults" => 1,
@@ -145,16 +154,21 @@ class grid_social_timeline_box extends grid_list_box  {
 						);
 				}
 				if($videos_options != null){
-					$videos = $helper_box->getVideos($videos_options);
-					foreach($videos as $video){
-						$datetime = new DateTime($video->published);
-						$datetime->setTimezone($timezone);
-						$content[] = (object)array(
-							"datetime" => $datetime,
-							"content" => $video,
-							"type" => self::PREFIX_YOUTUBE,
-						);
+					try{
+						$videos = $helper_box->getVideos($videos_options);
+						foreach($videos as $video){
+							$datetime = new DateTime($video->published);
+							$datetime->setTimezone($timezone);
+							$content[] = (object)array(
+								"datetime" => $datetime,
+								"content" => $video,
+								"type" => self::PREFIX_YOUTUBE,
+							);
+						}
+					} catch (Exception $e){
+						error_log($e->getMessage());
 					}
+
 				}
 			}
 			
