@@ -50,7 +50,10 @@ class grid_youtube_box extends grid_list_box  {
 				}
 			}
 
-			return implode("<br>",$arr);
+			$this->content->videos = $arr;
+			$this->content->html = implode("<br>",$arr);
+
+			return $this->content->html;
 		}
 	}
 
