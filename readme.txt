@@ -87,6 +87,8 @@ Extends the Grid Plugin with Facebook, Instagram, Youtube and Twitter Boxes.
 
 == Upgrade Notice ==
 
+If you used the YouTube type "Channel" in Version 1.4.10- you have to change this to "Username" for Versions 1.4.11+
+
 With 1.4.6 update you need to save permalinks to get twitter authorization work properly.
 
 $item->time property was replaced by $item->datetime for timezone fix. Please check your theme templates grid-box-social_timeline--*.tpl.php.
