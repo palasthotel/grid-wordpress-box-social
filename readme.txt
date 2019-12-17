@@ -4,7 +4,7 @@ Donate link: http://palasthotel.de/
 Tags: grid, landingpage, editor, admin, page, containerist
 Requires at least: 4.0
 Tested up to: 5.3.1
-Stable tag: 1.4.11
+Stable tag: 1.5.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl
 
@@ -30,8 +30,8 @@ Extends the Grid Plugin with Facebook, Instagram, Youtube and Twitter Boxes.
 
 == Changelog ==
 
-= 1.4.11 =
- * Optimization: YouTube by Channel ID
+= 1.5.0 =
+ * Breaking change: YouTube by Channel ID and username are two fields now. Please check your box configuration.
  * Optimization: Auto extend token for facebook
 
 = 1.4.10 =
