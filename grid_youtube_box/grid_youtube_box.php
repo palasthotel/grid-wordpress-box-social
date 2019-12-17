@@ -19,24 +19,48 @@ class grid_youtube_box extends grid_list_box  {
 		$this->content->count = 3;
 		$this->content->info = 0;
 		$this->content->related = 0;
+		$this->content->offset = 0;
 	}
 
 	public function build($editmode) {
 		if ( $editmode ) {
 			return $this->content;
 		} else {
-			$output = "<p>Youtube!</p>";
 
-			// TODO: cache output with transient for api calls limit
+			if( ! isset( $this->content->offset ) ) {
+				$this->content->offset = 0;
+			}
+			$this->content->offset = intval($this->content->offset);
 
-			$videos = $this->getData();
+			$videos = get_transient($this->getTransientKey());
+			if(!is_array($videos)){
+				$videos = $this->getData();
+				set_transient($this->getTransientKey(), $videos, 60 * 5 );
+			}
+
 			$arr = array();
 			foreach ($videos as $video){
 				$arr[] = $video->rendered;
 			}
 
+			if( isset( $this->content->offset ) && $this->content->offset != 0 ) {
+				// remove unwanted videos from list
+				for( $i = 0; $i < $this->content->offset; $i++ ) {
+					unset( $arr[$i] );
+				}
+			}
+
 			return implode("<br>",$arr);
 		}
+	}
+
+	public function getTransientKey(){
+		return "grid_youtube_box_".md5(json_encode($this->content));
+	}
+
+	public function getMaxResultsPlusOffset(){
+		$offset = (isset($this->content->offset))? $this->content->offset: 0;
+		return intval($this->content->count) + intval($offset);
 	}
 
 	public function getData(){
@@ -50,41 +74,54 @@ class grid_youtube_box extends grid_list_box  {
 
 			switch ($this->content->type){
 				case "channel":
-					return $this->getChannelData();
+					return $this->getChannelData($this->content->q, $this->getMaxResultsPlusOffset());
+				case "username":
+					return $this->getUsernameData($this->content->q, $this->getMaxResultsPlusOffset());
 				case "search":
 				default:
-					return $this->getSearchData();
+					return $this->getSearchData($this->content->q, $this->getMaxResultsPlusOffset());
 			}
 		}
 		return $arr;
 	}
 
-	public function getChannelData(){
-
+	public function getUsernameData($username, $max_results){
 		$channels = $this->getChannels(array(
-			"forUsername"=> $this->content->q,
-			"maxResults" => 1,
+			"forUsername"=> $username,
+			// "maxResults" => 1,
 		));
 
 		$arr = array();
 
 		foreach ($channels as $channel){
-			$videos = $this->getVideos(array(
-				"channelId" => $channel->id,
-				"maxResults" => $this->content->count,
-				"order" => "date",
-			));
+
+			// dont overshoot max results
+			$max_round_results = $max_results - count($arr);
+			if($max_round_results < 1) break;
+
+			// get videos of next users channel
+			$videos = $this->getChannelData( $channel->id, $max_round_results );
 			foreach ($videos as $video){
 				$arr[] = $video;
 			}
+
 		}
+
 		return $arr;
 	}
 
-	public function getSearchData(){
+	public function getChannelData( $channelId, $max_results){
 		return $this->getVideos(array(
-			"q"=> $this->content->q,
-			"maxResults" => $this->content->count,
+			"channelId" => $channelId,
+			"maxResults" => $max_results,
+			"order" => "date",
+		));
+	}
+
+	public function getSearchData($query, $max_results){
+		return $this->getVideos(array(
+			"q"=> $query,
+			"maxResults" => $max_results,
 		));
 	}
 
@@ -144,7 +181,7 @@ class grid_youtube_box extends grid_list_box  {
 				 * @var $thumbnails \Google_Service_YouTube_ThumbnailDetails
 				 */
 				$thumbnails = $snippet->getThumbnails();
-				
+
 				$sizes = array("Default","High","Medium", "Standard", "Maxres");
 				$thumbs = array();
 				foreach ($sizes as $size){
@@ -161,7 +198,7 @@ class grid_youtube_box extends grid_list_box  {
 						);
 					}
 				}
-				
+
 				$videos[] = (object) array(
 					"id" => $video->getId()->videoId,
 					"title" => $snippet->getTitle(),
@@ -174,7 +211,7 @@ class grid_youtube_box extends grid_list_box  {
 		}
 		return $videos;
 	}
-	
+
 	/**
 	 * @param $videoid
 	 * @param array $options
@@ -200,9 +237,14 @@ class grid_youtube_box extends grid_list_box  {
 			var_dump(curl_error($request));
 			die();
 		}
+		$responseCode = curl_getinfo($request, CURLINFO_HTTP_CODE);
 		curl_close($request);
-		$result=json_decode($result);
-		$html = $result->html;
+		$html = "";
+		if($responseCode == 200){
+			$result=json_decode($result);
+			if(is_object($result)) $html = $result->html;
+		}
+
 
 		$url_show_info = "&showinfo=";
 		if($this->content->info){
@@ -230,7 +272,7 @@ class grid_youtube_box extends grid_list_box  {
 				'key' => 'q',
 				'label' => 'Search for',
 				'type' => 'text',
- 			),
+			),
 			array(
 				'label' => 'Operation type',
 				'key' => 'type',
@@ -242,13 +284,22 @@ class grid_youtube_box extends grid_list_box  {
 					),
 					array(
 						'key' => 'channel',
-						'text' => 'Channel',
+						'text' => 'Channel ID',
+					),
+					array(
+						'key' => 'username',
+						'text' => 'Username',
 					)
 				)
 			),
 			array(
 				'key' => 'count',
 				'label' => t( 'Count' ),
+				'type' => 'number',
+			),
+			array(
+				'key' => 'offset',
+				'label' => t( 'Offset' ),
 				'type' => 'number',
 			),
 			array(
