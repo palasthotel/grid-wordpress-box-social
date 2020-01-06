@@ -51,11 +51,12 @@ class grid_youtube_box extends grid_list_box  {
 			if( isset( $this->content->offset ) && $this->content->offset != 0 ) {
 				// remove unwanted videos from list
 				for( $i = 0; $i < $this->content->offset; $i++ ) {
-					unset( $arr[$i] );
+					unset( $arr[ $i ] );
+					unset( $videos[ $i ] );
 				}
 			}
 
-			$this->content->videos = $arr;
+			$this->content->videos = $videos;
 			$this->content->html = implode("<br>",$arr);
 
 			return $this->content->html;
