@@ -34,8 +34,13 @@ class grid_youtube_box extends grid_list_box  {
 
 			$videos = get_transient($this->getTransientKey());
 			if(!is_array($videos)){
-				$videos = $this->getData();
-				set_transient($this->getTransientKey(), $videos, 60 * 5 );
+				try{
+					$videos = $this->getData();
+					set_transient($this->getTransientKey(), $videos, 60 * 60 );
+				} catch (Exception $e){
+					$videos = array();
+					error_log($e->getMessage());
+				}
 			}
 
 			$arr = array();
