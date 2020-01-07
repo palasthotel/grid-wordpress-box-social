@@ -33,6 +33,7 @@ Extends the Grid Plugin with Facebook, Instagram, Youtube and Twitter Boxes.
 = 1.5.0 =
  * Breaking change: YouTube by Channel ID and username are two fields now. Please check your box configuration.
  * Optimization: Auto extend token for facebook
+ * Bugfix: YouTube API exception handling
 
 = 1.4.10 =
  * Optimization: Update of youtube php client to 2.4.0
