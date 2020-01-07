@@ -155,7 +155,13 @@ class grid_youtube_box extends grid_list_box  {
 			/**
 			 * @var $result \Google_Service_YouTube_ChannelListResponse
 			 */
-			$result = $youtube->channels->listChannels( "id,snippet", $options);
+			try{
+				$result = $youtube->channels->listChannels( "id,snippet", $options);
+			} catch (Exception $e){
+				error_log($e->getMessage());
+				return array();
+			}
+
 			foreach ($result->getItems() as $channel){
 				/**
 				 * @var $channel \Google_Service_YouTube_Channel

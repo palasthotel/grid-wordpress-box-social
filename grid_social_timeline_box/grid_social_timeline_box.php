@@ -133,11 +133,17 @@ class grid_social_timeline_box extends grid_list_box  {
 
 						break;
 					case "username":
-						$channels = $helper_box->getChannels(array(
-								"forUsername"=> $q,
-								"maxResults" => 1,
-							)
-						);
+						try{
+							$channels = $helper_box->getChannels(array(
+									"forUsername"=> $q,
+									"maxResults" => 1,
+								)
+							);
+						} catch (Exception $e){
+							$channels = array();
+							error_log($e->getMessage());
+						}
+
 						if(count($channels)>0){
 							$videos_options = array(
 								"channelId" => $channels[0]->id,
