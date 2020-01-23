@@ -23,9 +23,6 @@ class Facebook extends Base {
 
 	const OPTION_ACCESS_TOKEN_EXPIRES = "grid_facebook_access_token_expires";
 
-	const TRANSIENT_FETCH_ACCESS_TOKEN_ERROR = "grid_facebook_fetch_access_token_error";
-	const TRANSIENT_FETCH_ACCESS_TOKEN_ERROR_VALUE = "error";
-
 	/**
 	 * @var \Facebook\Facebook
 	 */
@@ -43,41 +40,21 @@ class Facebook extends Base {
 	 */
 	function check_access_token(){
 
-		// TODO: better use cronjob for this
-
-		// check if base configuration is set
-		$fb = $this->getApi();
-		if($fb === null) return;
-		$defaultAccessToken = $fb->getDefaultAccessToken();
-		if($defaultAccessToken === null) return;
-
-		if($this->hasFetchTokenError()){
-			// admin notice will be displayed
-			return;
-		}
-
 		// if is set than check expiration
 		$willExpire = $this->willAccessTokenExpire();
-		if( $willExpire === true ){
-			// is expired so try to automatic get new one
-			try{
-				$token = $fb->getOAuth2Client()->getLongLivedAccessToken($defaultAccessToken);
-				$fb->setDefaultAccessToken($token);
-				$this->setWillAccessTokenExpire($fb->getOAuth2Client()->debugToken($token));
-				update_option(self::OPTION_APP_TOKEN, (string) $token);
-
-			} catch ( FacebookSDKException $e ) {
-				set_transient(self::TRANSIENT_FETCH_ACCESS_TOKEN_ERROR, self::TRANSIENT_FETCH_ACCESS_TOKEN_ERROR_VALUE);
-			}
-			return;
-		}
 
 		if( $willExpire === null ){
+
+			// check if base configuration is set
+			$fb = $this->getApi();
+			if($fb === null) return;
+			$defaultAccessToken = $fb->getDefaultAccessToken();
+			if($defaultAccessToken === null) return;
+
 			// we dont know if it will expire ask facebook
 			$tokenMeta = $fb->getOAuth2Client()->debugToken($defaultAccessToken->getValue());
 			$this->setWillAccessTokenExpire($tokenMeta);
 		}
-
 	}
 
 	/**
@@ -106,19 +83,8 @@ class Facebook extends Base {
 				<h2>Facebook API</h2>
 				<p>
 					Access token will expired shortly for grid social boxes. Valid till:
-					<?php echo $tokenValidTill; ?>
-				</p>
-			</div>
-			<?php
-		}
-
-		if($this->hasFetchTokenError()){
-			?>
-			<div class="notice notice-error">
-				<h2>Facebook API</h2>
-				<p>
-					Could not fetch new access token. You please check manually.
-					<a href="<?php echo $this->getSelfURL(); ?>">Settings</a>
+					<?php echo $tokenValidTill; ?><br/>
+					<a href="<?php echo $this->getSelfURL(); ?>">Goto settings and renew</a>
 				</p>
 			</div>
 			<?php
@@ -140,10 +106,6 @@ class Facebook extends Base {
 
 	}
 
-	public function hasFetchTokenError(){
-		return get_transient(self::TRANSIENT_FETCH_ACCESS_TOKEN_ERROR) == self::TRANSIENT_FETCH_ACCESS_TOKEN_ERROR_VALUE;
-	}
-
 	/**
 	 * @param int $daysOffset
 	 *
@@ -152,7 +114,9 @@ class Facebook extends Base {
 	public function willAccessTokenExpire($daysOffset = 14){
 		$expires = get_option(self::OPTION_ACCESS_TOKEN_EXPIRES, null);
 		if($expires === null) return null;
-		return intval($expires) < time() - $daysOffset * 24 * 60 * 60;
+		$expires = intval($expires);
+		$nowWithOffset = time() - $daysOffset * 24 * 60 * 60;
+		return $expires > $nowWithOffset;
 	}
 
 
@@ -197,6 +161,23 @@ class Facebook extends Base {
 		return $this->api;
 	}
 
+	private function getCallbackUrl(){
+		return $this->getSelfURL( array( "noheader" => false, 'facebook_callback_url' => 'it-is' ));
+	}
+
+	private function getFacebookLoginUrl(){
+		$api = $this->getApi();
+		$helper = $api->getRedirectLoginHelper();
+		return $helper->getLoginUrl(
+			$this->getCallbackUrl(),
+			array('manage_pages','pages_show_list', 'public_profile')
+		);
+	}
+
+	private function redirectToFacebookLoginUrl(){
+		wp_redirect($this->getFacebookLoginUrl());
+	}
+
 	/**
 	 * render settings page
 	 */
@@ -215,13 +196,7 @@ class Facebook extends Base {
 
 			if(empty($appToken)){
 				try {
-					$api = $this->getApi();
-					$helper = $api->getRedirectLoginHelper();
-					$url = $helper->getLoginUrl(
-						$this->getSelfURL( array( "noheader" => false, 'facebook_callback_url' => 'it-is' ) ),
-						array('manage_pages','pages_show_list', 'public_profile')
-					);
-					wp_redirect($url);
+					$this->redirectToFacebookLoginUrl();
 					exit;
 				} catch ( FacebookSDKException $e ) {
 					error_log($e->getMessage());
@@ -253,9 +228,7 @@ class Facebook extends Base {
 
 		if(isset($_GET['facebook_extend']) && $_GET['facebook_extend'] == "yes" ){
 			try{
-				$token = $fb->getOAuth2Client()->getLongLivedAccessToken($defaultToken);
-				update_option(self::OPTION_APP_TOKEN, (string) $token);
-				wp_redirect($this->getSelfURL());
+				$this->redirectToFacebookLoginUrl();
 			} catch ( FacebookSDKException $e ) {
 				var_dump($e);
 				exit;
@@ -288,6 +261,7 @@ class Facebook extends Base {
 					$tokenValidTill = $date->format(get_option( 'date_format' )." ".get_option('time_format'));
 					$extendUrl = $this->getSelfURL(array( "noheader" => true ,"facebook_extend" => "yes"));
 					echo "<p><strong>Expires:</strong> " . $tokenValidTill." <a href='$extendUrl'>extend</a></p>";
+
 				}
 				?>
 			</div>
@@ -304,6 +278,10 @@ class Facebook extends Base {
 				and get the <a target="_blank"
 				               href="https://developers.facebook.com/tools/accesstoken/">app
 					token</a>.</p>
+			<?php
+			$url = $this->getCallbackUrl();
+			echo "<p>Callback Uri: $url</p>";
+			?>
 			<label>
 				App ID:<br>
 				<input name="<?php echo self::OPTION_APP_ID; ?>"
