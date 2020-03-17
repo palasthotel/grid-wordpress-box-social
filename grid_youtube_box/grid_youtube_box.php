@@ -32,7 +32,8 @@ class grid_youtube_box extends grid_list_box  {
 			}
 			$this->content->offset = intval($this->content->offset);
 
-			$videos = get_transient($this->getTransientKey());
+			$videos = get_transient($this->getTransientKey( $this->content ));
+
 			if(!is_array($videos)){
 				try{
 					$videos = $this->getData();
@@ -43,7 +44,7 @@ class grid_youtube_box extends grid_list_box  {
 					if(count($videos) > 0 && !is_object($videos[0]))
 						throw new Exception("grid_youtube_box: getData() results are no objects.");
 
-					set_transient($this->getTransientKey(), $videos, 60 * 60 );
+					set_transient($this->getTransientKey( $this->content ), $videos, 60 * 60 );
 				} catch (Exception $e){
 					$videos = array();
 					error_log($e->getMessage());
@@ -70,8 +71,8 @@ class grid_youtube_box extends grid_list_box  {
 		}
 	}
 
-	public function getTransientKey(){
-		return "grid_youtube_box_".md5(json_encode($this->content));
+	public function getTransientKey($object){
+		return "grid_youtube_box_".md5(json_encode($object));
 	}
 
 	public function getMaxResultsPlusOffset(){
@@ -189,6 +190,12 @@ class grid_youtube_box extends grid_list_box  {
 		$videos = array();
 		$grid_social_boxes = grid_social_boxes_plugin();
 		$youtube = $grid_social_boxes->get_youtube_api();
+
+		$transient = get_transient( $this->getTransientKey( $options ) );
+		if(is_array($transient)){
+			return $transient;
+		}
+
 		if($youtube != null){
 			$result = $youtube->search->listSearch("id,snippet", $options);
 			foreach ($result->getItems() as $key => $video){
@@ -231,6 +238,9 @@ class grid_youtube_box extends grid_list_box  {
 				);
 			}
 		}
+
+		set_transient($this->getTransientKey( $options ), $videos, 60 * 60 );
+
 		return $videos;
 	}
 
