@@ -1,0 +1,20 @@
+{
+    "name": "palasthotel/grid-social-boxes",
+    "authors": [
+        {
+            "name": "Edward Bock",
+            "email": "edward.bock@palasthotel.de"
+        }
+    ],
+    "autoload": {
+        "classmap": [
+            "classes"
+        ],
+        "psr-4": {
+            "Palasthotel\\Grid\\SocialBoxes\\": "classes"
+        }
+    },
+    "require": {
+        "google/apiclient": "^2.0"
+    }
+}

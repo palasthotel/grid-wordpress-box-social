@@ -15,7 +15,14 @@
  * @package Palasthotel\GridSocialBoxes
  */
 
+namespace Palasthotel\Grid\SocialBoxes;
+
 // If this file is called directly, abort.
+use Abraham\TwitterOAuth\TwitterOAuth;
+use Facebook\Facebook;
+use MetzWeb\Instagram\Instagram;
+use MetzWeb\Instagram\InstagramException;
+
 if ( ! defined( 'WPINC' ) ) {
 	die;
 }
@@ -26,9 +33,9 @@ include_once dirname( __FILE__ ) . '/settings.php';
 /**
  * @property string dir
  * @property string url
- * @property \GridSocialBoxes\Settings settings
+ * @property Settings settings
  */
-class GridSocialBoxes {
+class Plugin {
 
 	const DOMAIN = "grid-social-boxes";
 
@@ -41,6 +48,9 @@ class GridSocialBoxes {
 	 * construct
 	 */
 	function __construct() {
+
+		require_once dirname(__FILE__)."/vendor/autoload.php";
+
 		/**
 		 * base paths
 		 */
@@ -48,7 +58,7 @@ class GridSocialBoxes {
 		$this->url = plugin_dir_url( __FILE__ );
 
 		load_plugin_textdomain(
-			GridSocialBoxes::DOMAIN,
+			Plugin::DOMAIN,
 			false,
 			dirname( plugin_basename( __FILE__ ) ) . '/languages'
 		);
@@ -64,8 +74,7 @@ class GridSocialBoxes {
 		add_action("grid_load_classes", array($this,"load_classes") );
 		add_filter("grid_templates_paths", array($this,"template_paths") );
 
-		require_once dirname( __FILE__ ) . "/inc/settings.inc";
-		$this->settings = new \GridSocialBoxes\Settings( $this );
+		$this->settings = new Settings( $this );
 
 		/**
 		 * on activate or deactivate plugin
@@ -94,7 +103,7 @@ class GridSocialBoxes {
 	 * load grid box classes
 	 *
 	 * @throws \Facebook\Exceptions\FacebookSDKException
-	 * @throws \MetzWeb\Instagram\InstagramException
+	 * @throws InstagramException
 	 */
 	public function load_classes() {
 
@@ -149,13 +158,13 @@ class GridSocialBoxes {
 	}
 
 	/**
-	 * @return \Abraham\TwitterOAuth\TwitterOAuth|null
+	 * @return TwitterOAuth|null
 	 */
 	public function get_twitter_api() {
 		/**
-		 * @var $settings \GridSocialBoxes\Settings\Twitter
+		 * @var Type\Twitter $settings
 		 */
-		$settings = $this->settings->pages[ \GridSocialBoxes\Settings::TYPE_TWITTER ];
+		$settings = $this->settings->pages[ Settings::TYPE_TWITTER ];
 
 		return $settings->getApi();
 	}
@@ -171,14 +180,14 @@ class GridSocialBoxes {
 	}
 
 	/**
-	 * @return \MetzWeb\Instagram\Instagram|null
-	 * @throws \MetzWeb\Instagram\InstagramException
+	 * @return Instagram|null
+	 * @throws InstagramException
 	 */
 	public function get_instagram_api() {
 		/**
-		 * @var $settings \GridSocialBoxes\Settings\Instagram
+		 * @var Type\Instagram $settings
 		 */
-		$settings = $this->settings->pages[ \GridSocialBoxes\Settings::TYPE_INSTAGRAM ];
+		$settings = $this->settings->pages[Settings::TYPE_INSTAGRAM ];
 
 		return $settings->getApi();
 	}
@@ -194,15 +203,13 @@ class GridSocialBoxes {
 	}
 
 	/**
-	 * @return \Facebook\Facebook
-	 * @throws \Facebook\Exceptions\FacebookSDKException
+	 * @return Facebook
 	 */
 	public function get_facebook_api() {
 		/**
-		 * @var $settings \GridSocialBoxes\Settings\Facebook
+		 * @var Type\Facebook $settings
 		 */
-		$settings = $this->settings->pages[ GridSocialBoxes\Settings::TYPE_FACEBOOK ];
-
+		$settings = $this->settings->pages[ Settings::TYPE_FACEBOOK ];
 		return $settings->getApi();
 	}
 
@@ -220,9 +227,9 @@ class GridSocialBoxes {
 	 */
 	public function get_youtube_api() {
 		/**
-		 * @var $settings \GridSocialBoxes\Settings\Youtube
+		 * @var Type\Youtube $settings
 		 */
-		$settings = $this->settings->pages[ \GridSocialBoxes\Settings::TYPE_YOUTUBE ];
+		$settings = $this->settings->pages[Settings::TYPE_YOUTUBE ];
 
 		return $settings->getYoutube();
 	}
@@ -239,13 +246,13 @@ class GridSocialBoxes {
 	/**
 	 * singleton
 	 *
-	 * @var \GridSocialBoxes
+	 * @var Plugin
 	 */
 	private static $instance = NULL;
 
 	public static function instance() {
 		if ( self::$instance == NULL ) {
-			self::$instance = new GridSocialBoxes();
+			self::$instance = new self();
 		}
 
 		return self::$instance;
@@ -253,7 +260,7 @@ class GridSocialBoxes {
 
 }
 
-GridSocialBoxes::instance();
+Plugin::instance();
 
 require_once dirname( __FILE__ ) . '/public-functions.php';
 
