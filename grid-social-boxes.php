@@ -183,16 +183,6 @@ class Plugin {
 	}
 
 	/**
-	 * include instagram api if not already included
-	 */
-	public function include_instagram_api() {
-		if ( ! class_exists( "Instagram" ) ) {
-			require_once 'grid_instagram_box/instagram-api/InstagramException.php';
-			require_once 'grid_instagram_box/instagram-api/Instagram.php';
-		}
-	}
-
-	/**
 	 * @return Facebook
 	 */
 	public function get_facebook_api() {

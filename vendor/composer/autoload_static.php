@@ -39,6 +39,7 @@ class ComposerStaticInitd29654c90dd0440a5a785b040ae3c75e
         'M' => 
         array (
             'Monolog\\' => 8,
+            'MetzWeb\\Instagram\\' => 18,
         ),
         'G' => 
         array (
@@ -94,6 +95,10 @@ class ComposerStaticInitd29654c90dd0440a5a785b040ae3c75e
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'MetzWeb\\Instagram\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/cosenary/instagram/src',
         ),
         'GuzzleHttp\\Psr7\\' => 
         array (

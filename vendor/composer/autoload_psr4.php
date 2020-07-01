@@ -15,6 +15,7 @@ return array(
     'Psr\\Cache\\' => array($vendorDir . '/psr/cache/src'),
     'Palasthotel\\Grid\\SocialBoxes\\' => array($baseDir . '/classes'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
+    'MetzWeb\\Instagram\\' => array($vendorDir . '/cosenary/instagram/src'),
     'GuzzleHttp\\Psr7\\' => array($vendorDir . '/guzzlehttp/psr7/src'),
     'GuzzleHttp\\Promise\\' => array($vendorDir . '/guzzlehttp/promises/src'),
     'GuzzleHttp\\' => array($vendorDir . '/guzzlehttp/guzzle/src'),

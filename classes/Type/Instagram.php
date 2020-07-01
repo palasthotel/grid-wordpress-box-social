@@ -8,6 +8,7 @@
 
 namespace Palasthotel\Grid\SocialBoxes\Type;
 
+use Exception;
 use Palasthotel\Grid\SocialBoxes\Settings;
 
 class Instagram extends Base {
@@ -48,7 +49,7 @@ class Instagram extends Base {
 	 * get instagram api
 	 *
 	 * @return \MetzWeb\Instagram\Instagram|null
-	 * @throws \MetzWeb\Instagram\InstagramException
+	 * @throws Exception
 	 */
 	public function getApi() {
 		$key    = get_site_option( self::OPTION_KEY_CLIENT_ID );
@@ -56,8 +57,6 @@ class Instagram extends Base {
 		if ( $key == false || $secret == false ) {
 			return NULL;
 		}
-
-		$this->settings->plugin->include_instagram_api();
 
 		if ( $this->api == NULL ) {
 			$this->api = new \MetzWeb\Instagram\Instagram( array(

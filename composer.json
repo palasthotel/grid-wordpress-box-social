@@ -17,6 +17,7 @@
     "require": {
         "google/apiclient": "^2.0",
         "abraham/twitteroauth": "^1.1",
-        "facebook/graph-sdk": "^5.7"
+        "facebook/graph-sdk": "^5.7",
+        "cosenary/instagram": "^2.3"
     }
 }
