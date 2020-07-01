@@ -6,13 +6,13 @@
  * Time: 13:07
  */
 
-namespace GridSocialBoxes;
+namespace Palasthotel\Grid\SocialBoxes;
 
-use GridSocialBoxes\Settings\Facebook;
-use GridSocialBoxes\Settings\Instagram;
-use GridSocialBoxes\Settings\Twitter;
-use GridSocialBoxes\Settings\Youtube;
+use Palasthotel\Grid\SocialBoxes\Type\Base;
 
+/**
+ * @property Base[] pages
+ */
 class Settings {
 	
 	/**
@@ -29,53 +29,47 @@ class Settings {
 	const TYPE_FACEBOOK = "facebook";
 	
 	/**
-	 * @var \GridSocialBoxes
+	 * @var Plugin
 	 */
 	public $plugin;
 	
 	/**
-	 * @var \GridSocialBoxes\Settings\Twitter
+	 * @var Type\Twitter
 	 */
 	public $twitter;
 	/**
-	 * @var \GridSocialBoxes\Settings\Instagram
+	 * @var Type\Instagram
 	 */
 	public $instagram;
 	/**
-	 * @var \GridSocialBoxes\Settings\Youtube
+	 * @var Type\Youtube
 	 */
 	public $youtube;
 	/**
-	 * @var \GridSocialBoxes\Settings\Facebook
+	 * @var Type\Facebook
 	 */
 	public $facebook;
 
 	/**
 	 * Settings constructor.
 	 *
-	 * @param \GridSocialBoxes $plugin
+	 * @param Plugin $plugin
 	 */
-	public function __construct(\GridSocialBoxes $plugin) {
+	public function __construct( $plugin) {
 		$this->plugin = $plugin;
 		
 		$this->pages = array();
-		
-		require_once $this->plugin->dir."/inc/settings/base.inc";
-		
-		require_once $this->plugin->dir."/inc/settings/twitter.inc";
-		$this->twitter = new Twitter($this);
+
+		$this->twitter = new Type\Twitter($this);
 		$this->pages[$this->twitter->getSlug()] = $this->twitter;
 		
-		require_once $this->plugin->dir."/inc/settings/instagram.inc";
-		$this->instagram = new Instagram($this);
+		$this->instagram = new Type\Instagram($this);
 		$this->pages[$this->instagram->getSlug()] = $this->instagram;
 		
-		require_once $this->plugin->dir."/inc/settings/youtube.inc";
-		$this->youtube = new Youtube($this);
+		$this->youtube = new Type\Youtube($this);
 		$this->pages[$this->youtube->getSlug()] = $this->youtube;
 		
-		require_once $this->plugin->dir."/inc/settings/facebook.inc";
-		$this->facebook = new Facebook($this);
+		$this->facebook = new Type\Facebook($this);
 		$this->pages[$this->facebook->getSlug()] = $this->facebook;
 		
 		add_action( 'admin_menu', array($this, 'social_boxes_admin_menu') );
@@ -111,9 +105,6 @@ class Settings {
 		 */
 		ob_start();
 		if(array_key_exists($current, $this->pages)){
-			/**
-			 * @var $obj Settings\Base
-			 */
 			$obj = $this->pages[$current];
 			$obj->renderPage();
 		} else {
@@ -128,9 +119,6 @@ class Settings {
 		echo '<h2 class="nav-tab-wrapper">';
 		
 		foreach( $this->pages as $slug => $obj ){
-			/**
-			 * @var $obj Settings\Base
-			 */
 			$class = ( $slug == $current ) ? ' nav-tab-active' : '';
 			echo "<a class='nav-tab$class' href='".$obj->getSelfURL()."'>".$obj->getTitle()."</a>";
 		}
