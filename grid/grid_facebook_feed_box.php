@@ -66,7 +66,7 @@ class grid_facebook_feed_box extends grid_list_box {
 			if ( $overridden_template = locate_template('grid/grid_facebook_feed_box.tpl.php' ) ) {
 					require $overridden_template;
 				} else {
-					require ( 'grid_facebook_feed_box.tpl.php' );
+					require dirname(__FILE__).'/../templates/grid_facebook_feed_box.tpl.php';
 				}
 			$output = ob_get_contents();
 			ob_end_clean();
