@@ -204,15 +204,6 @@ class Plugin {
 	}
 
 	/**
-	 * include facebook sdk
-	 */
-	public function include_facebook_sdk() {
-		if ( ! class_exists( "Facebook" ) ) {
-			require_once "grid_facebook_box/facebook-sdk-v5/autoload.php";
-		}
-	}
-
-	/**
 	 * @return Google_Service_YouTube
 	 */
 	public function get_youtube_api() {

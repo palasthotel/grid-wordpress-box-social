@@ -32,7 +32,9 @@ Extends the Grid Plugin with Facebook, Instagram, Youtube and Twitter Boxes.
 
 = 1.5.1 =
  * Breaking change: Heavy refactoring of namespaces and class names.
-
+ * Library update: Google Services PHP Library for YouTube
+ * Library update: Twitter PHP api
+ * Library update: Facebook PHP api
 
 = 1.5.0 =
  * Breaking change: YouTube by Channel ID and username are two fields now. Please check your box configuration.

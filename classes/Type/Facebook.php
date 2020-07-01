@@ -148,7 +148,6 @@ class Facebook extends Base {
 		}
 
 		if ( $this->api == NULL ) {
-			$this->settings->plugin->include_facebook_sdk();
 			try{
 				$this->api = new \Facebook\Facebook( array(
 					'app_id'                => get_site_option( self::OPTION_APP_ID ),
