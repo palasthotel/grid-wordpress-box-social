@@ -8,6 +8,8 @@
 
 namespace Palasthotel\Grid\SocialBoxes\Type;
 
+use Google_Client;
+use Google_Service_YouTube;
 use Palasthotel\Grid\SocialBoxes\Settings;
 
 class Youtube extends Base{
@@ -20,12 +22,12 @@ class Youtube extends Base{
 	const PAGE_CALLBACK = "grid_social_boxes_youtube_callback";
 
 	/**
-	 * @var \Google_Service
+	 * @var Google_Client
 	 */
 	private $api;
 
 	/**
-	 * @var \Google_Service_YouTube
+	 * @var Google_Service_YouTube
 	 */
 	private $youtube;
 
@@ -56,13 +58,12 @@ class Youtube extends Base{
 
 		if($this->api == null){
 
-			$this->settings->plugin->include_youtube_api();
 			$config = get_site_option( self::OPTION_CONFIG, '');
 			$access_token = get_site_option(self::TOKEN,  '');
 
 			if(!empty($config) && is_array($config)){
-				$this->api = new \Google_Client();
-				$this->api->addScope(\Google_Service_YouTube::YOUTUBE);
+				$this->api = new Google_Client();
+				$this->api->addScope(Google_Service_YouTube::YOUTUBE);
 				$this->api->setAuthConfig($config);
 				$this->api->setRedirectUri(get_site_url()."/".self::PAGE_CALLBACK);
 				$this->api->setAccessType("offline");
@@ -90,12 +91,12 @@ class Youtube extends Base{
 	}
 
 	/**
-	 * @return \Google_Service_YouTube
+	 * @return Google_Service_YouTube
 	 */
 	public function getYoutube(){
 		$api = $this->getApi();
 		if($api != null && !$api->isAccessTokenExpired()){
-			$this->youtube = new \Google_Service_YouTube($this->api);
+			$this->youtube = new Google_Service_YouTube($this->api);
 		}
 		return $this->youtube;
 	}

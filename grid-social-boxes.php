@@ -235,15 +235,6 @@ class Plugin {
 	}
 
 	/**
-	 * include youtube api if not already included
-	 */
-	public function include_youtube_api() {
-		if ( ! class_exists( "Google_Service" ) ) {
-			require_once 'grid_youtube_box/google-api-php-client-2.4.0/vendor/autoload.php';
-		}
-	}
-
-	/**
 	 * singleton
 	 *
 	 * @var Plugin
