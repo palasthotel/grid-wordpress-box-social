@@ -76,7 +76,7 @@ class grid_twitter_box extends grid_list_box {
 				if ( file_exists( $this->storage->templatesPath.'/grid_twitterbox.tpl.php' ) ) {
 					require ( $this->storage->templatesPath.'/grid_twitterbox.tpl.php' );
 				} else {
-					require ( dirname(__FILE__).'/../templates/grid_twitterbox.tpl.php' );
+					require(dirname(__FILE__) . '/../templates/grid_twitterbox.tpl.php');
 				}
 				$result = ob_get_clean();
 				return $result;

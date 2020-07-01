@@ -330,9 +330,9 @@ class Facebook extends Base {
 		);
 		wp_enqueue_script(
 			Plugin::HANDLE_FACEBOOK_JS,
-			$this->settings->plugin->url . "/grid_facebook_box/facebook.js",
+			$this->settings->plugin->url . "/js/facebook.js",
 			array( "jquery", Plugin::HANDLE_API_JS ),
-			1,
+			filemtime($this->settings->plugin->dir."/js/facebook.ks"),
 			true
 		);
 		wp_localize_script(

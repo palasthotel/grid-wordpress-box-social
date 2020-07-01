@@ -52,23 +52,15 @@ class Plugin {
 
 		require_once dirname(__FILE__)."/vendor/autoload.php";
 
-		/**
-		 * base paths
-		 */
-		$this->dir = plugin_dir_path( __FILE__ );
-		$this->url = plugin_dir_url( __FILE__ );
-
 		load_plugin_textdomain(
 			Plugin::DOMAIN,
 			false,
 			dirname( plugin_basename( __FILE__ ) ) . '/languages'
 		);
 
-
-		add_action( "grid_load_classes", array( $this, "load_classes" ) );
-		add_filter( "grid_templates_paths", array( $this, "template_paths" ) );
-
-
+		/**
+		 * base paths
+		 */
 		$this->dir = plugin_dir_path(__FILE__);
 		$this->url = plugin_dir_url(__FILE__);
 		
@@ -102,23 +94,22 @@ class Plugin {
 
 	/**
 	 * load grid box classes
-	 *
-	 * @throws \Facebook\Exceptions\FacebookSDKException
-	 * @throws InstagramException
 	 */
 	public function load_classes() {
 
 		/**
 		 * twitter box
 		 */
-		require_once( dirname(__FILE__).'/grid_twitterbox/grid_wp_twitterboxes.php' );
+		if($this->get_twitter_api() != NULL){
+			require_once dirname(__FILE__) . '/grid/grid_wp_twitterboxes.php';
+		}
 		
 		/**
 		 * facebook box
 		 */
-		require( 'grid_facebook_box/grid_fb_like_box_box.php' );
+		require('grid/grid_fb_like_box_box.php');
 		if ( $this->get_facebook_api() != NULL ) {
-			require( 'grid_facebook_box/grid_facebook_feed_box.php' );
+			require_once dirname(__FILE__) . '/grid/grid_facebook_feed_box.php';
 		}
 
 
@@ -126,21 +117,20 @@ class Plugin {
 		 * instagram box
 		 */
 		if ( $this->get_instagram_api() != NULL ) {
-			require( 'grid_instagram_box/grid_instagram_box.php' );
+			require_once dirname(__FILE__) . '/grid/grid_instagram_box.php';
 		}
 
 		/**
 		 * youtube box
 		 */
 		if ( $this->get_youtube_api() != NULL ) {
-			require( 'grid_youtube_box/grid_youtube_box.php' );
+			require_once dirname(__FILE__) . '/grid/grid_youtube_box.php';
 		}
-
 
 		/**
 		 * social timeline
 		 */
-		require "grid_social_timeline_box/grid_social_timeline_box.php";
+		require_once dirname(__FILE__)."/grid/grid_social_timeline_box.php";
 
 	}
 
