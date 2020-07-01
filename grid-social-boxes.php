@@ -20,6 +20,7 @@ namespace Palasthotel\Grid\SocialBoxes;
 // If this file is called directly, abort.
 use Abraham\TwitterOAuth\TwitterOAuth;
 use Facebook\Facebook;
+use Google_Service_YouTube;
 use MetzWeb\Instagram\Instagram;
 use MetzWeb\Instagram\InstagramException;
 
@@ -110,7 +111,6 @@ class Plugin {
 		/**
 		 * twitter box
 		 */
-		$this->include_twitter_api();
 		require_once( dirname(__FILE__).'/grid_twitterbox/grid_wp_twitterboxes.php' );
 		
 		/**
@@ -170,16 +170,6 @@ class Plugin {
 	}
 
 	/**
-	 * include twitter api if not already included
-	 */
-
-	public function include_twitter_api(){
-		if(!class_exists("TwitterOAuth")){
-			require_once dirname(__FILE__).'/grid_twitterbox/vendor/autoload.php';
-		}
-	}
-
-	/**
 	 * @return Instagram|null
 	 * @throws InstagramException
 	 */
@@ -223,7 +213,7 @@ class Plugin {
 	}
 
 	/**
-	 * @return \Google_Service_YouTube
+	 * @return Google_Service_YouTube
 	 */
 	public function get_youtube_api() {
 		/**

@@ -53,8 +53,6 @@ class Twitter extends Base{
 
 		if($this->api == null){
 
-			$this->settings->plugin->include_twitter_api();
-
 			$token = get_option( 'grid_twitterbox_accesstoken' );
 
 			if ( $token === false || ! isset( $token['oauth_token'] ) || ! isset( $token['oauth_token_secret'] ) ) {
@@ -80,7 +78,6 @@ class Twitter extends Base{
 	 */
 	public function renderPage(){
 		$access_token = get_site_option( 'grid_twitterbox_accesstoken');
-		$this->settings->plugin->include_twitter_api();
 		$callback_url = get_home_url()."/".self::AUTH_URL;
 
 		if ( isset( $_POST ) && ! empty( $_POST ) ) {
@@ -217,8 +214,6 @@ class Twitter extends Base{
 				'No session found 🚨'
 			));
 		}
-
-		$this->settings->plugin->include_twitter_api();
 
 		$connection = new TwitterOAuth(
 			get_site_option( 'grid_twitterbox_consumer_key', '' ),
