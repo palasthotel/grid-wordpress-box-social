@@ -9,6 +9,7 @@
 namespace Palasthotel\Grid\SocialBoxes\Type;
 
 use Exception;
+use Palasthotel\Grid\SocialBoxes\Plugin;
 use Palasthotel\Grid\SocialBoxes\Settings;
 
 class Instagram extends Base {
@@ -115,7 +116,7 @@ class Instagram extends Base {
 					<p>Token not valid. Seems to be expired.</p>
 					<p><?php
 						printf(
-							__('Goto %sInstagram Developer%s and renew the API token.', \GridSocialBoxes::DOMAIN),
+							__('Goto %sInstagram Developer%s and renew the API token.', Plugin::DOMAIN),
 
 								'<a href="https://www.instagram.com/developer/">',
 								'</a>'
@@ -129,7 +130,7 @@ class Instagram extends Base {
 			?>
 			<p><?php
 					printf(
-						__('Goto %sInstagram Developer%s and register an App to get the following credentials.', \GridSocialBoxes::DOMAIN),
+						__('Goto %sInstagram Developer%s and register an App to get the following credentials.', Plugin::DOMAIN),
 
 						'<a href="https://www.instagram.com/developer/">',
 						'</a>'

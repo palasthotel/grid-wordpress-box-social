@@ -8,6 +8,7 @@ $baseDir = dirname($vendorDir);
 return array(
     'Google_Service_Exception' => $vendorDir . '/google/apiclient/src/Google/Service/Exception.php',
     'Google_Service_Resource' => $vendorDir . '/google/apiclient/src/Google/Service/Resource.php',
+    'Palasthotel\\Grid\\SocialBoxes\\Model\\YouTubeFeedItem' => $baseDir . '/classes/Model/YouTubeFeedItem.php',
     'Palasthotel\\Grid\\SocialBoxes\\Settings' => $baseDir . '/classes/Settings.php',
     'Palasthotel\\Grid\\SocialBoxes\\Type\\Base' => $baseDir . '/classes/Type/Base.php',
     'Palasthotel\\Grid\\SocialBoxes\\Type\\Facebook' => $baseDir . '/classes/Type/Facebook.php',

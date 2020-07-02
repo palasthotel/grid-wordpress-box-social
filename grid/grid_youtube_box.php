@@ -1,4 +1,7 @@
 <?php
+
+use Palasthotel\Grid\SocialBoxes\Plugin;
+
 /**
  * @author Palasthotel <rezeption@palasthotel.de>
  * @copyright Copyright (c) 2014, Palasthotel
@@ -85,10 +88,6 @@ class grid_youtube_box extends grid_list_box  {
 		$youtube = $grid_social_boxes->get_youtube_api();
 		$arr = array();
 		if($youtube != null){
-			/**
-			 * @var $result \Google_Service_YouTube_SearchListResponse
-			 */
-
 			switch ($this->content->type){
 				case "channel":
 					return $this->getChannelData($this->content->q, $this->getMaxResultsPlusOffset());
@@ -153,9 +152,6 @@ class grid_youtube_box extends grid_list_box  {
 		$youtube = $grid_social_boxes->get_youtube_api();
 		$channels = array();
 		if($youtube != null) {
-			/**
-			 * @var $result \Google_Service_YouTube_ChannelListResponse
-			 */
 			try{
 				$result = $youtube->channels->listChannels( "id,snippet", $options);
 			} catch (Exception $e){
@@ -164,12 +160,6 @@ class grid_youtube_box extends grid_list_box  {
 			}
 
 			foreach ($result->getItems() as $channel){
-				/**
-				 * @var $channel \Google_Service_YouTube_Channel
-				 */
-				/**
-				 * @var $snippet \Google_Service_YouTube_ChannelSnippet
-				 */
 				$snippet = $channel->getSnippet();
 				$channels[] = (object) array(
 					"id" => $channel->getId(),
@@ -199,16 +189,7 @@ class grid_youtube_box extends grid_list_box  {
 		if($youtube != null){
 			$result = $youtube->search->listSearch("id,snippet", $options);
 			foreach ($result->getItems() as $key => $video){
-				/**
-				 * @var $video \Google_Service_YouTube_SearchResult
-				 */
-				/**
-				 * @param $snippet \Google_Service_YouTube_SearchResultSnippet
-				 */
 				$snippet = $video->getSnippet();
-				/**
-				 * @var $thumbnails \Google_Service_YouTube_ThumbnailDetails
-				 */
 				$thumbnails = $snippet->getThumbnails();
 
 				$sizes = array("Default","High","Medium", "Standard", "Maxres");
@@ -233,7 +214,11 @@ class grid_youtube_box extends grid_list_box  {
 					"title" => $snippet->getTitle(),
 					"description" => $snippet->getDescription(),
 					"tumbnails" => (object)$thumbs,
-					"rendered" => $this->getOembedHTML($video->getId()->videoId),
+					"rendered" => Plugin::instance()->oembed->getYouTubeHTML($video->getId()->videoId, [
+						"scheme" => "http",
+						"show_info" => $this->content->info? "1": "0",
+						"related" => $this->content->related ? "1":"0",
+					]),
 					"published" => $snippet->getPublishedAt(),
 				);
 			}
@@ -242,58 +227,6 @@ class grid_youtube_box extends grid_list_box  {
 		set_transient($this->getTransientKey( $options ), $videos, 60 * 60 );
 
 		return $videos;
-	}
-
-	/**
-	 * @param $videoid
-	 * @param array $options
-	 *
-	 * @return string
-	 */
-	public function getOembedHTML($videoid, $extend = array()){
-		$options = array_merge(array(
-			"scheme" => "http",
-			"show_info" => 0,
-			"related" => 0,
-		), $extend);
-
-		$content_url = $options["scheme"]."://www.youtube.com/watch?v=".urlencode($videoid);
-		$url=$options['scheme']."://www.youtube.com/oembed?url=".$content_url."&format=json";
-
-		$request=curl_init($url);
-		curl_setopt($request,CURLOPT_RETURNTRANSFER,TRUE);
-		curl_setopt($request,CURLOPT_HEADER,FALSE);
-		$result=curl_exec($request);
-		if($result===FALSE)
-		{
-			var_dump(curl_error($request));
-			die();
-		}
-		$responseCode = curl_getinfo($request, CURLINFO_HTTP_CODE);
-		curl_close($request);
-		$html = "";
-		if($responseCode == 200){
-			$result=json_decode($result);
-			if(is_object($result)) $html = $result->html;
-		}
-
-
-		$url_show_info = "&showinfo=";
-		if($this->content->info){
-			$url_show_info.="1";
-		} else {
-			$url_show_info.="0";
-		}
-		$url_related = "&rel=";
-		if($this->content->related){
-			$url_related.="1";
-		} else {
-			$url_related.="0";
-		}
-
-		$html = str_replace("src=\"http://", "src=\"".$options["scheme"]."://", $html);
-		$html = str_replace('feature=oembed', 'feature=oembed&wmode=transparent&html5=1'.$url_related.$url_show_info, $html);
-		return $html;
 	}
 
 	public function contentStructure () {

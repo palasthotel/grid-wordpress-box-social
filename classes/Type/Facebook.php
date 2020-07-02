@@ -332,7 +332,7 @@ class Facebook extends Base {
 			Plugin::HANDLE_FACEBOOK_JS,
 			$this->settings->plugin->url . "/js/facebook.js",
 			array( "jquery", Plugin::HANDLE_API_JS ),
-			filemtime($this->settings->plugin->dir."/js/facebook.ks"),
+			filemtime($this->settings->plugin->dir."/js/facebook.js"),
 			true
 		);
 		wp_localize_script(

@@ -147,6 +147,7 @@ class ComposerStaticInitd29654c90dd0440a5a785b040ae3c75e
     public static $classMap = array (
         'Google_Service_Exception' => __DIR__ . '/..' . '/google/apiclient/src/Google/Service/Exception.php',
         'Google_Service_Resource' => __DIR__ . '/..' . '/google/apiclient/src/Google/Service/Resource.php',
+        'Palasthotel\\Grid\\SocialBoxes\\Model\\YouTubeFeedItem' => __DIR__ . '/../..' . '/classes/Model/YouTubeFeedItem.php',
         'Palasthotel\\Grid\\SocialBoxes\\Settings' => __DIR__ . '/../..' . '/classes/Settings.php',
         'Palasthotel\\Grid\\SocialBoxes\\Type\\Base' => __DIR__ . '/../..' . '/classes/Type/Base.php',
         'Palasthotel\\Grid\\SocialBoxes\\Type\\Facebook' => __DIR__ . '/../..' . '/classes/Type/Facebook.php',

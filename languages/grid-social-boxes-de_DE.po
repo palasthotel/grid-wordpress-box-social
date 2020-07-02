@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Grid Social Boxes\n"
-"POT-Creation-Date: 2019-02-21 17:29+0100\n"
-"PO-Revision-Date: 2019-02-21 17:30+0100\n"
+"POT-Creation-Date: 2020-07-02 07:58+0200\n"
+"PO-Revision-Date: 2020-07-02 08:00+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: de_DE\n"
@@ -10,91 +10,37 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Poedit 2.3.1\n"
 "X-Poedit-Basepath: ..\n"
 "X-Poedit-Flags-xgettext: --add-comments=translators:\n"
 "X-Poedit-WPHeader: grid-social-boxes.php\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
-"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;"
-"_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 "X-Poedit-SearchPathExcluded-0: *.js\n"
 
-#: grid_instagram_box/grid_instagram_box.php:56
-msgid "Instagram Account"
-msgstr ""
-
-#: grid_instagram_box/grid_instagram_box.php:57
-msgid "Not logged in. Goto settings and get an access token."
-msgstr "Noch nicht verbunden. Gehe zu den Einstellungen."
-
-#: grid_instagram_box/grid_instagram_box.php:63
-#, php-format
-msgid "Get Instagram posts for: %1$s"
-msgstr "Instagrambeiträge von: %1$s"
-
-#: grid_social_timeline_box/grid_social_timeline_box.php:239
-msgid "Configuration for Twitter."
-msgstr "Twitter Konfiguration."
-
-#: grid_social_timeline_box/grid_social_timeline_box.php:244
-msgid "Activate Twitter posts"
-msgstr "Aktiviere Twitter Beiträge"
-
-#: grid_social_timeline_box/grid_social_timeline_box.php:259
-msgid "Configuration for Instagram."
-msgstr "Instagram Konfiguration."
-
-#: grid_social_timeline_box/grid_social_timeline_box.php:264
-msgid "Activate Instagram posts"
-msgstr "Aktiviere Instagram Beiträge."
-
-#: grid_social_timeline_box/grid_social_timeline_box.php:279
-msgid "Configuration for Youtube."
-msgstr "YouTube Konfiguration."
-
-#: grid_social_timeline_box/grid_social_timeline_box.php:284
-msgid "Activate Youtube posts"
-msgstr "Aktiviere YouTube Beiträge"
-
-#: grid_social_timeline_box/grid_social_timeline_box.php:299
-msgid "Configuration for Facebook."
-msgstr "Facebook Konfiguration."
-
-#: grid_social_timeline_box/grid_social_timeline_box.php:304
-msgid "Activate Facebook posts"
-msgstr "Aktiviere Facebook Beiträge"
-
-#: grid_social_timeline_box/grid_social_timeline_box.php:323
-msgid "Sort order"
-msgstr "Sortierrichtung"
-
-#: grid_social_timeline_box/grid_social_timeline_box.php:326
-msgid "Latest first"
-msgstr "Neuste zuerst"
-
-#: grid_social_timeline_box/grid_social_timeline_box.php:327
-msgid "Oldest first"
-msgstr "Älteste zuerst"
-
-#: grid_social_timeline_box/grid_social_timeline_box.php:340
-msgid "You have to confiure the social apis first."
-msgstr "Du musst vorher die Konfigurationen vornehmen."
-
-#: inc/settings/facebook.inc:39
+#: classes/Type/Facebook.php:133
 msgid "Facebook"
-msgstr ""
+msgstr "Facebook"
 
-#: inc/settings/facebook.inc:175
+#: classes/Type/Facebook.php:353
 msgid "Enable facebook contents"
 msgstr "Inhalte von Facebook einschalten"
 
-#: inc/settings/instagram.inc:45
+#: classes/Type/Instagram.php:46
 msgid "Instagram"
-msgstr ""
+msgstr "Instagram"
 
-#: inc/settings/instagram.inc:117
+#: classes/Type/Instagram.php:119
+#, php-format
+msgid "Goto %sInstagram Developer%s and renew the API token."
+msgstr ""
+"Gehe zu %sInstagram Developer%s und registriere eine Applikation um "
+"Zugriffsdaten zu erhalten."
+
+#: classes/Type/Instagram.php:133
 #, php-format
 msgid ""
 "Goto %sInstagram Developer%s and register an App to get the following "
@@ -103,39 +49,124 @@ msgstr ""
 "Gehe zu %sInstsagram Developer%s und registriere eine Applikation um "
 "Zugriffsdaten zu erhalten."
 
-#: inc/settings/instagram.inc:130 inc/settings/youtube.inc:163
+#: classes/Type/Instagram.php:146 classes/Type/Youtube.php:163
 msgid "Callback URL:"
-msgstr ""
+msgstr "Callback URL:"
 
-#: inc/settings/twitter.inc:34
+#: classes/Type/Twitter.php:43
 msgid "Twitter"
-msgstr ""
+msgstr "Twitter"
 
-#: inc/settings/twitter.inc:123
+#: classes/Type/Twitter.php:141
 msgid ""
 "Get your credentials at <a href='https://apps.twitter.com/'>Twitter Apps</"
 "a>. Create or choose your app and have a look at 'Keys and Access Tokens'."
 msgstr ""
+"Erhalte Anmeldeinformationen bei <a href='https://apps.twitter.com/'>Twitter "
+"Apps</a>. Erstelle oder wähle die App aus und wirf einen Blick auf "
+"\"Schlüssel und Zugriffstoken\"."
 
-#: inc/settings/twitter.inc:126
-msgid "Use as callback url: "
-msgstr ""
+#: classes/Type/Twitter.php:144
+msgid "Important: Use as callback url in your twitter app details settings: "
+msgstr "Wichtig: Verwende als Rückruf-URL in den Details der Twitter-App:"
 
-#: inc/settings/youtube.inc:52
+#: classes/Type/Youtube.php:53
 msgid "Youtube"
-msgstr ""
+msgstr "YouTube"
+
+#: grid/grid_instagram_box.php:56
+msgid "Instagram Account"
+msgstr "Instagram-Konto"
+
+#: grid/grid_instagram_box.php:57
+msgid "Not logged in. Goto settings and get an access token."
+msgstr "Noch nicht verbunden. Gehe zu den Einstellungen."
+
+#: grid/grid_instagram_box.php:63
+#, php-format
+msgid "Get Instagram posts for: %1$s"
+msgstr "Instagrambeiträge von: %1$s"
+
+#: grid/grid_social_timeline_box.php:300
+msgid "Configuration for Twitter."
+msgstr "Twitter Konfiguration."
+
+#: grid/grid_social_timeline_box.php:305
+msgid "Activate Twitter posts"
+msgstr "Aktiviere Twitter Beiträge"
+
+#: grid/grid_social_timeline_box.php:320
+msgid "Configuration for Instagram."
+msgstr "Instagram Konfiguration."
+
+#: grid/grid_social_timeline_box.php:325
+msgid "Activate Instagram posts"
+msgstr "Aktiviere Instagram Beiträge."
+
+#: grid/grid_social_timeline_box.php:339
+msgid "Activate Youtube feed posts"
+msgstr "Aktiviere YouTube Beiträge"
+
+#: grid/grid_social_timeline_box.php:347
+msgid "Choose date type to sort videos"
+msgstr "Datumstyp auswählen, um Videos zu sortieren"
+
+#: grid/grid_social_timeline_box.php:350
+msgid "Published"
+msgstr "Veröffentlicht"
+
+#: grid/grid_social_timeline_box.php:351
+msgid "Updated"
+msgstr "Aktualisiert"
+
+#: grid/grid_social_timeline_box.php:364
+msgid "Configuration for Youtube."
+msgstr "YouTube Konfiguration."
+
+#: grid/grid_social_timeline_box.php:369
+msgid "Activate Youtube posts"
+msgstr "Aktiviere YouTube Beiträge"
+
+#: grid/grid_social_timeline_box.php:384
+msgid "Configuration for Facebook."
+msgstr "Facebook Konfiguration."
+
+#: grid/grid_social_timeline_box.php:389
+msgid "Activate Facebook posts"
+msgstr "Aktiviere Facebook Beiträge"
+
+#: grid/grid_social_timeline_box.php:404
+msgid "Overall items count"
+msgstr "Anzahl insgesamt"
+
+#: grid/grid_social_timeline_box.php:408
+msgid "Sort order"
+msgstr "Sortierrichtung"
+
+#: grid/grid_social_timeline_box.php:411
+msgid "Latest first"
+msgstr "Neuste zuerst"
+
+#: grid/grid_social_timeline_box.php:412
+msgid "Oldest first"
+msgstr "Älteste zuerst"
+
+#: grid/grid_social_timeline_box.php:425
+msgid "You have to configure the social apis first."
+msgstr "Du musst zuerst die apis konfigurieren."
 
 #. Plugin Name of the plugin/theme
 msgid "Grid Social Boxes"
-msgstr ""
+msgstr "Grid Social Boxen"
 
 #. Plugin URI of the plugin/theme
 msgid "https://github.com/palasthotel/wordpress-grid-box-social"
-msgstr ""
+msgstr "https://github.com/palasthotel/wordpress-grid-box-social"
 
 #. Description of the plugin/theme
 msgid "Some social network boxes. Facebook, Twitter, Instagram and Youtube."
 msgstr ""
+"Einige soziale Netzwerk-Boxen. Facebook, Twitter, Instagram und Youtube."
 
 #. Author of the plugin/theme
 msgid "Palasthotel <rezeption@palasthotel.de> (in"

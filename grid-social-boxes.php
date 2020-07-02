@@ -35,6 +35,7 @@ include_once dirname( __FILE__ ) . '/settings.php';
  * @property string dir
  * @property string url
  * @property Settings settings
+ * @property OEmbed oembed
  */
 class Plugin {
 
@@ -67,6 +68,7 @@ class Plugin {
 		add_action("grid_load_classes", array($this,"load_classes") );
 		add_filter("grid_templates_paths", array($this,"template_paths") );
 
+		$this->oembed = new OEmbed();
 		$this->settings = new Settings( $this );
 
 		/**
@@ -123,6 +125,7 @@ class Plugin {
 		/**
 		 * youtube box
 		 */
+		require_once dirname(__FILE__)."/grid/grid_youtube_feed_box.php";
 		if ( $this->get_youtube_api() != NULL ) {
 			require_once dirname(__FILE__) . '/grid/grid_youtube_box.php';
 		}

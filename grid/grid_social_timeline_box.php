@@ -1,4 +1,7 @@
 <?php
+
+use Palasthotel\Grid\SocialBoxes\Plugin;
+
 /**
  * @author Palasthotel <rezeption@palasthotel.de>
  * @copyright Copyright (c) 2014, Palasthotel
@@ -9,6 +12,7 @@ class grid_social_timeline_box extends grid_list_box  {
 	
 	const PREFIX_TWITTER = "twitter";
 	const PREFIX_INSTAGRAM = "instagram";
+	const PREFIX_YOUTUBE_FEED = "youtube_feed";
 	const PREFIX_YOUTUBE = "youtube";
 	const PREFIX_FACEBOOK = "facebook";
 	
@@ -16,6 +20,7 @@ class grid_social_timeline_box extends grid_list_box  {
 		parent::__construct();
 		$this->content->limit = 5;
 		$this->content->sort = 1;
+		$this->content->youtube_feed_sort_by_date_type = "published";
 	}
 	
 	public function type() {
@@ -116,7 +121,30 @@ class grid_social_timeline_box extends grid_list_box  {
 
 				}
 			}
-			
+
+			/**
+			 * youtube feed
+			 */
+			if($this->hasYoutubeFeed()){
+				$helper_box = new grid_youtube_feed_box();
+				$helper_box->content->channel_id = $this->content->youtube_feed_channel_id;
+				$helper_box->content->numItems = $this->content->youtube_feed_numItems;
+				$helper_box->content->offset = $this->content->youtube_feed_offset;
+
+				$sortBy = (isset($this->content->youtube_feed_sort_by_date_type))? $this->content->youtube_feed_sort_by_date_type : "published";
+
+				foreach ($helper_box->build($editmode) as $item){
+					$content[] = (object)array(
+						"datetime" =>  ($sortBy == "published")? $item->published: $item->updated,
+						"content" => $item,
+						"type" => self::PREFIX_YOUTUBE_FEED,
+					);
+				};
+			}
+
+			/**
+			 * youtube via api
+			 */
 			if($this->hasYoutube()){
 				$helper_box = new grid_youtube_box();
 				$videos_options = null;
@@ -269,12 +297,12 @@ class grid_social_timeline_box extends grid_list_box  {
 				array(
 					array(
 						"label"=> "",
-						"text" => __("Configuration for Twitter.", "grid-social-boxes"),
+						"text" => __("Configuration for Twitter.", Plugin::DOMAIN),
 						"type" => "info",
 					),
 					array(
 						'key' => self::PREFIX_TWITTER,
-						'label' => __("Activate Twitter posts", 'grid-social-boxes'),
+						'label' => __("Activate Twitter posts", Plugin::DOMAIN),
 						'type' => "checkbox",
 					),
 				),
@@ -289,19 +317,43 @@ class grid_social_timeline_box extends grid_list_box  {
 				array(
 					array(
 						"label"=> "",
-						"text" => __("Configuration for Instagram.", "grid-social-boxes"),
+						"text" => __("Configuration for Instagram.", Plugin::DOMAIN),
 						"type" => "info",
 					),
 					array(
 						'key' => self::PREFIX_INSTAGRAM,
-						'label' => __("Activate Instagram posts", 'grid-social-boxes'),
+						'label' => __("Activate Instagram posts", Plugin::DOMAIN),
 						'type' => "checkbox",
 					),
 				),
 				$this->prefixStructure($instagram->contentStructure(), self::PREFIX_INSTAGRAM)
 			);
 		}
-		
+
+		$youtube = new grid_youtube_feed_box();
+		$apis = array_merge(
+			$apis,
+			array(
+				array(
+					'key' => self::PREFIX_YOUTUBE_FEED,
+					'label' => __("Activate Youtube feed posts", Plugin::DOMAIN),
+					'type' => "checkbox",
+				),
+			),
+			$this->prefixStructure($youtube->contentStructure(), self::PREFIX_YOUTUBE_FEED),
+			array(
+				array(
+					"key" => "youtube_feed_sort_by_date_type",
+					"label" => __("Choose date type to sort videos", Plugin::DOMAIN),
+					"type" => "select",
+					"selections" => array(
+						array("key" => "published", "text" => __("Published", Plugin::DOMAIN)),
+						array("key" => "updated", "text" => __("Updated", Plugin::DOMAIN)),
+					)
+				)
+			)
+		);
+
 		if($grid_social_boxes->get_youtube_api() != null){
 			$youtube = new grid_youtube_box();
 			$apis = array_merge(
@@ -309,12 +361,12 @@ class grid_social_timeline_box extends grid_list_box  {
 				array(
 					array(
 						"label"=> "",
-						"text" => __("Configuration for Youtube.", "grid-social-boxes"),
+						"text" => __("Configuration for Youtube.", Plugin::DOMAIN),
 						"type" => "info",
 					),
 					array(
 						'key' => self::PREFIX_YOUTUBE,
-						'label' => __("Activate Youtube posts", 'grid-social-boxes'),
+						'label' => __("Activate Youtube posts", Plugin::DOMAIN),
 						'type' => "checkbox",
 					),
 				),
@@ -329,12 +381,12 @@ class grid_social_timeline_box extends grid_list_box  {
 				array(
 					array(
 						"label"=> "",
-						"text" => __("Configuration for Facebook.", "grid-social-boxes"),
+						"text" => __("Configuration for Facebook.", Plugin::DOMAIN),
 						"type" => "info",
 					),
 					array(
 						'key' => self::PREFIX_FACEBOOK,
-						'label' => __("Activate Facebook posts", 'grid-social-boxes'),
+						'label' => __("Activate Facebook posts", Plugin::DOMAIN),
 						'type' => "checkbox",
 					),
 				),
@@ -349,15 +401,15 @@ class grid_social_timeline_box extends grid_list_box  {
 					array(
 						'key' => 'limit',
 						'type' => 'number',
-						'label' => 'Anzahl der Einträge insgesamt',
+						'label' => __('Overall items count', Plugin::DOMAIN),
 					),
 					array(
 						'key' => 'sort',
-						'label' => __('Sort order', 'grid-social-boxes'),
+						'label' => __('Sort order', Plugin::DOMAIN),
 						'type' => 'select',
 						'selections' => array(
-							array( 'key' => 1, 'text' => __("Latest first", 'grid-social-boxes')),
-							array( 'key' => -1, 'text' => __("Oldest first", 'grid-social-boxes')),
+							array( 'key' => 1, 'text' => __("Latest first", Plugin::DOMAIN)),
+							array( 'key' => -1, 'text' => __("Oldest first", Plugin::DOMAIN)),
 						),
 					)
 				),
@@ -370,7 +422,7 @@ class grid_social_timeline_box extends grid_list_box  {
 			array(
 				array(
 					"label"=> "Info",
-					"text" => __("You have to confiure the social apis first.", "grid-social-boxes"),
+					"text" => __("You have to configure the social apis first.", Plugin::DOMAIN),
 					"type" => "info",
 				)
 			)
@@ -393,7 +445,15 @@ class grid_social_timeline_box extends grid_list_box  {
 	public function hasInstagram(){
 		return $this->isWorking(self::PREFIX_INSTAGRAM);
 	}
-	
+
+	/**
+	 * check if youtube
+	 * @return bool
+	 */
+	public function hasYoutubeFeed(){
+		return $this->isWorking(self::PREFIX_YOUTUBE_FEED);
+	}
+
 	/**
 	 * check if youtube config is set
 	 * @return bool
