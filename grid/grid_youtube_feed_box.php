@@ -30,6 +30,11 @@ class grid_youtube_feed_box extends grid_rss_box  {
 
 	public function build($editmode) {
 		$this->content->url = $this->getUrl();
+
+		if($editmode){
+			return $this->content;
+		}
+
 		$result = parent::build($editmode);
 
 		$NSYouTube = "http://www.youtube.com/xml/schemas/2015";
