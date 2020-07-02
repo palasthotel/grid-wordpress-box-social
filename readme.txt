@@ -4,7 +4,7 @@ Donate link: http://palasthotel.de/
 Tags: grid, landingpage, editor, admin, page, containerist
 Requires at least: 4.0
 Tested up to: 5.4.2
-Stable tag: 1.5.1
+Stable tag: 1.6.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl
 
@@ -30,7 +30,8 @@ Extends the Grid Plugin with Facebook, Instagram, Youtube and Twitter Boxes.
 
 == Changelog ==
 
-= 1.5.1 =
+= 1.6.0 =
+ * Feature: new YouTube Feed box that needs no api configuration
  * Breaking change: Heavy refactoring of namespaces and class names.
  * Library update: Google Services for YouTube
  * Library update: Twitter
@@ -95,7 +96,7 @@ Extends the Grid Plugin with Facebook, Instagram, Youtube and Twitter Boxes.
 
 == Upgrade Notice ==
 
-With version 1.5.1 we changed some namespaces and classnames.
+With version 1.6.0 we changed some namespaces and classnames.
 
 If you used the YouTube type "Channel" in Version 1.4.10- you have to change this to "Username" for Versions 1.4.11+
 
