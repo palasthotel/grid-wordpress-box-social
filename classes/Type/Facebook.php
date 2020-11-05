@@ -259,7 +259,7 @@ class Facebook extends Base {
 				<p><?php echo "<strong>Is valid:</strong> ". (($isTokenValid)? "yes": "no"); ?></p>
 
 				<?php
-				if($isTokenValid){
+				if($isTokenValid && $token->getExpiresAt() != null){
 					$date = $token->getExpiresAt();
 					$date->setTimezone(new \DateTimeZone(get_option('timezone_string', 'UTC')));
 					$tokenValidTill = $date->format(get_option( 'date_format' )." ".get_option('time_format'));
