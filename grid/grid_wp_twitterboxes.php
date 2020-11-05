@@ -1,4 +1,7 @@
 <?php
+
+use Abraham\TwitterOAuth\TwitterOAuth;
+
 /**
  * @author Palasthotel <rezeption@palasthotel.de>
  * @copyright Copyright (c) 2014, Palasthotel
@@ -27,7 +30,7 @@ class grid_twitter_box extends grid_list_box {
 	}
 
 	/**
-	 * @param \Abraham\TwitterOAuth\TwitterOAuth $connection
+	 * @param TwitterOAuth $connection
 	 *
 	 * @return mixed
 	 */
@@ -73,8 +76,9 @@ class grid_twitter_box extends grid_list_box {
 				}
 				ob_start();
 				$content = $result;
-				if ( file_exists( $this->storage->templatesPath.'/grid_twitterbox.tpl.php' ) ) {
-					require ( $this->storage->templatesPath.'/grid_twitterbox.tpl.php' );
+				$templatePath = $this->template::getPath('grid_twitterbox.tpl.php');
+				if ( file_exists( $templatePath ) ) {
+					require ( $templatePath );
 				} else {
 					require(dirname(__FILE__) . '/../templates/grid_twitterbox.tpl.php');
 				}
@@ -141,7 +145,7 @@ class grid_twitter_hashtag_box extends grid_twitter_box {
 	}
 
 	/**
-	 * @param \Abraham\TwitterOAuth\TwitterOAuth $connection
+	 * @param TwitterOAuth $connection
 	 *
 	 * @return array
 	 */
