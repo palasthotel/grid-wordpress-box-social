@@ -16,6 +16,8 @@ class grid_twitter_box extends grid_list_box {
 		$this->content->limit = 5;
 		$this->content->user = '';
 		$this->content->retweet = 'timeline';
+		$this->content->exclude_replies = false;
+		$this->content->include_rts = false;
 	}
 
 	public function type() {
@@ -42,13 +44,22 @@ class grid_twitter_box extends grid_list_box {
 			));
 			$result = $result->statuses;
 		} else {
-			$result = $connection->get( 'statuses/user_timeline',
-				array(
-					'screen_name' => $this->content->user,
-					"tweet_mode" => "extended",
-					"count" => $this->content->limit,
-				)
-			);
+			$args = [];
+			$args['screen_name'] = $this->content->user;
+			$args['tweet_mode'] = "extended";
+			$args['count'] = $this->content->limit;
+
+			if( ! isset( $this->content->exclude_replies ) ) {
+				$this->content->exclude_replies = false;
+			}
+			$args['exclude_replies'] = $this->content->exclude_replies;
+
+			if( ! isset( $this->content->include_rts ) ) {
+				$this->content->include_rts = false;
+			}
+			$args['include_rts'] = $this->content->include_rts;
+
+			$result = $connection->get( 'statuses/user_timeline', $args );
 		}
 
 		return $result;
@@ -104,6 +115,16 @@ class grid_twitter_box extends grid_list_box {
 				'key' => 'user',
 				'type' => 'text',
 				'label' => 'User',
+			),
+			array(
+				'key' => 'exclude_replies',
+				'type' => 'checkbox',
+				'label' => 'Exclude replies',
+			),
+			array(
+				'key' => 'include_rts',
+				'type' => 'checkbox',
+				'label' => 'Include retweets',
 			),
 			array(
 				'key' => 'retweet',
