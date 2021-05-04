@@ -166,14 +166,6 @@ class ComposerStaticInitd29654c90dd0440a5a785b040ae3c75e
         'Google_Task_Retryable' => __DIR__ . '/..' . '/google/apiclient/src/aliases.php',
         'Google_Task_Runner' => __DIR__ . '/..' . '/google/apiclient/src/aliases.php',
         'Google_Utils_UriTemplate' => __DIR__ . '/..' . '/google/apiclient/src/aliases.php',
-        'Palasthotel\\Grid\\SocialBoxes\\Model\\YouTubeFeedItem' => __DIR__ . '/../..' . '/classes/Model/YouTubeFeedItem.php',
-        'Palasthotel\\Grid\\SocialBoxes\\OEmbed' => __DIR__ . '/../..' . '/classes/OEmbed.php',
-        'Palasthotel\\Grid\\SocialBoxes\\Settings' => __DIR__ . '/../..' . '/classes/Settings.php',
-        'Palasthotel\\Grid\\SocialBoxes\\Type\\Base' => __DIR__ . '/../..' . '/classes/Type/Base.php',
-        'Palasthotel\\Grid\\SocialBoxes\\Type\\Facebook' => __DIR__ . '/../..' . '/classes/Type/Facebook.php',
-        'Palasthotel\\Grid\\SocialBoxes\\Type\\Instagram' => __DIR__ . '/../..' . '/classes/Type/Instagram.php',
-        'Palasthotel\\Grid\\SocialBoxes\\Type\\Twitter' => __DIR__ . '/../..' . '/classes/Type/Twitter.php',
-        'Palasthotel\\Grid\\SocialBoxes\\Type\\Youtube' => __DIR__ . '/../..' . '/classes/Type/Youtube.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

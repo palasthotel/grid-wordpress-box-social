@@ -28,12 +28,4 @@ return array(
     'Google_Task_Retryable' => $vendorDir . '/google/apiclient/src/aliases.php',
     'Google_Task_Runner' => $vendorDir . '/google/apiclient/src/aliases.php',
     'Google_Utils_UriTemplate' => $vendorDir . '/google/apiclient/src/aliases.php',
-    'Palasthotel\\Grid\\SocialBoxes\\Model\\YouTubeFeedItem' => $baseDir . '/classes/Model/YouTubeFeedItem.php',
-    'Palasthotel\\Grid\\SocialBoxes\\OEmbed' => $baseDir . '/classes/OEmbed.php',
-    'Palasthotel\\Grid\\SocialBoxes\\Settings' => $baseDir . '/classes/Settings.php',
-    'Palasthotel\\Grid\\SocialBoxes\\Type\\Base' => $baseDir . '/classes/Type/Base.php',
-    'Palasthotel\\Grid\\SocialBoxes\\Type\\Facebook' => $baseDir . '/classes/Type/Facebook.php',
-    'Palasthotel\\Grid\\SocialBoxes\\Type\\Instagram' => $baseDir . '/classes/Type/Instagram.php',
-    'Palasthotel\\Grid\\SocialBoxes\\Type\\Twitter' => $baseDir . '/classes/Type/Twitter.php',
-    'Palasthotel\\Grid\\SocialBoxes\\Type\\Youtube' => $baseDir . '/classes/Type/Youtube.php',
 );

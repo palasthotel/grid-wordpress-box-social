@@ -1,5 +1,6 @@
 {
     "name": "palasthotel/grid-social-boxes",
+    "description": "Social boxes for grid",
     "authors": [
         {
             "name": "Edward Bock",
@@ -7,9 +8,6 @@
         }
     ],
     "autoload": {
-        "classmap": [
-            "classes"
-        ],
         "psr-4": {
             "Palasthotel\\Grid\\SocialBoxes\\": "classes"
         }
