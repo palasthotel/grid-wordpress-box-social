@@ -30,14 +30,14 @@
  */
 class Google_Service_CloudAsset extends Google_Service
 {
-  /** View and manage your data across Google Cloud Platform services. */
+  /** See, edit, configure, and delete your Google Cloud Platform data. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
 
   public $feeds;
   public $operations;
   public $v1;
-  
+
   /**
    * Constructs the internal representation of the CloudAsset service.
    *
@@ -139,7 +139,77 @@ class Google_Service_CloudAsset extends Google_Service
         'v1',
         array(
           'methods' => array(
-            'batchGetAssetsHistory' => array(
+            'analyzeIamPolicy' => array(
+              'path' => 'v1/{+scope}:analyzeIamPolicy',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'scope' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'analysisQuery.accessSelector.permissions' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                  'repeated' => true,
+                ),
+                'analysisQuery.accessSelector.roles' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                  'repeated' => true,
+                ),
+                'analysisQuery.conditionContext.accessTime' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'analysisQuery.identitySelector.identity' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'analysisQuery.options.analyzeServiceAccountImpersonation' => array(
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ),
+                'analysisQuery.options.expandGroups' => array(
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ),
+                'analysisQuery.options.expandResources' => array(
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ),
+                'analysisQuery.options.expandRoles' => array(
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ),
+                'analysisQuery.options.outputGroupEdges' => array(
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ),
+                'analysisQuery.options.outputResourceEdges' => array(
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ),
+                'analysisQuery.resourceSelector.fullResourceName' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'executionTimeout' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),'analyzeIamPolicyLongrunning' => array(
+              'path' => 'v1/{+scope}:analyzeIamPolicyLongrunning',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'scope' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'batchGetAssetsHistory' => array(
               'path' => 'v1/{+parent}:batchGetAssetsHistory',
               'httpMethod' => 'GET',
               'parameters' => array(
@@ -147,6 +217,11 @@ class Google_Service_CloudAsset extends Google_Service
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
+                ),
+                'assetNames' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                  'repeated' => true,
                 ),
                 'contentType' => array(
                   'location' => 'query',
@@ -159,11 +234,6 @@ class Google_Service_CloudAsset extends Google_Service
                 'readTimeWindow.startTime' => array(
                   'location' => 'query',
                   'type' => 'string',
-                ),
-                'assetNames' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                  'repeated' => true,
                 ),
               ),
             ),'exportAssets' => array(
@@ -185,13 +255,13 @@ class Google_Service_CloudAsset extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'pageSize' => array(
                   'location' => 'query',
                   'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
                 ),
                 'query' => array(
                   'location' => 'query',
@@ -207,10 +277,6 @@ class Google_Service_CloudAsset extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'query' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'assetTypes' => array(
                   'location' => 'query',
                   'type' => 'string',
@@ -220,13 +286,17 @@ class Google_Service_CloudAsset extends Google_Service
                   'location' => 'query',
                   'type' => 'string',
                 ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
                 'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
-                'pageSize' => array(
+                'query' => array(
                   'location' => 'query',
-                  'type' => 'integer',
+                  'type' => 'string',
                 ),
               ),
             ),

@@ -31,14 +31,14 @@
  */
 class Google_Service_Storagetransfer extends Google_Service
 {
-  /** View and manage your data across Google Cloud Platform services. */
+  /** See, edit, configure, and delete your Google Cloud Platform data. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
 
   public $googleServiceAccounts;
   public $transferJobs;
   public $transferOperations;
-  
+
   /**
    * Constructs the internal representation of the Storagetransfer service.
    *
@@ -96,6 +96,7 @@ class Google_Service_Storagetransfer extends Google_Service
                 'projectId' => array(
                   'location' => 'query',
                   'type' => 'string',
+                  'required' => true,
                 ),
               ),
             ),'list' => array(
@@ -105,19 +106,30 @@ class Google_Service_Storagetransfer extends Google_Service
                 'filter' => array(
                   'location' => 'query',
                   'type' => 'string',
-                ),
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
+                  'required' => true,
                 ),
                 'pageSize' => array(
                   'location' => 'query',
                   'type' => 'integer',
                 ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
               ),
             ),'patch' => array(
               'path' => 'v1/{+jobName}',
               'httpMethod' => 'PATCH',
+              'parameters' => array(
+                'jobName' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'run' => array(
+              'path' => 'v1/{+jobName}:run',
+              'httpMethod' => 'POST',
               'parameters' => array(
                 'jobName' => array(
                   'location' => 'path',
@@ -164,13 +176,14 @@ class Google_Service_Storagetransfer extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageSize' => array(
-                  'location' => 'query',
-                  'type' => 'integer',
-                ),
                 'filter' => array(
                   'location' => 'query',
                   'type' => 'string',
+                  'required' => true,
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
                 ),
                 'pageToken' => array(
                   'location' => 'query',

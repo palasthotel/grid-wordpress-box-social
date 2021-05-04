@@ -27,7 +27,6 @@ class Google_Service_AndroidPublisher_InAppProduct extends Google_Model
   protected $pricesType = 'Google_Service_AndroidPublisher_Price';
   protected $pricesDataType = 'map';
   public $purchaseType;
-  public $resubscribeEligibility;
   public $sku;
   public $status;
   public $subscriptionPeriod;
@@ -64,14 +63,14 @@ class Google_Service_AndroidPublisher_InAppProduct extends Google_Model
     return $this->gracePeriod;
   }
   /**
-   * @param Google_Service_AndroidPublisher_InAppProductListing
+   * @param Google_Service_AndroidPublisher_InAppProductListing[]
    */
   public function setListings($listings)
   {
     $this->listings = $listings;
   }
   /**
-   * @return Google_Service_AndroidPublisher_InAppProductListing
+   * @return Google_Service_AndroidPublisher_InAppProductListing[]
    */
   public function getListings()
   {
@@ -86,14 +85,14 @@ class Google_Service_AndroidPublisher_InAppProduct extends Google_Model
     return $this->packageName;
   }
   /**
-   * @param Google_Service_AndroidPublisher_Price
+   * @param Google_Service_AndroidPublisher_Price[]
    */
   public function setPrices($prices)
   {
     $this->prices = $prices;
   }
   /**
-   * @return Google_Service_AndroidPublisher_Price
+   * @return Google_Service_AndroidPublisher_Price[]
    */
   public function getPrices()
   {
@@ -106,14 +105,6 @@ class Google_Service_AndroidPublisher_InAppProduct extends Google_Model
   public function getPurchaseType()
   {
     return $this->purchaseType;
-  }
-  public function setResubscribeEligibility($resubscribeEligibility)
-  {
-    $this->resubscribeEligibility = $resubscribeEligibility;
-  }
-  public function getResubscribeEligibility()
-  {
-    return $this->resubscribeEligibility;
   }
   public function setSku($sku)
   {

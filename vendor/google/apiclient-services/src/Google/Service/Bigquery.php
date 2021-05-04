@@ -36,10 +36,7 @@ class Google_Service_Bigquery extends Google_Service
   /** Insert data into Google BigQuery. */
   const BIGQUERY_INSERTDATA =
       "https://www.googleapis.com/auth/bigquery.insertdata";
-  /** View your data in Google BigQuery. */
-  const BIGQUERY_READONLY =
-      "https://www.googleapis.com/auth/bigquery.readonly";
-  /** View and manage your data across Google Cloud Platform services. */
+  /** See, edit, configure, and delete your Google Cloud Platform data. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
   /** View your data across Google Cloud Platform services. */
@@ -60,9 +57,10 @@ class Google_Service_Bigquery extends Google_Service
   public $models;
   public $projects;
   public $routines;
+  public $rowAccessPolicies;
   public $tabledata;
   public $tables;
-  
+
   /**
    * Constructs the internal representation of the Bigquery service.
    *
@@ -137,7 +135,11 @@ class Google_Service_Bigquery extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageToken' => array(
+                'all' => array(
+                  'location' => 'query',
+                  'type' => 'boolean',
+                ),
+                'filter' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
@@ -145,11 +147,7 @@ class Google_Service_Bigquery extends Google_Service
                   'location' => 'query',
                   'type' => 'integer',
                 ),
-                'all' => array(
-                  'location' => 'query',
-                  'type' => 'boolean',
-                ),
-                'filter' => array(
+                'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
@@ -213,6 +211,25 @@ class Google_Service_Bigquery extends Google_Service
                   'type' => 'string',
                 ),
               ),
+            ),'delete' => array(
+              'path' => 'projects/{+projectId}/jobs/{+jobId}/delete',
+              'httpMethod' => 'DELETE',
+              'parameters' => array(
+                'projectId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'jobId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'location' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
             ),'get' => array(
               'path' => 'projects/{projectId}/jobs/{jobId}',
               'httpMethod' => 'GET',
@@ -246,23 +263,23 @@ class Google_Service_Bigquery extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'startIndex' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'location' => array(
                   'location' => 'query',
                   'type' => 'string',
+                ),
+                'maxResults' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
                 ),
                 'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
-                'timeoutMs' => array(
+                'startIndex' => array(
                   'location' => 'query',
-                  'type' => 'integer',
+                  'type' => 'string',
                 ),
-                'maxResults' => array(
+                'timeoutMs' => array(
                   'location' => 'query',
                   'type' => 'integer',
                 ),
@@ -290,10 +307,6 @@ class Google_Service_Bigquery extends Google_Service
                   'location' => 'query',
                   'type' => 'boolean',
                 ),
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'maxCreationTime' => array(
                   'location' => 'query',
                   'type' => 'string',
@@ -302,22 +315,26 @@ class Google_Service_Bigquery extends Google_Service
                   'location' => 'query',
                   'type' => 'integer',
                 ),
-                'stateFilter' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                  'repeated' => true,
-                ),
-                'projection' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'minCreationTime' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
                 'parentJobId' => array(
                   'location' => 'query',
                   'type' => 'string',
+                ),
+                'projection' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'stateFilter' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                  'repeated' => true,
                 ),
               ),
             ),'query' => array(
@@ -394,13 +411,13 @@ class Google_Service_Bigquery extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'maxResults' => array(
                   'location' => 'query',
                   'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
                 ),
               ),
             ),'patch' => array(
@@ -447,13 +464,13 @@ class Google_Service_Bigquery extends Google_Service
               'path' => 'projects',
               'httpMethod' => 'GET',
               'parameters' => array(
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'maxResults' => array(
                   'location' => 'query',
                   'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
                 ),
               ),
             ),
@@ -539,7 +556,7 @@ class Google_Service_Bigquery extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageToken' => array(
+                'filter' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
@@ -547,11 +564,11 @@ class Google_Service_Bigquery extends Google_Service
                   'location' => 'query',
                   'type' => 'integer',
                 ),
-                'readMask' => array(
+                'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
-                'filter' => array(
+                'readMask' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
@@ -571,6 +588,74 @@ class Google_Service_Bigquery extends Google_Service
                   'required' => true,
                 ),
                 'routineId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),
+          )
+        )
+    );
+    $this->rowAccessPolicies = new Google_Service_Bigquery_Resource_RowAccessPolicies(
+        $this,
+        $this->serviceName,
+        'rowAccessPolicies',
+        array(
+          'methods' => array(
+            'getIamPolicy' => array(
+              'path' => '{+resource}:getIamPolicy',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'resource' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'list' => array(
+              'path' => 'projects/{+projectId}/datasets/{+datasetId}/tables/{+tableId}/rowAccessPolicies',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'projectId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'datasetId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'tableId' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),'setIamPolicy' => array(
+              'path' => '{+resource}:setIamPolicy',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'resource' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'testIamPermissions' => array(
+              'path' => '{+resource}:testIamPermissions',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'resource' => array(
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
@@ -625,13 +710,13 @@ class Google_Service_Bigquery extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'maxResults' => array(
                   'location' => 'query',
                   'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
                 ),
                 'selectedFields' => array(
                   'location' => 'query',
@@ -735,13 +820,13 @@ class Google_Service_Bigquery extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'maxResults' => array(
                   'location' => 'query',
                   'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
                 ),
               ),
             ),'patch' => array(

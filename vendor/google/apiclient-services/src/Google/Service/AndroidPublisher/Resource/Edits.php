@@ -26,12 +26,16 @@
 class Google_Service_AndroidPublisher_Resource_Edits extends Google_Service_Resource
 {
   /**
-   * Commits/applies the changes made in this edit back to the app. (edits.commit)
+   * Commits an app edit. (edits.commit)
    *
-   * @param string $packageName Unique identifier for the Android app that is
-   * being updated; for example, "com.spiffygame".
-   * @param string $editId Unique identifier for this edit.
+   * @param string $packageName Package name of the app.
+   * @param string $editId Identifier of the edit.
    * @param array $optParams Optional parameters.
+   *
+   * @opt_param bool changesNotSentForReview Indicates that the changes in this
+   * edit will not be reviewed until they are explicitly sent for review from the
+   * Google Play Console UI. These changes will be added to any other changes that
+   * are not yet sent for review.
    * @return Google_Service_AndroidPublisher_AppEdit
    */
   public function commit($packageName, $editId, $optParams = array())
@@ -41,13 +45,10 @@ class Google_Service_AndroidPublisher_Resource_Edits extends Google_Service_Reso
     return $this->call('commit', array($params), "Google_Service_AndroidPublisher_AppEdit");
   }
   /**
-   * Deletes an edit for an app. Creating a new edit will automatically delete any
-   * of your previous edits so this method need only be called if you want to
-   * preemptively abandon an edit. (edits.delete)
+   * Deletes an app edit. (edits.delete)
    *
-   * @param string $packageName Unique identifier for the Android app that is
-   * being updated; for example, "com.spiffygame".
-   * @param string $editId Unique identifier for this edit.
+   * @param string $packageName Package name of the app.
+   * @param string $editId Identifier of the edit.
    * @param array $optParams Optional parameters.
    */
   public function delete($packageName, $editId, $optParams = array())
@@ -57,12 +58,10 @@ class Google_Service_AndroidPublisher_Resource_Edits extends Google_Service_Reso
     return $this->call('delete', array($params));
   }
   /**
-   * Returns information about the edit specified. Calls will fail if the edit is
-   * no long active (e.g. has been deleted, superseded or expired). (edits.get)
+   * Gets an app edit. (edits.get)
    *
-   * @param string $packageName Unique identifier for the Android app that is
-   * being updated; for example, "com.spiffygame".
-   * @param string $editId Unique identifier for this edit.
+   * @param string $packageName Package name of the app.
+   * @param string $editId Identifier of the edit.
    * @param array $optParams Optional parameters.
    * @return Google_Service_AndroidPublisher_AppEdit
    */
@@ -73,11 +72,9 @@ class Google_Service_AndroidPublisher_Resource_Edits extends Google_Service_Reso
     return $this->call('get', array($params), "Google_Service_AndroidPublisher_AppEdit");
   }
   /**
-   * Creates a new edit for an app, populated with the app's current state.
-   * (edits.insert)
+   * Creates a new edit for an app. (edits.insert)
    *
-   * @param string $packageName Unique identifier for the Android app that is
-   * being updated; for example, "com.spiffygame".
+   * @param string $packageName Package name of the app.
    * @param Google_Service_AndroidPublisher_AppEdit $postBody
    * @param array $optParams Optional parameters.
    * @return Google_Service_AndroidPublisher_AppEdit
@@ -89,12 +86,10 @@ class Google_Service_AndroidPublisher_Resource_Edits extends Google_Service_Reso
     return $this->call('insert', array($params), "Google_Service_AndroidPublisher_AppEdit");
   }
   /**
-   * Checks that the edit can be successfully committed. The edit's changes are
-   * not applied to the live app. (edits.validate)
+   * Validates an app edit. (edits.validate)
    *
-   * @param string $packageName Unique identifier for the Android app that is
-   * being updated; for example, "com.spiffygame".
-   * @param string $editId Unique identifier for this edit.
+   * @param string $packageName Package name of the app.
+   * @param string $editId Identifier of the edit.
    * @param array $optParams Optional parameters.
    * @return Google_Service_AndroidPublisher_AppEdit
    */

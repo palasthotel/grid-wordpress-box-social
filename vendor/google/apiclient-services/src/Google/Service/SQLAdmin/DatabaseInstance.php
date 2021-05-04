@@ -40,14 +40,18 @@ class Google_Service_SQLAdmin_DatabaseInstance extends Google_Collection
   public $name;
   protected $onPremisesConfigurationType = 'Google_Service_SQLAdmin_OnPremisesConfiguration';
   protected $onPremisesConfigurationDataType = '';
+  protected $outOfDiskReportType = 'Google_Service_SQLAdmin_SqlOutOfDiskReport';
+  protected $outOfDiskReportDataType = '';
   public $project;
   public $region;
   protected $replicaConfigurationType = 'Google_Service_SQLAdmin_ReplicaConfiguration';
   protected $replicaConfigurationDataType = '';
   public $replicaNames;
   public $rootPassword;
+  public $satisfiesPzs;
   protected $scheduledMaintenanceType = 'Google_Service_SQLAdmin_SqlScheduledMaintenance';
   protected $scheduledMaintenanceDataType = '';
+  public $secondaryGceZone;
   public $selfLink;
   protected $serverCaCertType = 'Google_Service_SQLAdmin_SslCert';
   protected $serverCaCertDataType = '';
@@ -156,14 +160,14 @@ class Google_Service_SQLAdmin_DatabaseInstance extends Google_Collection
     return $this->instanceType;
   }
   /**
-   * @param Google_Service_SQLAdmin_IpMapping
+   * @param Google_Service_SQLAdmin_IpMapping[]
    */
   public function setIpAddresses($ipAddresses)
   {
     $this->ipAddresses = $ipAddresses;
   }
   /**
-   * @return Google_Service_SQLAdmin_IpMapping
+   * @return Google_Service_SQLAdmin_IpMapping[]
    */
   public function getIpAddresses()
   {
@@ -223,6 +227,20 @@ class Google_Service_SQLAdmin_DatabaseInstance extends Google_Collection
   {
     return $this->onPremisesConfiguration;
   }
+  /**
+   * @param Google_Service_SQLAdmin_SqlOutOfDiskReport
+   */
+  public function setOutOfDiskReport(Google_Service_SQLAdmin_SqlOutOfDiskReport $outOfDiskReport)
+  {
+    $this->outOfDiskReport = $outOfDiskReport;
+  }
+  /**
+   * @return Google_Service_SQLAdmin_SqlOutOfDiskReport
+   */
+  public function getOutOfDiskReport()
+  {
+    return $this->outOfDiskReport;
+  }
   public function setProject($project)
   {
     $this->project = $project;
@@ -269,6 +287,14 @@ class Google_Service_SQLAdmin_DatabaseInstance extends Google_Collection
   {
     return $this->rootPassword;
   }
+  public function setSatisfiesPzs($satisfiesPzs)
+  {
+    $this->satisfiesPzs = $satisfiesPzs;
+  }
+  public function getSatisfiesPzs()
+  {
+    return $this->satisfiesPzs;
+  }
   /**
    * @param Google_Service_SQLAdmin_SqlScheduledMaintenance
    */
@@ -282,6 +308,14 @@ class Google_Service_SQLAdmin_DatabaseInstance extends Google_Collection
   public function getScheduledMaintenance()
   {
     return $this->scheduledMaintenance;
+  }
+  public function setSecondaryGceZone($secondaryGceZone)
+  {
+    $this->secondaryGceZone = $secondaryGceZone;
+  }
+  public function getSecondaryGceZone()
+  {
+    return $this->secondaryGceZone;
   }
   public function setSelfLink($selfLink)
   {

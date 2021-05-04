@@ -20,6 +20,7 @@ class Google_Service_Bigquery_QueryRequest extends Google_Collection
   protected $collection_key = 'queryParameters';
   protected $connectionPropertiesType = 'Google_Service_Bigquery_ConnectionProperty';
   protected $connectionPropertiesDataType = 'array';
+  public $createSession;
   protected $defaultDatasetType = 'Google_Service_Bigquery_DatasetReference';
   protected $defaultDatasetDataType = '';
   public $dryRun;
@@ -39,18 +40,26 @@ class Google_Service_Bigquery_QueryRequest extends Google_Collection
   public $useQueryCache;
 
   /**
-   * @param Google_Service_Bigquery_ConnectionProperty
+   * @param Google_Service_Bigquery_ConnectionProperty[]
    */
   public function setConnectionProperties($connectionProperties)
   {
     $this->connectionProperties = $connectionProperties;
   }
   /**
-   * @return Google_Service_Bigquery_ConnectionProperty
+   * @return Google_Service_Bigquery_ConnectionProperty[]
    */
   public function getConnectionProperties()
   {
     return $this->connectionProperties;
+  }
+  public function setCreateSession($createSession)
+  {
+    $this->createSession = $createSession;
+  }
+  public function getCreateSession()
+  {
+    return $this->createSession;
   }
   /**
    * @param Google_Service_Bigquery_DatasetReference
@@ -139,14 +148,14 @@ class Google_Service_Bigquery_QueryRequest extends Google_Collection
     return $this->query;
   }
   /**
-   * @param Google_Service_Bigquery_QueryParameter
+   * @param Google_Service_Bigquery_QueryParameter[]
    */
   public function setQueryParameters($queryParameters)
   {
     $this->queryParameters = $queryParameters;
   }
   /**
-   * @return Google_Service_Bigquery_QueryParameter
+   * @return Google_Service_Bigquery_QueryParameter[]
    */
   public function getQueryParameters()
   {

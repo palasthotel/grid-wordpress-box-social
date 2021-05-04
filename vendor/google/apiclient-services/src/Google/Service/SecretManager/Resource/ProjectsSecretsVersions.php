@@ -27,12 +27,12 @@ class Google_Service_SecretManager_Resource_ProjectsSecretsVersions extends Goog
 {
   /**
    * Accesses a SecretVersion. This call returns the secret data.
-   *
-   * `projects/secrets/versions/latest` is an alias to the `latest` SecretVersion.
-   * (versions.access)
+   * `projects/secrets/versions/latest` is an alias to the most recently created
+   * SecretVersion. (versions.access)
    *
    * @param string $name Required. The resource name of the SecretVersion in the
-   * format `projects/secrets/versions`.
+   * format `projects/secrets/versions`. `projects/secrets/versions/latest` is an
+   * alias to the most recently created SecretVersion.
    * @param array $optParams Optional parameters.
    * @return Google_Service_SecretManager_AccessSecretVersionResponse
    */
@@ -43,10 +43,8 @@ class Google_Service_SecretManager_Resource_ProjectsSecretsVersions extends Goog
     return $this->call('access', array($params), "Google_Service_SecretManager_AccessSecretVersionResponse");
   }
   /**
-   * Destroys a SecretVersion.
-   *
-   * Sets the state of the SecretVersion to DESTROYED and irrevocably destroys the
-   * secret data. (versions.destroy)
+   * Destroys a SecretVersion. Sets the state of the SecretVersion to DESTROYED
+   * and irrevocably destroys the secret data. (versions.destroy)
    *
    * @param string $name Required. The resource name of the SecretVersion to
    * destroy in the format `projects/secrets/versions`.
@@ -61,9 +59,8 @@ class Google_Service_SecretManager_Resource_ProjectsSecretsVersions extends Goog
     return $this->call('destroy', array($params), "Google_Service_SecretManager_SecretVersion");
   }
   /**
-   * Disables a SecretVersion.
-   *
-   * Sets the state of the SecretVersion to DISABLED. (versions.disable)
+   * Disables a SecretVersion. Sets the state of the SecretVersion to DISABLED.
+   * (versions.disable)
    *
    * @param string $name Required. The resource name of the SecretVersion to
    * disable in the format `projects/secrets/versions`.
@@ -78,9 +75,8 @@ class Google_Service_SecretManager_Resource_ProjectsSecretsVersions extends Goog
     return $this->call('disable', array($params), "Google_Service_SecretManager_SecretVersion");
   }
   /**
-   * Enables a SecretVersion.
-   *
-   * Sets the state of the SecretVersion to ENABLED. (versions.enable)
+   * Enables a SecretVersion. Sets the state of the SecretVersion to ENABLED.
+   * (versions.enable)
    *
    * @param string $name Required. The resource name of the SecretVersion to
    * enable in the format `projects/secrets/versions`.
@@ -95,14 +91,12 @@ class Google_Service_SecretManager_Resource_ProjectsSecretsVersions extends Goog
     return $this->call('enable', array($params), "Google_Service_SecretManager_SecretVersion");
   }
   /**
-   * Gets metadata for a SecretVersion.
-   *
-   * `projects/secrets/versions/latest` is an alias to the `latest` SecretVersion.
-   * (versions.get)
+   * Gets metadata for a SecretVersion. `projects/secrets/versions/latest` is an
+   * alias to the most recently created SecretVersion. (versions.get)
    *
    * @param string $name Required. The resource name of the SecretVersion in the
    * format `projects/secrets/versions`. `projects/secrets/versions/latest` is an
-   * alias to the `latest` SecretVersion.
+   * alias to the most recently created SecretVersion.
    * @param array $optParams Optional parameters.
    * @return Google_Service_SecretManager_SecretVersion
    */
@@ -120,12 +114,12 @@ class Google_Service_SecretManager_Resource_ProjectsSecretsVersions extends Goog
    * with the SecretVersions to list, in the format `projects/secrets`.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string pageToken Optional. Pagination token, returned earlier via
-   * ListSecretVersionsResponse.next_page_token][].
    * @opt_param int pageSize Optional. The maximum number of results to be
    * returned in a single page. If set to 0, the server decides the number of
    * results to return. If the number is greater than 25000, it is capped at
    * 25000.
+   * @opt_param string pageToken Optional. Pagination token, returned earlier via
+   * ListSecretVersionsResponse.next_page_token][].
    * @return Google_Service_SecretManager_ListSecretVersionsResponse
    */
   public function listProjectsSecretsVersions($parent, $optParams = array())

@@ -30,11 +30,17 @@
  */
 class Google_Service_CloudHealthcare extends Google_Service
 {
-  /** View and manage your data across Google Cloud Platform services. */
+  /** See, edit, configure, and delete your Google Cloud Platform data. */
   const CLOUD_PLATFORM =
       "https://www.googleapis.com/auth/cloud-platform";
 
+  public $projects_locations;
   public $projects_locations_datasets;
+  public $projects_locations_datasets_consentStores;
+  public $projects_locations_datasets_consentStores_attributeDefinitions;
+  public $projects_locations_datasets_consentStores_consentArtifacts;
+  public $projects_locations_datasets_consentStores_consents;
+  public $projects_locations_datasets_consentStores_userDataMappings;
   public $projects_locations_datasets_dicomStores;
   public $projects_locations_datasets_dicomStores_studies;
   public $projects_locations_datasets_dicomStores_studies_series;
@@ -45,7 +51,7 @@ class Google_Service_CloudHealthcare extends Google_Service
   public $projects_locations_datasets_hl7V2Stores;
   public $projects_locations_datasets_hl7V2Stores_messages;
   public $projects_locations_datasets_operations;
-  
+
   /**
    * Constructs the internal representation of the CloudHealthcare service.
    *
@@ -61,6 +67,48 @@ class Google_Service_CloudHealthcare extends Google_Service
     $this->version = 'v1';
     $this->serviceName = 'healthcare';
 
+    $this->projects_locations = new Google_Service_CloudHealthcare_Resource_ProjectsLocations(
+        $this,
+        $this->serviceName,
+        'locations',
+        array(
+          'methods' => array(
+            'get' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'list' => array(
+              'path' => 'v1/{+name}/locations',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'filter' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),
+          )
+        )
+    );
     $this->projects_locations_datasets = new Google_Service_CloudHealthcare_Resource_ProjectsLocationsDatasets(
         $this,
         $this->serviceName,
@@ -181,6 +229,516 @@ class Google_Service_CloudHealthcare extends Google_Service
           )
         )
     );
+    $this->projects_locations_datasets_consentStores = new Google_Service_CloudHealthcare_Resource_ProjectsLocationsDatasetsConsentStores(
+        $this,
+        $this->serviceName,
+        'consentStores',
+        array(
+          'methods' => array(
+            'checkDataAccess' => array(
+              'path' => 'v1/{+consentStore}:checkDataAccess',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'consentStore' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'create' => array(
+              'path' => 'v1/{+parent}/consentStores',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'consentStoreId' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),'delete' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'DELETE',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'evaluateUserConsents' => array(
+              'path' => 'v1/{+consentStore}:evaluateUserConsents',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'consentStore' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'get' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'getIamPolicy' => array(
+              'path' => 'v1/{+resource}:getIamPolicy',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'resource' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'options.requestedPolicyVersion' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+              ),
+            ),'list' => array(
+              'path' => 'v1/{+parent}/consentStores',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'filter' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),'patch' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'PATCH',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'updateMask' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),'queryAccessibleData' => array(
+              'path' => 'v1/{+consentStore}:queryAccessibleData',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'consentStore' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'setIamPolicy' => array(
+              'path' => 'v1/{+resource}:setIamPolicy',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'resource' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'testIamPermissions' => array(
+              'path' => 'v1/{+resource}:testIamPermissions',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'resource' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),
+          )
+        )
+    );
+    $this->projects_locations_datasets_consentStores_attributeDefinitions = new Google_Service_CloudHealthcare_Resource_ProjectsLocationsDatasetsConsentStoresAttributeDefinitions(
+        $this,
+        $this->serviceName,
+        'attributeDefinitions',
+        array(
+          'methods' => array(
+            'create' => array(
+              'path' => 'v1/{+parent}/attributeDefinitions',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'attributeDefinitionId' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),'delete' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'DELETE',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'get' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'list' => array(
+              'path' => 'v1/{+parent}/attributeDefinitions',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'filter' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),'patch' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'PATCH',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'updateMask' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),
+          )
+        )
+    );
+    $this->projects_locations_datasets_consentStores_consentArtifacts = new Google_Service_CloudHealthcare_Resource_ProjectsLocationsDatasetsConsentStoresConsentArtifacts(
+        $this,
+        $this->serviceName,
+        'consentArtifacts',
+        array(
+          'methods' => array(
+            'create' => array(
+              'path' => 'v1/{+parent}/consentArtifacts',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'delete' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'DELETE',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'get' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'list' => array(
+              'path' => 'v1/{+parent}/consentArtifacts',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'filter' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),
+          )
+        )
+    );
+    $this->projects_locations_datasets_consentStores_consents = new Google_Service_CloudHealthcare_Resource_ProjectsLocationsDatasetsConsentStoresConsents(
+        $this,
+        $this->serviceName,
+        'consents',
+        array(
+          'methods' => array(
+            'activate' => array(
+              'path' => 'v1/{+name}:activate',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'create' => array(
+              'path' => 'v1/{+parent}/consents',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'delete' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'DELETE',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'deleteRevision' => array(
+              'path' => 'v1/{+name}:deleteRevision',
+              'httpMethod' => 'DELETE',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'get' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'list' => array(
+              'path' => 'v1/{+parent}/consents',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'filter' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),'listRevisions' => array(
+              'path' => 'v1/{+name}:listRevisions',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'filter' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),'patch' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'PATCH',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'updateMask' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),'reject' => array(
+              'path' => 'v1/{+name}:reject',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'revoke' => array(
+              'path' => 'v1/{+name}:revoke',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),
+          )
+        )
+    );
+    $this->projects_locations_datasets_consentStores_userDataMappings = new Google_Service_CloudHealthcare_Resource_ProjectsLocationsDatasetsConsentStoresUserDataMappings(
+        $this,
+        $this->serviceName,
+        'userDataMappings',
+        array(
+          'methods' => array(
+            'archive' => array(
+              'path' => 'v1/{+name}:archive',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'create' => array(
+              'path' => 'v1/{+parent}/userDataMappings',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'delete' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'DELETE',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'get' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'list' => array(
+              'path' => 'v1/{+parent}/userDataMappings',
+              'httpMethod' => 'GET',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'filter' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),'patch' => array(
+              'path' => 'v1/{+name}',
+              'httpMethod' => 'PATCH',
+              'parameters' => array(
+                'name' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'updateMask' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+              ),
+            ),
+          )
+        )
+    );
     $this->projects_locations_datasets_dicomStores = new Google_Service_CloudHealthcare_Resource_ProjectsLocationsDatasetsDicomStores(
         $this,
         $this->serviceName,
@@ -274,10 +832,6 @@ class Google_Service_CloudHealthcare extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 'filter' => array(
                   'location' => 'query',
                   'type' => 'string',
@@ -285,6 +839,10 @@ class Google_Service_CloudHealthcare extends Google_Service
                 'pageSize' => array(
                   'location' => 'query',
                   'type' => 'integer',
+                ),
+                'pageToken' => array(
+                  'location' => 'query',
+                  'type' => 'string',
                 ),
               ),
             ),'patch' => array(
@@ -758,13 +1316,13 @@ class Google_Service_CloudHealthcare extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageSize' => array(
-                  'location' => 'query',
-                  'type' => 'integer',
-                ),
                 'filter' => array(
                   'location' => 'query',
                   'type' => 'string',
+                ),
+                'pageSize' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
                 ),
                 'pageToken' => array(
                   'location' => 'query',
@@ -824,7 +1382,19 @@ class Google_Service_CloudHealthcare extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'start' => array(
+                '_count' => array(
+                  'location' => 'query',
+                  'type' => 'integer',
+                ),
+                '_page_token' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                '_since' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                '_type' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
@@ -832,11 +1402,7 @@ class Google_Service_CloudHealthcare extends Google_Service
                   'location' => 'query',
                   'type' => 'string',
                 ),
-                '_count' => array(
-                  'location' => 'query',
-                  'type' => 'integer',
-                ),
-                '_page_token' => array(
+                'start' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
@@ -905,10 +1471,6 @@ class Google_Service_CloudHealthcare extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                '_since' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
                 '_at' => array(
                   'location' => 'query',
                   'type' => 'string',
@@ -918,6 +1480,10 @@ class Google_Service_CloudHealthcare extends Google_Service
                   'type' => 'integer',
                 ),
                 '_page_token' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
+                '_since' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
@@ -947,6 +1513,21 @@ class Google_Service_CloudHealthcare extends Google_Service
               'httpMethod' => 'POST',
               'parameters' => array(
                 'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+              ),
+            ),'search-type' => array(
+              'path' => 'v1/{+parent}/fhir/{resourceType}/_search',
+              'httpMethod' => 'POST',
+              'parameters' => array(
+                'parent' => array(
+                  'location' => 'path',
+                  'type' => 'string',
+                  'required' => true,
+                ),
+                'resourceType' => array(
                   'location' => 'path',
                   'type' => 'string',
                   'required' => true,
@@ -1149,19 +1730,19 @@ class Google_Service_CloudHealthcare extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
-                'pageSize' => array(
+                'filter' => array(
                   'location' => 'query',
-                  'type' => 'integer',
+                  'type' => 'string',
                 ),
                 'orderBy' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
-                'pageToken' => array(
+                'pageSize' => array(
                   'location' => 'query',
-                  'type' => 'string',
+                  'type' => 'integer',
                 ),
-                'filter' => array(
+                'pageToken' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),
@@ -1223,15 +1804,15 @@ class Google_Service_CloudHealthcare extends Google_Service
                   'type' => 'string',
                   'required' => true,
                 ),
+                'filter' => array(
+                  'location' => 'query',
+                  'type' => 'string',
+                ),
                 'pageSize' => array(
                   'location' => 'query',
                   'type' => 'integer',
                 ),
                 'pageToken' => array(
-                  'location' => 'query',
-                  'type' => 'string',
-                ),
-                'filter' => array(
                   'location' => 'query',
                   'type' => 'string',
                 ),

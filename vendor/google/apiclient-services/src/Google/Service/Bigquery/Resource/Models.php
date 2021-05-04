@@ -56,17 +56,18 @@ class Google_Service_Bigquery_Resource_Models extends Google_Service_Resource
   }
   /**
    * Lists all models in the specified dataset. Requires the READER dataset role.
-   * (models.listModels)
+   * After retrieving the list of models, you can get information about a
+   * particular model by calling the models.get method. (models.listModels)
    *
    * @param string $projectId Required. Project ID of the models to list.
    * @param string $datasetId Required. Dataset ID of the models to list.
    * @param array $optParams Optional parameters.
    *
-   * @opt_param string pageToken Page token, returned by a previous call to
-   * request the next page of results
    * @opt_param string maxResults The maximum number of results to return in a
    * single response page. Leverage the page tokens to iterate through the entire
    * collection.
+   * @opt_param string pageToken Page token, returned by a previous call to
+   * request the next page of results
    * @return Google_Service_Bigquery_ListModelsResponse
    */
   public function listModels($projectId, $datasetId, $optParams = array())

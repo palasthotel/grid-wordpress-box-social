@@ -28,13 +28,14 @@ class Google_Service_Monitoring_Resource_ProjectsAlertPolicies extends Google_Se
   /**
    * Creates a new alerting policy. (alertPolicies.create)
    *
-   * @param string $name Required. The project in which to create the alerting
-   * policy. The format is: projects/[PROJECT_ID_OR_NUMBER] Note that this field
-   * names the parent container in which the alerting policy will be written, not
-   * the name of the created policy. |name| must be a host project of a workspace,
-   * otherwise INVALID_ARGUMENT error will return. The alerting policy that is
-   * returned will have a name that contains a normalized representation of this
-   * name as a prefix but adds a suffix of the form
+   * @param string $name Required. The project
+   * (https://cloud.google.com/monitoring/api/v3#project_name) in which to create
+   * the alerting policy. The format is: projects/[PROJECT_ID_OR_NUMBER] Note that
+   * this field names the parent container in which the alerting policy will be
+   * written, not the name of the created policy. |name| must be a host project of
+   * a workspace, otherwise INVALID_ARGUMENT error will return. The alerting
+   * policy that is returned will have a name that contains a normalized
+   * representation of this name as a prefix but adds a suffix of the form
    * /alertPolicies/[ALERT_POLICY_ID], identifying the policy in the container.
    * @param Google_Service_Monitoring_AlertPolicy $postBody
    * @param array $optParams Optional parameters.
@@ -79,11 +80,12 @@ class Google_Service_Monitoring_Resource_ProjectsAlertPolicies extends Google_Se
    * Lists the existing alerting policies for the workspace.
    * (alertPolicies.listProjectsAlertPolicies)
    *
-   * @param string $name Required. The project whose alert policies are to be
-   * listed. The format is: projects/[PROJECT_ID_OR_NUMBER] Note that this field
-   * names the parent container in which the alerting policies to be listed are
-   * stored. To retrieve a single alerting policy by name, use the GetAlertPolicy
-   * operation, instead.
+   * @param string $name Required. The project
+   * (https://cloud.google.com/monitoring/api/v3#project_name) whose alert
+   * policies are to be listed. The format is: projects/[PROJECT_ID_OR_NUMBER]
+   * Note that this field names the parent container in which the alerting
+   * policies to be listed are stored. To retrieve a single alerting policy by
+   * name, use the GetAlertPolicy operation, instead.
    * @param array $optParams Optional parameters.
    *
    * @opt_param string filter If provided, this field specifies the criteria that
@@ -95,12 +97,12 @@ class Google_Service_Monitoring_Resource_ProjectsAlertPolicies extends Google_Se
    * Entries can be prefixed with a minus sign to sort by the field in descending
    * order.For more details, see sorting and filtering
    * (https://cloud.google.com/monitoring/api/v3/sorting-and-filtering).
+   * @opt_param int pageSize The maximum number of results to return in a single
+   * response.
    * @opt_param string pageToken If this field is not empty then it must contain
    * the nextPageToken value returned by a previous call to this method. Using
    * this field causes the method to return more results from the previous method
    * call.
-   * @opt_param int pageSize The maximum number of results to return in a single
-   * response.
    * @return Google_Service_Monitoring_ListAlertPoliciesResponse
    */
   public function listProjectsAlertPolicies($name, $optParams = array())

@@ -22,6 +22,7 @@ class Google_Service_PeopleService_ListOtherContactsResponse extends Google_Coll
   public $nextSyncToken;
   protected $otherContactsType = 'Google_Service_PeopleService_Person';
   protected $otherContactsDataType = 'array';
+  public $totalSize;
 
   public function setNextPageToken($nextPageToken)
   {
@@ -40,17 +41,25 @@ class Google_Service_PeopleService_ListOtherContactsResponse extends Google_Coll
     return $this->nextSyncToken;
   }
   /**
-   * @param Google_Service_PeopleService_Person
+   * @param Google_Service_PeopleService_Person[]
    */
   public function setOtherContacts($otherContacts)
   {
     $this->otherContacts = $otherContacts;
   }
   /**
-   * @return Google_Service_PeopleService_Person
+   * @return Google_Service_PeopleService_Person[]
    */
   public function getOtherContacts()
   {
     return $this->otherContacts;
+  }
+  public function setTotalSize($totalSize)
+  {
+    $this->totalSize = $totalSize;
+  }
+  public function getTotalSize()
+  {
+    return $this->totalSize;
   }
 }
