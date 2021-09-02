@@ -87,7 +87,7 @@ class grid_twitter_box extends grid_list_box {
 				}
 				ob_start();
 				$content = $result;
-				$templatePath = $this->template::getPath('grid_twitterbox.tpl.php');
+				$templatePath = $this->template->getPath('grid_twitterbox.tpl.php');
 				if ( file_exists( $templatePath ) ) {
 					require ( $templatePath );
 				} else {
