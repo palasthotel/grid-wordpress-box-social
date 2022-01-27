@@ -20,12 +20,22 @@ class grid_youtube_feed_box extends grid_rss_box  {
 		parent::__construct();
 		// numItems and offset comes from grid_rss_box
 		$this->content->channel_id = '';
+        $this->content->playlist_id = '';
 		$this->content->info = 0;
 		$this->content->related = 0;
 	}
 
 	public function getUrl(){
-		return "https://www.youtube.com/feeds/videos.xml?channel_id={$this->content->channel_id}";
+
+        if( $this->content->channel_id != '' ) {
+            return "https://www.youtube.com/feeds/videos.xml?channel_id={$this->content->channel_id}";
+        }
+
+        if( $this->content->playlist_id != '' ) {
+            return "https://www.youtube.com/feeds/videos.xml?playlist_id={$this->content->playlist_id}";
+        }
+
+		return false;
 	}
 
 	public function build($editmode) {
@@ -71,6 +81,11 @@ class grid_youtube_feed_box extends grid_rss_box  {
 					'label' => 'Channel',
 					'type' => 'text',
 				),
+                array(
+                    'key' => 'playlist_id',
+                    'label' => 'Playlist',
+                    'type' => 'text',
+                ),
 			),
 			$cs,
 			array(
