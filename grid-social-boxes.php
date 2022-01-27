@@ -3,15 +3,14 @@
  * Plugin Name: Grid Social Boxes
  * Plugin URI: https://github.com/palasthotel/wordpress-grid-box-social
  * Description: Some social network boxes. Facebook, Twitter, Instagram and Youtube.
- * Version: 1.6.2
- * Author: Palasthotel <rezeption@palasthotel.de> (in
- * person: Edward Bock, Enno Welbers)
+ * Version: 1.7.0
+ * Author: Palasthotel <rezeption@palasthotel.de> (in person: Edward Bock, Enno Welbers, Stephan Kroppenstedt)
  * Author URI: http://www.palasthotel.de
  * Text Domain: grid-social-boxes Domain
  * Path: /languages
  * License: http://www.gnu.org/licenses/gpl-2.0.html GPLv2
  *
- * @copyright Copyright (c) 2020, Palasthotel
+ * @copyright Copyright (c) 2022, Palasthotel
  * @package Palasthotel\GridSocialBoxes
  */
 
