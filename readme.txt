@@ -1,3 +1,12 @@
+> [!WARNING]
+> **This repository is no longer maintained.**
+>
+> We have stopped active development on this project. It will not receive new features, bug fixes, or security updates, and issues and pull requests will no longer be reviewed.
+>
+> The code remains available for reference, but we recommend not using it in production. If you rely on it, consider forking the repository or switching to an alternative.
+>
+> Thank you to everyone who contributed and used this project over the years!
+
 === Grid Social Boxes ===
 Contributors: edwardbock,mkernel,skroppenstedt
 Donate link: http://palasthotel.de/
